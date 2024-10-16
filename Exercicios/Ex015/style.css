@@ -1,0 +1,17 @@
+body {
+    background-color: lightblue;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 20px;
+    }
+    h1 {
+        color: rgb(41, 41, 41);
+        background-color: rgb(192, 192, 192);
+    }
+    h2 {
+        color: rgb(197, 120, 120);
+        font-size: 19px;
+    }
+    p {
+        color: gray;
+        text-align: justify;
+    }

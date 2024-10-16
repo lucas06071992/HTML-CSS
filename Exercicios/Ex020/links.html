@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+
+        }
+
+        a {
+            color: red;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:visited {
+            color: darkred;
+        }
+
+        a:hover {
+            color: black;
+            text-decoration: underline;
+        }
+        /*
+        a:active {
+            color: yellow;
+        }
+        
+        a::after {
+            content: ' [link]';
+            text-decoration: none;
+            font-weight: normal;
+            color: darkgray;
+        }
+        
+        a::before {
+            content: ' ➡️';
+        }
+        a::after {
+            content: ' ⬅️';
+        }
+            */
+        .especial::before {
+            content: ' ➡️';
+        }
+        .especial::after {
+            content: ' ⬅️';
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Personalizando Links</h1>
+    <ul>
+        <li class="especial"><a href="https://www.youtube.com/c/VivaUmaFam%C3%ADliaFeliz">Canal do Youtube Viva</a></li>
+        <li><a href="https://www.instagram.com/vivaumafamiliafeliz/">Instagram Viva</a></li>
+        <li><a href="https://open.spotify.com/playlist/7E0RcvpzajVxh0QId8FAPr?si=GSuRWuDMSoOqFlWe1mCpEQ">Spotify Viva</a></li>
+    </ul>
+</body>
+</html>
