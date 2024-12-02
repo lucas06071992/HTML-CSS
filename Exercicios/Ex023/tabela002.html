@@ -13,6 +13,7 @@
         table {
             width: 500px;
             border-collapse: collapse;
+            position: relative;
         }
 
         td, th {
@@ -27,6 +28,12 @@
             background-color: lightgray;
         }
 
+        thead > tr > th {
+            position: sticky;
+            top: -1px;
+            background-color: grey;
+        }
+
         tbody > tr:nth-child(2n) {
             background-color: lightgray;
         }
@@ -35,6 +42,7 @@
             background-color: grey;
             color: white;
         }
+
 
         td.num {
             text-align: right;
