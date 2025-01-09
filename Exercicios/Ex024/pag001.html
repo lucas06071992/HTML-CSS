@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site de Teste</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: lightgrey;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        caption {
+            font-size: 1.2em;
+            font-weight: bolder;
+            padding: 20px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+       tr:nth-child(even) {
+            background-color: rgb(228, 228, 228);
+        }
+
+        tr:nth-child(odd) {
+            background-color: white;
+        }
+        div#container {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tabelas em telas pequenas</h1>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi reiciendis nemo sed facere adipisci, qui iure ipsa ea! Doloremque molestias maxime, eius quae aperiam suscipit eaque voluptas nam corrupti saepe. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur repudiandae iste tenetur itaque eum facilis, maiores saepe dolor assumenda. Perspiciatis quidem laborum velit corrupti dolores culpa, animi sit vel omnis.</p>
+    <div id="container">
+        <table>
+            <caption>Tabela Responsivas</caption>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Jan</th>
+                        <th>Fev</th>
+                        <th>Mar</th>
+                        <th>Abr</th>
+                        <th>Mai</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Ago</th>
+                        <th>Set</th>
+                        <th>Out</th>
+                        <th>Nov</th>
+                        <th>Dez</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Coca-Cola</th>
+                        <th>30</th>
+                        <th>15</th>
+                        <th>14</th>
+                        <th>50</th>
+                        <th>16</th>
+                        <th>24</th>
+                        <th>35</th>
+                        <th>45</th>
+                        <th>18</th>
+                        <th>19</th>
+                        <th>22</th>
+                        <th>50</th>
+                    </tr>
+                    <tr>
+                        <th>Doritos</th>
+                        <th>10</th>
+                        <th>12</th>
+                        <th>13</th>
+                        <th>20</th>
+                        <th>13</th>
+                        <th>14</th>
+                        <th>15</th>
+                        <th>22</th>
+                        <th>20</th>
+                        <th>19</th>
+                        <th>23</th>
+                        <th>12</th>
+                    </tr>
+                </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
