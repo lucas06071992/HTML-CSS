@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RL-Hub - O seu portal de Rocket League</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            background-image: url('https://images.unsplash.com/photo-1635551347938-51f3417332a5?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(17, 24, 39, 0.95); /* bg-gray-900 with opacity */
+            z-index: -1;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #38bdf8; /* text-sky-400 */
+            border-bottom-color: #38bdf8;
+        }
+        .glass-card {
+            background: rgba(31, 41, 55, 0.6); /* bg-gray-800 com opacidade */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(55, 65, 81, 0.5); /* border-gray-700 com opacidade */
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <!-- Container Principal -->
+    <div class="container mx-auto p-4 relative min-h-screen">
+        <div class="main-content fixed inset-0 -z-10"></div>
+
+        <!-- Cabeçalho e Navegação -->
+        <header class="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 mb-6 sticky top-4 z-50 flex justify-between items-center shadow-lg border border-gray-700/50">
+            <a href="#" class="text-3xl font-black text-sky-400" onclick="showPage('home')">RL-HUB</a>
+            <nav class="hidden md:flex items-center space-x-6 text-lg font-semibold">
+                <a href="#" class="nav-link active" onclick="showPage('home', this)">Início</a>
+                <a href="#" class="nav-link" onclick="showPage('championships', this)">Campeonatos</a>
+                <a href="#" class="nav-link" onclick="showPage('ranking', this)">Ranking</a>
+                <a href="#" class="nav-link" onclick="showPage('teams', this)">Times</a>
+                <a href="#" class="nav-link" onclick="showPage('players', this)">Jogadores</a>
+                <a href="#" class="nav-link" onclick="showPage('news', this)">Notícias</a>
+            </nav>
+            <div class="md:hidden">
+                <button onclick="toggleMobileMenu()">
+                    <i data-lucide="menu" class="w-8 h-8"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden fixed top-0 left-0 w-full h-full bg-gray-900/90 z-50 p-6">
+            <div class="flex justify-between items-center mb-8">
+                 <a href="#" class="text-3xl font-black text-sky-400" onclick="showPage('home')">RL-HUB</a>
+                 <button onclick="toggleMobileMenu()">
+                    <i data-lucide="x" class="w-8 h-8"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col space-y-6 text-2xl font-semibold text-center">
+                <a href="#" onclick="showPage('home', this); toggleMobileMenu();">Início</a>
+                <a href="#" onclick="showPage('championships', this); toggleMobileMenu();">Campeonatos</a>
+                <a href="#" onclick="showPage('ranking', this); toggleMobileMenu();">Ranking</a>
+                <a href="#" onclick="showPage('teams', this); toggleMobileMenu();">Times</a>
+                <a href="#" onclick="showPage('players', this); toggleMobileMenu();">Jogadores</a>
+                <a href="#" onclick="showPage('news', this); toggleMobileMenu();">Notícias</a>
+            </nav>
+        </div>
+
+
+        <!-- Conteúdo das Páginas -->
+        <main id="page-container">
+
+            <!-- Página Inicial (Home) -->
+            <div id="home" class="page-content">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Coluna Esquerda -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <!-- Ranking -->
+                        <div class="glass-card rounded-lg p-4">
+                            <h2 class="text-xl font-bold mb-4 text-sky-400 border-b border-gray-700 pb-2">Top 10 Mundial</h2>
+                            <ul class="space-y-3">
+                                <!-- Mock Data para Ranking -->
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">1.</span> <img src="https://placehold.co/20x20/eab308/000000?text=G2" class="w-5 h-5 rounded-sm"> <span>G2 Stride</span> <span class="ml-auto font-mono">1540</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">2.</span> <img src="https://placehold.co/20x20/dc2626/ffffff?text=KC" class="w-5 h-5 rounded-sm"> <span>Karmine Corp</span> <span class="ml-auto font-mono">1510</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">3.</span> <img src="https://placehold.co/20x20/2563eb/ffffff?text=F" class="w-5 h-5 rounded-sm"> <span>Falcons</span> <span class="ml-auto font-mono">1485</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">4.</span> <img src="https://placehold.co/20x20/16a34a/ffffff?text=FUR" class="w-5 h-5 rounded-sm"> <span>FURIA</span> <span class="ml-auto font-mono">1420</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">5.</span> <img src="https://placehold.co/20x20/f97316/000000?text=GEN" class="w-5 h-5 rounded-sm"> <span>Gen.G</span> <span class="ml-auto font-mono">1390</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">6.</span> <img src="https://placehold.co/20x20/ffffff/000000?text=BDS" class="w-5 h-5 rounded-sm"> <span>Team BDS</span> <span class="ml-auto font-mono">1355</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">7.</span> <img src="https://placehold.co/20x20/6d28d9/ffffff?text=OG" class="w-5 h-5 rounded-sm"> <span>OG</span> <span class="ml-auto font-mono">1280</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">8.</span> <img src="https://placehold.co/20x20/db2777/ffffff?text=M8" class="w-5 h-5 rounded-sm"> <span>Gentle Mates</span> <span class="ml-auto font-mono">1250</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">9.</span> <img src="https://placehold.co/20x20/0284c7/ffffff?text=VIT" class="w-5 h-5 rounded-sm"> <span>Team Vitality</span> <span class="ml-auto font-mono">1210</span></li>
+                                <li class="flex items-center space-x-3"><span class="font-bold w-6">10.</span> <img src="https://placehold.co/20x20/be123c/ffffff?text=PWR" class="w-5 h-5 rounded-sm"> <span>PWR</span> <span class="ml-auto font-mono">1195</span></li>
+                            </ul>
+                        </div>
+                        <!-- Próximas Partidas -->
+                        <div class="glass-card rounded-lg p-4">
+                            <h2 class="text-xl font-bold mb-4 text-sky-400 border-b border-gray-700 pb-2">Próximas Partidas</h2>
+                            <ul class="space-y-4">
+                                <!-- Mock Data Partida -->
+                                <li class="text-sm">
+                                    <div class="flex justify-between items-center font-bold">
+                                        <div class="flex items-center gap-2">
+                                            <img src="https://placehold.co/20x20/eab308/000000?text=G2" class="w-5 h-5 rounded-sm"> G2
+                                        </div>
+                                        <span>vs</span>
+                                        <div class="flex items-center gap-2">
+                                            FURIA <img src="https://placehold.co/20x20/16a34a/ffffff?text=FUR" class="w-5 h-5 rounded-sm">
+                                        </div>
+                                    </div>
+                                    <div class="text-center text-xs text-gray-400 mt-1">Hoje - 18:00 | RLCS Major</div>
+                                </li>
+                                <li class="text-sm">
+                                    <div class="flex justify-between items-center font-bold">
+                                        <div class="flex items-center gap-2">
+                                            <img src="https://placehold.co/20x20/dc2626/ffffff?text=KC" class="w-5 h-5 rounded-sm"> KC
+                                        </div>
+                                        <span>vs</span>
+                                        <div class="flex items-center gap-2">
+                                            Falcons <img src="https://placehold.co/20x20/2563eb/ffffff?text=F" class="w-5 h-5 rounded-sm">
+                                        </div>
+                                    </div>
+                                    <div class="text-center text-xs text-gray-400 mt-1">Hoje - 20:00 | RLCS Major</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Coluna Central -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <h2 class="text-2xl font-bold text-sky-400 border-b border-gray-700 pb-2">Notícias em Destaque</h2>
+                         <!-- Mock Notícia Principal -->
+                        <div class="glass-card rounded-lg overflow-hidden cursor-pointer hover:border-sky-400 transition-all">
+                            <img src="https://placehold.co/800x400/1e293b/ffffff?text=Imagem+da+Notícia" alt="Notícia Principal" class="w-full h-64 object-cover">
+                            <div class="p-4">
+                                <span class="text-xs font-bold uppercase text-sky-400">RLCS Major</span>
+                                <h3 class="text-2xl font-bold mt-1">G2 Stride vence a Karmine Corp e conquista o Major de Londres!</h3>
+                                <p class="text-gray-400 mt-2 text-sm">Em uma final eletrizante de 7 jogos, a equipe norte-americana superou os gigantes europeus e levantou o troféu.</p>
+                            </div>
+                        </div>
+                         <!-- Mock Resultados Recentes -->
+                        <div>
+                            <h3 class="text-xl font-bold text-sky-400 border-b border-gray-700 pb-2 mb-4">Resultados Recentes</h3>
+                            <div class="space-y-3">
+                                <div class="glass-card rounded-lg p-3 flex items-center justify-between">
+                                    <div class="flex items-center gap-3 font-bold"><img src="https://placehold.co/24x24/eab308/000000?text=G2" class="w-6 h-6 rounded-sm"> G2 Stride</div>
+                                    <div class="font-bold text-lg"><span class="text-green-400">4</span> - <span>3</span></div>
+                                    <div class="flex items-center gap-3 font-bold">Karmine Corp <img src="https://placehold.co/24x24/dc2626/ffffff?text=KC" class="w-6 h-6 rounded-sm"></div>
+                                </div>
+                                <div class="glass-card rounded-lg p-3 flex items-center justify-between">
+                                    <div class="flex items-center gap-3 font-bold"><img src="https://placehold.co/24x24/16a34a/ffffff?text=FUR" class="w-6 h-6 rounded-sm"> FURIA</div>
+                                    <div class="font-bold text-lg"><span>2</span> - <span class="text-green-400">4</span></div>
+                                    <div class="flex items-center gap-3 font-bold">G2 Stride <img src="https://placehold.co/24x24/eab308/000000?text=G2" class="w-6 h-6 rounded-sm"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Coluna Direita -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <!-- Campeonatos em Andamento -->
+                        <div class="glass-card rounded-lg p-4">
+                            <h2 class="text-xl font-bold mb-4 text-sky-400 border-b border-gray-700 pb-2">Campeonatos Ativos</h2>
+                            <ul class="space-y-4">
+                                <li class="flex items-center space-x-3 cursor-pointer hover:bg-gray-700/50 p-2 rounded-md">
+                                    <img src="https://placehold.co/40x40/0ea5e9/ffffff?text=RLCS" class="w-10 h-10 rounded-md">
+                                    <div>
+                                        <p class="font-bold">RLCS 2024 - Major 2</p>
+                                        <p class="text-xs text-gray-400">Finalizado</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-center space-x-3 cursor-pointer hover:bg-gray-700/50 p-2 rounded-md">
+                                    <img src="https://placehold.co/40x40/84cc16/000000?text=GS" class="w-10 h-10 rounded-md">
+                                    <div>
+                                        <p class="font-bold">Gamers8 2024</p>
+                                        <p class="text-xs text-gray-400">Playoffs</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Jogador em Destaque -->
+                         <div class="glass-card rounded-lg p-4">
+                            <h2 class="text-xl font-bold mb-4 text-sky-400 border-b border-gray-700 pb-2">Jogador em Destaque</h2>
+                            <div class="flex items-center space-x-4">
+                                <img src="https://placehold.co/80x80/ffffff/000000?text=JOG" class="w-20 h-20 rounded-full border-2 border-sky-400">
+                                <div>
+                                    <p class="text-lg font-bold">Atomic</p>
+                                    <div class="flex items-center gap-2 text-sm">
+                                        <img src="https://flagcdn.com/w20/us.png" alt="EUA">
+                                        G2 Stride
+                                        <img src="https://placehold.co/20x20/eab308/000000?text=G2" class="w-5 h-5 rounded-sm">
+                                    </div>
+                                    <p class="text-xs text-gray-400 mt-1">MVP do Major de Londres</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página de Campeonatos -->
+            <div id="championships" class="page-content hidden">
+                 <!-- Este é um placeholder. O conteúdo real seria dinâmico -->
+                <h1 class="text-3xl font-bold text-sky-400 mb-6">Campeonatos</h1>
+                <!-- Simulação da página de um campeonato específico -->
+                <div class="glass-card rounded-lg p-6">
+                    <!-- Cabeçalho do Campeonato -->
+                    <div class="flex flex-col md:flex-row items-center gap-6 border-b-2 pb-4" style="border-color: #f59e0b;">
+                        <img src="https://placehold.co/100x100/f59e0b/ffffff?text=MAJOR" class="w-24 h-24 rounded-lg">
+                        <div>
+                            <h2 class="text-4xl font-black" style="color: #f59e0b;">RLCS 2024 - Major 2</h2>
+                            <p class="text-lg text-gray-400">
+                                <img src="https://flagcdn.com/w20/gb.png" class="inline-block h-4 mr-2" alt="UK">
+                                Londres, Reino Unido | Copper Box Arena
+                            </p>
+                        </div>
+                        <div class="ml-auto">
+                            <!-- Botão de Edição (para admin) -->
+                             <button class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2">
+                                <i data-lucide="pencil"></i> Editar Campeonato
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Abas de Navegação do Campeonato -->
+                    <div class="flex space-x-4 border-b border-gray-700 mt-4">
+                        <button class="py-2 px-4 font-semibold border-b-2 border-sky-400 text-sky-400">Playoffs</button>
+                        <button class="py-2 px-4 font-semibold text-gray-400 hover:text-white hover:border-b-2 hover:border-white">Fase de Grupos</button>
+                        <button class="py-2 px-4 font-semibold text-gray-400 hover:text-white hover:border-b-2 hover:border-white">Estatísticas</button>
+                    </div>
+
+                    <!-- Conteúdo da Aba: Playoffs (Simulação) -->
+                    <div class="mt-6">
+                        <h3 class="text-2xl font-bold mb-4">Bracket dos Playoffs</h3>
+                        <div class="text-xs text-center text-gray-400">(Isso é uma representação visual de uma chave de playoffs)</div>
+                        <!-- Simulação de um bracket -->
+                        <div class="flex justify-center items-center space-x-8 p-4 overflow-x-auto">
+                            <!-- Quartas -->
+                            <div class="space-y-4">
+                                <div class="glass-card p-2 rounded w-48">Time A vs Time H</div>
+                                <div class="glass-card p-2 rounded w-48">Time D vs Time E</div>
+                                <div class="glass-card p-2 rounded w-48">Time B vs Time G</div>
+                                <div class="glass-card p-2 rounded w-48">Time C vs Time F</div>
+                            </div>
+                             <!-- Semis -->
+                            <div class="space-y-16">
+                                <div class="glass-card p-2 rounded w-48">Vencedor 1</div>
+                                <div class="glass-card p-2 rounded w-48">Vencedor 2</div>
+                            </div>
+                             <!-- Final -->
+                            <div class="self-center">
+                                <div class="glass-card p-2 rounded w-48 font-bold bg-sky-500/30">Grande Final</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conteúdo da Aba: Estatísticas (Simulação) -->
+                    <div class="mt-6 hidden">
+                        <h3 class="text-2xl font-bold mb-4">Estatísticas dos Jogadores no Campeonato</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-700/50">
+                                    <tr>
+                                        <th class="p-3">Jogador</th>
+                                        <th class="p-3">Time</th>
+                                        <th class="p-3">Média Gols</th>
+                                        <th class="p-3">Média Defesas</th>
+                                        <th class="p-3">Média Assists</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-700">
+                                        <td class="p-3 font-bold flex items-center gap-2"><img src="https://flagcdn.com/w20/us.png">Atomic</td>
+                                        <td class="p-3 flex items-center gap-2"><img src="https://placehold.co/20x20/eab308/000000?text=G2" class="w-5 h-5 rounded-sm"> G2 Stride</td>
+                                        <td class="p-3 font-mono">0.98</td>
+                                        <td class="p-3 font-mono">2.15</td>
+                                        <td class="p-3 font-mono">0.75</td>
+                                    </tr>
+                                     <tr class="border-b border-gray-700">
+                                        <td class="p-3 font-bold flex items-center gap-2"><img src="https://flagcdn.com/w20/fr.png">Vatira</td>
+                                        <td class="p-3 flex items-center gap-2"><img src="https://placehold.co/20x20/dc2626/ffffff?text=KC" class="w-5 h-5 rounded-sm"> Karmine Corp</td>
+                                        <td class="p-3 font-mono">0.85</td>
+                                        <td class="p-3 font-mono">2.50</td>
+                                        <td class="p-3 font-mono">0.60</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página de Ranking -->
+            <div id="ranking" class="page-content hidden">
+                <h1 class="text-3xl font-bold text-sky-400 mb-6">Ranking Mundial de Times</h1>
+                <div class="glass-card rounded-lg p-4 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-700/50">
+                                <tr>
+                                    <th class="p-3">#</th>
+                                    <th class="p-3">Time</th>
+                                    <th class="p-3">País</th>
+                                    <th class="p-3">Pontos</th>
+                                    <th class="p-3">Variação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Mock Data Tabela Ranking -->
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-3 font-bold">1</td>
+                                    <td class="p-3 font-bold flex items-center gap-3"><img src="https://placehold.co/32x32/eab308/000000?text=G2" class="w-8 h-8 rounded-md">G2 Stride</td>
+                                    <td class="p-3"><img src="https://flagcdn.com/w40/us.png" class="w-8" title="Estados Unidos"></td>
+                                    <td class="p-3 font-mono">1540</td>
+                                    <td class="p-3 text-green-400 flex items-center gap-1 font-bold"><i data-lucide="chevron-up"></i> 1</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-3 font-bold">2</td>
+                                    <td class="p-3 font-bold flex items-center gap-3"><img src="https://placehold.co/32x32/dc2626/ffffff?text=KC" class="w-8 h-8 rounded-md">Karmine Corp</td>
+                                    <td class="p-3"><img src="https://flagcdn.com/w40/fr.png" class="w-8" title="França"></td>
+                                    <td class="p-3 font-mono">1510</td>
+                                    <td class="p-3 text-red-400 flex items-center gap-1 font-bold"><i data-lucide="chevron-down"></i> 1</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="p-3 font-bold">3</td>
+                                    <td class="p-3 font-bold flex items-center gap-3"><img src="https://placehold.co/32x32/2563eb/ffffff?text=F" class="w-8 h-8 rounded-md">Falcons</td>
+                                    <td class="p-3"><img src="https://flagcdn.com/w40/sa.png" class="w-8" title="Arábia Saudita"></td>
+                                    <td class="p-3 font-mono">1485</td>
+                                    <td class="p-3 text-gray-400 flex items-center gap-1 font-bold">-</td>
+                                </tr>
+                                 <tr class="border-b border-gray-700">
+                                    <td class="p-3 font-bold">4</td>
+                                    <td class="p-3 font-bold flex items-center gap-3"><img src="https://placehold.co/32x32/16a34a/ffffff?text=FUR" class="w-8 h-8 rounded-md">FURIA</td>
+                                    <td class="p-3"><img src="https://flagcdn.com/w40/br.png" class="w-8" title="Brasil"></td>
+                                    <td class="p-3 font-mono">1420</td>
+                                    <td class="p-3 text-green-400 flex items-center gap-1 font-bold"><i data-lucide="chevron-up"></i> 2</td>
+                                </tr>
+                                <!-- ... mais times ... -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-500 mt-4">
+                    <strong>Como a pontuação funciona:</strong> Vitória = 3 Pts, Derrota = -1 Pt. Bônus por colocação em campeonatos: Campeão (+50), Vice (+25), e bônus escalonado a partir do 8º lugar.
+                </div>
+            </div>
+            
+            <!-- Página de Times -->
+            <div id="teams" class="page-content hidden">
+                <h1 class="text-3xl font-bold text-sky-400 mb-6">Times</h1>
+                <!-- Simulação de uma página de time específico -->
+                <div class="glass-card rounded-lg overflow-hidden">
+                    <!-- Banner do Time - com cores personalizadas -->
+                    <div class="h-40 bg-gradient-to-r from-green-500 to-gray-800 p-6 flex items-end">
+                       <img src="https://placehold.co/120x120/16a34a/ffffff?text=FUR" class="w-28 h-28 rounded-lg border-4 border-gray-800 -mb-14">
+                    </div>
+                    <!-- Info do Time -->
+                    <div class="bg-gray-800/50 p-6 pt-20">
+                        <div class="flex flex-col md:flex-row justify-between items-start">
+                            <div>
+                                <h2 class="text-4xl font-black">FURIA Esports</h2>
+                                <p class="text-lg text-gray-400 flex items-center gap-2"><img src="https://flagcdn.com/w20/br.png"> Brasil</p>
+                            </div>
+                            <button class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 mt-4 md:mt-0">
+                                <i data-lucide="pencil"></i> Editar Time
+                            </button>
+                        </div>
+
+                        <!-- Seções do Time -->
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Elenco -->
+                            <div class="md:col-span-1">
+                                <h3 class="text-xl font-bold mb-4">Elenco Atual</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center gap-3"><img src="https://flagcdn.com/w20/br.png"> yanxnz</div>
+                                    <div class="flex items-center gap-3"><img src="https://flagcdn.com/w20/br.png"> Drufinho</div>
+                                    <div class="flex items-center gap-3"><img src="https://flagcdn.com/w20/br.png"> Lostt</div>
+                                </div>
+                            </div>
+                            <!-- Estatísticas da Equipe (placeholder) -->
+                            <div class="md:col-span-2">
+                                <h3 class="text-xl font-bold mb-4">Estatísticas da Equipe (Últimos 3 meses)</h3>
+                                <p class="text-gray-400">Aqui entrariam as estatísticas consolidadas da equipe...</p>
+                            </div>
+                        </div>
+                        
+                         <!-- Galeria de Títulos -->
+                        <div class="mt-8">
+                             <h3 class="text-xl font-bold mb-4 border-t border-gray-700 pt-4">Galeria de Títulos (Total: 1)</h3>
+                             <div class="flex flex-wrap gap-6">
+                                 <!-- Título simulado -->
+                                 <div class="text-center">
+                                     <div class="p-2 glass-card rounded-lg">
+                                         <img src="https://placehold.co/80x80/ca8a04/ffffff?text=SAM" class="w-20 h-20 rounded-md">
+                                     </div>
+                                     <p class="font-bold mt-2 text-sm">RLCS SAM Regional</p>
+                                     <p class="text-xs text-amber-400 font-bold">Campeão (x1)</p>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Página de Jogadores -->
+            <div id="players" class="page-content hidden">
+                 <h1 class="text-3xl font-bold text-sky-400 mb-6">Jogadores</h1>
+                 <!-- Página de jogador específico -->
+                 <div class="glass-card rounded-lg p-6">
+                    <div class="flex flex-col md:flex-row items-center gap-6 border-b border-gray-700 pb-4">
+                        <img src="https://placehold.co/100x100/ffffff/000000?text=JOG" class="w-24 h-24 rounded-full">
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-4xl font-black">yanxnz</h2>
+                                <img src="https://placehold.co/32x32/16a34a/ffffff?text=FUR" title="FURIA" class="w-8 h-8 rounded-md">
+                            </div>
+                            <p class="text-lg text-gray-400 flex items-center gap-2">
+                                <img src="https://flagcdn.com/w20/br.png" alt="Brasil"> Yan Xisto | 18 anos
+                            </p>
+                        </div>
+                         <button class="md:ml-auto bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2">
+                                <i data-lucide="user-cog"></i> Editar Jogador
+                        </button>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Estatísticas de Carreira (Todos Campeonatos)</h3>
+                            <!-- Placeholder de stats -->
+                             <div class="grid grid-cols-2 gap-4">
+                                <div class="glass-card p-3 rounded-lg"><span class="font-bold text-sky-400">Gols/Jogo:</span> 0.95</div>
+                                <div class="glass-card p-3 rounded-lg"><span class="font-bold text-sky-400">Defesas/Jogo:</span> 1.80</div>
+                                <div class="glass-card p-3 rounded-lg"><span class="font-bold text-sky-400">Assists/Jogo:</span> 0.65</div>
+                                <div class="glass-card p-3 rounded-lg"><span class="font-bold text-sky-400">Rating:</span> 1.18</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Histórico de Times</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-2 glass-card rounded-lg">
+                                    <span class="font-bold flex items-center gap-2"><img src="https://placehold.co/20x20/16a34a/ffffff?text=FUR" class="w-5 h-5 rounded-sm"> FURIA</span>
+                                    <span class="text-sm text-gray-400">2023 - Presente</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 glass-card rounded-lg">
+                                    <span class="font-bold flex items-center gap-2"><img src="https://placehold.co/20x20/ef4444/ffffff?text=NIP" class="w-5 h-5 rounded-sm"> Ninjas in Pyjamas</span>
+                                    <span class="text-sm text-gray-400">2022 - 2023</span>
+                                </div>
+                                <div class="flex items-center justify-between p-2 glass-card rounded-lg">
+                                    <span class="font-bold flex items-center gap-2"><img src="https://placehold.co/20x20/6366f1/ffffff?text=REB" class="w-5 h-5 rounded-sm"> The Club</span>
+                                    <span class="text-sm text-gray-400">2021 - 2022</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Página de Notícias -->
+            <div id="news" class="page-content hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-3xl font-bold text-sky-400">Notícias</h1>
+                    <button class="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2">
+                        <i data-lucide="plus-circle"></i> Criar Notícia
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Notícia Card 1 -->
+                    <div class="glass-card rounded-lg overflow-hidden cursor-pointer hover:border-sky-400 transition-all">
+                        <img src="https://placehold.co/600x350/1e293b/ffffff?text=RL" alt="Notícia" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <span class="text-xs font-bold uppercase text-sky-400">RLCS Major</span>
+                            <h3 class="text-xl font-bold mt-1">G2 Stride vence o Major de Londres</h3>
+                            <p class="text-gray-400 mt-2 text-sm">A equipe norte-americana mostrou domínio e garantiu o título...</p>
+                        </div>
+                    </div>
+                     <!-- Notícia Card 2 -->
+                     <div class="glass-card rounded-lg overflow-hidden cursor-pointer hover:border-sky-400 transition-all">
+                        <img src="https://placehold.co/600x350/4d7c0f/ffffff?text=FUR" alt="Notícia" class="w-full h-48 object-cover">
+                        <div class="p-4">
+                            <span class="text-xs font-bold uppercase text-green-400">Mercado</span>
+                            <h3 class="text-xl font-bold mt-1">FURIA anuncia novo reforço para a próxima temporada</h3>
+                            <p class="text-gray-400 mt-2 text-sm">Depois de uma campanha sólida, a equipe brasileira busca mais...</p>
+                        </div>
+                    </div>
+                    <!-- Mais notícias... -->
+                </div>
+            </div>
+            
+        </main>
+
+        <!-- Rodapé -->
+        <footer class="text-center text-gray-500 text-sm mt-8 pb-4">
+            <p>RL-HUB &copy; 2024 - Criado como um protótipo de design e funcionalidade.</p>
+            <p>Este é um site front-end. Funcionalidades de edição, salvamento e pontuação automática requerem um back-end e banco de dados.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Inicializa Lucide Icons
+        lucide.createIcons();
+
+        // Lógica para navegação SPA (Single Page Application)
+        const pages = document.querySelectorAll('.page-content');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function showPage(pageId, clickedLink) {
+            // Esconde todas as páginas
+            pages.forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            // Mostra a página solicitada
+            const activePage = document.getElementById(pageId);
+            if (activePage) {
+                activePage.classList.remove('hidden');
+            }
+
+            // Atualiza o estado 'active' nos links de navegação
+            if (clickedLink) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                clickedLink.classList.add('active');
+            }
+            window.scrollTo(0,0);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Simulação de lista de países para dropdown (apenas exemplo)
+        const all_countries = [
+            { name: "Brasil", code: "br" },
+            { name: "Estados Unidos", code: "us" },
+            { name: "França", code: "fr" },
+            { name: "Reino Unido", code: "gb" },
+            // ... aqui entrariam TODOS os países do mundo
+        ];
+
+        // Mostra a página inicial por padrão
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('home', document.querySelector('.nav-link'));
+        });
+    </script>
+</body>
+</html>
