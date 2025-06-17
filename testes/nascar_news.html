@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASCAR News</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            background-color: #003087;
+            padding: 20px;
+            color: white;
+        }
+        .nav-menu {
+            background-color: #002366;
+            padding: 10px;
+            text-align: center;
+        }
+        .nav-menu a {
+            color: #ffd700;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav-menu a:hover, .nav-menu a.active {
+            text-decoration: underline;
+        }
+        .header img.nascar-logo {
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            gap: 20px;
+        }
+        .sidebar-left, .sidebar-right {
+            flex: 1;
+            background-color: #fff;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .news-section {
+            flex: 3;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .news-card {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+            cursor: pointer;
+        }
+        .news-card img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .news-card h3 {
+            margin: 0 0 10px;
+            color: #003087;
+        }
+        .news-card p {
+            margin: 0 0 10px;
+        }
+        .news-full img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        .news-full h2 {
+            color: #003087;
+            margin-top: 0;
+        }
+        .news-full .summary {
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+        .news-full .full-text {
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .news-full .back-button {
+            background-color: #003087;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        .news-full .back-button:hover {
+            background-color: #002366;
+        }
+        .sidebar-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .sidebar-table th, .sidebar-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .sidebar-table th {
+            background-color: #003087;
+            color: white;
+        }
+        .sidebar-table img {
+            width: 40px;
+            height: 24px;
+            object-fit: contain;
+            vertical-align: middle;
+        }
+        .next-race h3, .sidebar-left h3, .sidebar-right h3 {
+            color: #003087;
+            margin-top: 0;
+        }
+        .next-race input, .next-race button {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .next-race button {
+            background-color: #003087;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .next-race button:hover {
+            background-color: #002366;
+        }
+        .add-news-form {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        .add-news-form input, .add-news-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .add-news-form button {
+            background-color: #003087;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .add-news-form button:hover {
+            background-color: #002366;
+        }
+        .footer {
+            background-color: #003087;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #ffd700;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar-left, .sidebar-right, .news-section {
+                flex: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-menu">
+        <a href="nascar_standings.html">Standings</a>
+        <a href="nascar_titles.html">Titles</a>
+        <a href="nascar_news.html" class="active">News</a>
+    </div>
+    <div class="header">
+        <img src="./images/nascar-logo.png" alt="NASCAR Logo" class="nascar-logo">
+    </div>
+
+    <div class="container">
+        <!-- Sidebar Esquerda: Standings -->
+        <aside class="sidebar-left">
+            <h3>Cup Series Standings (Top 5)</h3>
+            <table class="sidebar-table" id="standings-table">
+                <thead>
+                    <tr>
+                        <th>Pos</th>
+                        <th>Driver</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody id="standings-tbody">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+        </aside>
+
+        <!-- Seção Central: Notícias -->
+        <main class="news-section">
+            <h2>NASCAR News</h2>
+            <div class="news-list" id="news-list">
+                <div class="add-news-form">
+                    <h3>Add New News</h3>
+                    <input type="text" id="news-title" placeholder="News Title">
+                    <input type="file" id="news-image" accept="image/*">
+                    <label for="news-image" class="news-image-label">Choose Image</label>
+                    <textarea id="news-summary" placeholder="News Summary" rows="4"></textarea>
+                    <textarea id="news-full-text" placeholder="Full Text" rows="6"></textarea>
+                    <button onclick="addNews()">Add News</button>
+                </div>
+                <div id="news-container">
+                    <!-- Notícias serão carregadas via JavaScript -->
+                </div>
+            </div>
+            <div class="news-full hidden" id="news-full">
+                <h2 id="full-title"></h2>
+                <img id="full-image" src="" alt="">
+                <p class="summary" id="full-summary"></p>
+                <div class="full-text" id="full-text"></div>
+                <button class="back-button" onclick="goBack()">Back to News</button>
+            </div>
+        </main>
+
+        <!-- Sidebar Direita: Titles e Próxima Corrida -->
+        <aside class="sidebar-right">
+            <h3>Titles Leaders</h3>
+            <div id="titles-leaders">
+                <p><strong>Driver:</strong> <span id="leader-driver"></span></p>
+                <p><strong>Owner:</strong> <span id="leader-owner"></span></p>
+                <p><strong>Manufacturer:</strong> <span id="leader-manufacturer"></span></p>
+            </div>
+            <div class="next-race">
+                <h3>Next Race</h3>
+                <input type="text" id="race-name" placeholder="Race Name">
+                <input type="text" id="race-date" placeholder="Date (e.g., MM/DD/YYYY)">
+                <input type="text" id="race-location" placeholder="Location">
+                <input type="text" id="race-time" placeholder="Time (e.g., 3:00 PM)">
+                <button onclick="saveNextRace()">Save Race Info</button>
+            </div>
+        </aside>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 NASCAR Fan Template | All Rights Reserved</p>
+        <p>
+            <a href="#">Race Schedule</a> |
+            <a href="#">Latest News</a> |
+            <a href="#">Driver Profiles</a> |
+            <a href="#">Shop Merchandise</a> |
+            <a href="#">Contact Us</a>
+        </p>
+    </div>
+
+    <script>
+        // Função para redimensionar imagens com alta qualidade
+        function resizeImage(file, maxWidth, maxHeight, callback) {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width = Math.round(width * ratio);
+                height = Math.round(height * ratio);
+
+                let srcCanvas = document.createElement('canvas');
+                let srcCtx = srcCanvas.getContext('2d');
+                srcCanvas.width = img.width;
+                srcCanvas.height = img.height;
+                srcCtx.imageSmoothingEnabled = true;
+                srcCtx.imageSmoothingQuality = 'high';
+                srcCtx.drawImage(img, 0, 0);
+
+                let currentWidth = img.width;
+                let currentHeight = img.height;
+                while (currentWidth > width * 1.5 && currentHeight > height * 1.5) {
+                    currentWidth = Math.round(currentWidth / 1.5);
+                    currentHeight = Math.round(currentHeight / 1.5);
+                    const stepCanvas = document.createElement('canvas');
+                    const stepCtx = stepCanvas.getContext('2d');
+                    stepCanvas.width = currentWidth;
+                    stepCanvas.height = currentHeight;
+                    stepCtx.imageSmoothingEnabled = true;
+                    stepCtx.imageSmoothingQuality = 'high';
+                    stepCtx.drawImage(srcCanvas, 0, 0, currentWidth, currentHeight);
+                    srcCanvas = stepCanvas;
+                }
+
+                const finalCanvas = document.createElement('canvas');
+                const finalCtx = finalCanvas.getContext('2d');
+                finalCanvas.width = maxWidth;
+                finalCanvas.height = maxHeight;
+                finalCtx.imageSmoothingEnabled = true;
+                finalCtx.imageSmoothingQuality = 'high';
+                const xOffset = (maxWidth - width) / 2;
+                const yOffset = (maxHeight - height) / 2;
+                finalCtx.drawImage(srcCanvas, xOffset, yOffset, width, height);
+
+                callback(finalCanvas.toDataURL('image/png', 1.0));
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        // Função para carregar notícias do localStorage
+        function loadNews() {
+            const newsContainer = document.getElementById('news-container');
+            const savedNews = localStorage.getItem('nascar_news_data');
+            let newsData = savedNews ? JSON.parse(savedNews) : [
+                {
+                    title: 'NASCAR Cup Series: Thrilling Finish at Daytona',
+                    image: './images/news1.jpg',
+                    summary: 'The latest race at Daytona saw an unexpected winner after a dramatic final lap.',
+                    fullText: 'In a heart-pounding finish at Daytona International Speedway, underdog driver Alex Brown clinched their first NASCAR Cup Series victory. The final lap saw a three-wide battle, with Brown edging out veterans John Doe and Jane Smith by mere inches. Fans were on their feet as the race concluded under caution after a multi-car incident in Turn 4. Brown credited their team’s strategy and pit crew for the win, marking a significant upset in the 2025 season.'
+                },
+                {
+                    title: 'Jimmie Johnson Aims for Record-Breaking Title',
+                    image: './images/news2.jpg',
+                    summary: 'Jimmie Johnson discusses his strategy for the 2025 season and his pursuit of another championship.',
+                    fullText: 'Seven-time NASCAR Cup Series champion Jimmie Johnson is back with renewed focus for the 2025 season, aiming to break the tie with Richard Petty and Dale Earnhardt for the most titles. In an exclusive interview, Johnson revealed his team’s off-season preparations, including advanced simulations and a new fitness regimen. “We’re leaving no stone unturned,” Johnson said. With a strong start at Daytona, fans are eager to see if the veteran can reclaim the top spot.'
+                },
+                {
+                    title: 'New Manufacturer Joins NASCAR in 2026',
+                    image: './images/news3.jpg',
+                    summary: 'A major automotive brand has announced its entry into NASCAR starting next season.',
+                    fullText: 'NASCAR announced a groundbreaking addition to its roster, with a new manufacturer set to debut in the 2026 season. The brand, known for its innovation in electric and hybrid vehicles, aims to compete with Chevrolet, Ford, and Toyota. Details remain scarce, but insiders suggest the manufacturer has been testing prototypes at select tracks. This move is expected to shake up the competition and bring new technology to the sport, exciting fans and teams alike.'
+                }
+            ];
+
+            // Migrar dados antigos, se necessário
+            newsData = newsData.map(news => ({
+                title: news.title,
+                image: news.image,
+                summary: news.summary,
+                fullText: news.fullText || 'No full text available for this news.'
+            }));
+
+            localStorage.setItem('nascar_news_data', JSON.stringify(newsData));
+
+            newsContainer.innerHTML = '';
+            newsData.forEach((news, index) => {
+                const newsCard = document.createElement('div');
+                newsCard.className = 'news-card';
+                newsCard.innerHTML = `
+                    <img src="${news.image}" alt="${news.title}">
+                    <h3>${news.title}</h3>
+                    <p>${news.summary}</p>
+                `;
+                newsCard.onclick = () => showFullNews(index);
+                newsContainer.appendChild(newsCard);
+            });
+        }
+
+        // Função para exibir a notícia completa
+        function showFullNews(index) {
+            const savedNews = JSON.parse(localStorage.getItem('nascar_news_data'));
+            const news = savedNews[index];
+
+            document.getElementById('news-list').classList.add('hidden');
+            document.getElementById('news-full').classList.remove('hidden');
+
+            document.getElementById('full-title').innerText = news.title;
+            document.getElementById('full-image').src = news.image;
+            document.getElementById('full-image').alt = news.title;
+            document.getElementById('full-summary').innerText = news.summary;
+            document.getElementById('full-text').innerText = news.fullText;
+        }
+
+        // Função para voltar à lista de notícias
+        function goBack() {
+            document.getElementById('news-full').classList.add('hidden');
+            document.getElementById('news-list').classList.remove('hidden');
+        }
+
+        // Função para adicionar nova notícia
+        function addNews() {
+            const title = document.getElementById('news-title').value;
+            const imageInput = document.getElementById('news-image');
+            const summary = document.getElementById('news-summary').value;
+            const fullText = document.getElementById('news-full-text').value;
+
+            if (!title || !summary || !fullText) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            const savedNews = localStorage.getItem('nascar_news_data');
+            let newsData = savedNews ? JSON.parse(savedNews) : [];
+
+            if (imageInput.files[0]) {
+                resizeImage(imageInput.files[0], 600, 400, (dataUrl) => {
+                    newsData.unshift({
+                        title,
+                        image: dataUrl,
+                        summary,
+                        fullText
+                    });
+                    localStorage.setItem('nascar_news_data', JSON.stringify(newsData));
+                    loadNews();
+                    clearNewsForm();
+                });
+            } else {
+                newsData.unshift({
+                    title,
+                    image: './images/placeholder-logo.png',
+                    summary,
+                    fullText
+                });
+                localStorage.setItem('nascar_news_data', JSON.stringify(newsData));
+                loadNews();
+                clearNewsForm();
+            }
+        }
+
+        // Função para limpar o formulário de notícias
+        function clearNewsForm() {
+            document.getElementById('news-title').value = '';
+            document.getElementById('news-image').value = '';
+            document.getElementById('news-summary').value = '';
+            document.getElementById('news-full-text').value = '';
+            document.querySelector('.news-image-label').textContent = 'Choose Image';
+        }
+
+        // Função para carregar standings na sidebar esquerda
+        function loadStandings() {
+            const tbody = document.getElementById('standings-tbody');
+            const savedData = localStorage.getItem('nascar_cup_data');
+            let data = savedData ? JSON.parse(savedData) : [
+                { driver: 'John Doe', points: '1000' },
+                { driver: 'Jane Smith', points: '950' },
+                { driver: 'Mike Johnson', points: '900' },
+                { driver: 'Alex Brown', points: '850' },
+                { driver: 'Sarah Lee', points: '800' }
+            ];
+
+            data.sort((a, b) => parseInt(b.points) - parseInt(a.points));
+            data = data.slice(0, 5); // Top 5
+
+            tbody.innerHTML = '';
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${row.driver}</td>
+                    <td>${row.points}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Função para carregar líderes de títulos na sidebar direita
+        function loadTitlesLeaders() {
+            const driverLeader = document.getElementById('leader-driver');
+            const ownerLeader = document.getElementById('leader-owner');
+            const manufacturerLeader = document.getElementById('leader-manufacturer');
+
+            // Drivers
+            let driversData = localStorage.getItem('nascar_drivers_titles');
+            driversData = driversData ? JSON.parse(driversData) : [{ driver: 'Richard Petty', titles: '7' }];
+            driversData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
+            driverLeader.innerText = `${driversData[0].driver} (${driversData[0].titles} titles)`;
+
+            // Owners
+            let ownersData = localStorage.getItem('nascar_owners_titles');
+            ownersData = ownersData ? JSON.parse(ownersData) : [{ nameAlt: 'Hendrick Motorsports', titles: '14' }];
+            ownersData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
+            ownerLeader.innerHTML = `<img src="${ownersData[0].nameSrc}" alt="${ownersData[0].nameAlt}" style="width: 40px; height: 24px; vertical-align: middle;"> ${ownersData[0].nameAlt} (${ownersData[0].titles} titles)`;
+
+            // Manufacturers
+            let manufacturersData = localStorage.getItem('nascar_manufacturers_titles');
+            manufacturersData = manufacturersData ? JSON.parse(manufacturersData) : [{ nameAlt: 'Chevrolet', titles: '39' }];
+            manufacturersData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
+            manufacturerLeader.innerHTML = `<img src="${manufacturersData[0].nameSrc}" alt="${manufacturersData[0].nameAlt}" style="width: 40px; height: 24px; vertical-align: middle;"> ${manufacturersData[0].nameAlt} (${manufacturersData[0].titles} titles)`;
+        }
+
+        // Função para carregar informações da próxima corrida
+        function loadNextRace() {
+            const savedRace = localStorage.getItem('nascar_next_race');
+            const raceData = savedRace ? JSON.parse(savedRace) : {
+                name: 'Next Race TBD',
+                date: 'TBD',
+                location: 'TBD',
+                time: 'TBD'
+            };
+
+            document.getElementById('race-name').value = raceData.name;
+            document.getElementById('race-date').value = raceData.date;
+            document.getElementById('race-location').value = raceData.location;
+            document.getElementById('race-time').value = raceData.time;
+        }
+
+        // Função para salvar informações da próxima corrida
+        function saveNextRace() {
+            const raceData = {
+                name: document.getElementById('race-name').value || 'Next Race TBD',
+                date: document.getElementById('race-date').value || 'TBD',
+                location: document.getElementById('race-location').value || 'TBD',
+                time: document.getElementById('race-time').value || 'TBD'
+            };
+
+            localStorage.setItem('nascar_next_race', JSON.stringify(raceData));
+            alert('Next race information saved!');
+        }
+
+        // Carregar dados ao iniciar a página
+        loadNews();
+        loadStandings();
+        loadTitlesLeaders();
+        loadNextRace();
+
+        // Adicionar evento para o input de imagem de notícias
+        document.getElementById('news-image').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.querySelector('.news-image-label').textContent = file.name;
+            }
+        });
+    </script>
+</body>
+</html>

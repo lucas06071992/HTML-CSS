@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASCAR Standings - Editable</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            background-color: #003087;
+            padding: 20px;
+            color: white;
+        }
+        .nav-menu {
+            background-color: #002366;
+            padding: 10px;
+            text-align: center;
+        }
+        .nav-menu a {
+            color: #ffd700;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .nav-menu a:hover {
+            text-decoration: underline;
+        }
+        .header img.nascar-logo {
+            width: 200px;
+            margin-bottom: 10px;
+        }
+        .series-logos {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .series-logos img {
+            width: 100px;
+            height: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .series-logos img:hover {
+            transform: scale(1.2);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .standings-table th, .standings-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .standings-table th {
+            background-color: #003087;
+            color: white;
+            font-weight: bold;
+        }
+        .standings-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .standings-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .standings-table td[contenteditable="true"] {
+            cursor: text;
+            background-color: #fffbe6;
+        }
+        .standings-table td[contenteditable="true"]:hover {
+            background-color: #fff5cc;
+        }
+        .manufacturer-logo, .owner-logo {
+            width: 50px;
+            height: 30px;
+            cursor: pointer;
+            vertical-align: middle;
+            object-fit: contain;
+        }
+        .save-button, .add-button {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background-color: #003087;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .save-button:hover, .add-button:hover {
+            background-color: #002366;
+        }
+        .footer {
+            background-color: #003087;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #ffd700;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .nav-menu a.active {
+        text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-menu">
+    <a href="nascar_standings.html" class="${window.location.pathname.includes('standings') ? 'active' : ''}">Standings</a>
+    <a href="nascar_titles.html" class="${window.location.pathname.includes('titles') ? 'active' : ''}">Titles</a>
+    <a href="nascar_news.html" class="${window.location.pathname.includes('news') ? 'active' : ''}">News</a>
+</div>
+    <div class="header">
+        <img src="./images/nascar-logo.png" alt="NASCAR Logo" class="nascar-logo">
+        <div class="series-logos">
+            <img src="./images/cup-series-logo.png" alt="NASCAR Cup Series Logo" onclick="showSeries('cup')">
+            <img src="./images/xfinity-series-logo.png" alt="NASCAR Xfinity Series Logo" onclick="showSeries('xfinity')">
+            <img src="./images/truck-series-logo.png" alt="NASCAR Truck Series Logo" onclick="showSeries('truck')">
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- NASCAR Cup Series Table -->
+        <div id="cup-series" class="series-table">
+            <h2>NASCAR Cup Series Standings</h2>
+            <table class="standings-table" id="cup-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Driver</th>
+                        <th>Owner</th>
+                        <th>Manufacturer</th>
+                        <th>Points</th>
+                        <th>Wins</th>
+                        <th>Top 5</th>
+                        <th>Top 10</th>
+                        <th>Poles</th>
+                        <th>Stage Wins</th>
+                    </tr>
+                </thead>
+                <tbody id="cup-tbody">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+            <button class="save-button" onclick="saveTable('cup')">Save Cup Series Changes</button>
+            <button class="add-button" onclick="addDriver('cup')">Add New Driver</button>
+        </div>
+
+        <!-- NASCAR Xfinity Series Table -->
+        <div id="xfinity-series" class="series-table hidden">
+            <h2>NASCAR Xfinity Series Standings</h2>
+            <table class="standings-table" id="xfinity-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Driver</th>
+                        <th>Owner</th>
+                        <th>Manufacturer</th>
+                        <th>Points</th>
+                        <th>Wins</th>
+                        <th>Top 5</th>
+                        <th>Top 10</th>
+                        <th>Poles</th>
+                        <th>Stage Wins</th>
+                    </tr>
+                </thead>
+                <tbody id="xfinity-tbody">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+            <button class="save-button" onclick="saveTable('xfinity')">Save Xfinity Series Changes</button>
+            <button class="add-button" onclick="addDriver('xfinity')">Add New Driver</button>
+        </div>
+
+        <!-- NASCAR CRAFTSMAN Truck Series Table -->
+        <div id="truck-series" class="series-table hidden">
+            <h2>NASCAR CRAFTSMAN Truck Series Standings</h2>
+            <table class="standings-table" id="truck-table">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Driver</th>
+                        <th>Owner</th>
+                        <th>Manufacturer</th>
+                        <th>Points</th>
+                        <th>Wins</th>
+                        <th>Top 5</th>
+                        <th>Top 10</th>
+                        <th>Poles</th>
+                        <th>Stage Wins</th>
+                    </tr>
+                </thead>
+                <tbody id="truck-tbody">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+            <button class="save-button" onclick="saveTable('truck')">Save Truck Series Changes</button>
+            <button class="add-button" onclick="addDriver('truck')">Add New Driver</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 NASCAR Fan Template | All Rights Reserved</p>
+        <p>
+            <a href="#">Race Schedule</a> |
+            <a href="#">Latest News</a> |
+            <a href="#">Driver Profiles</a> |
+            <a href="#">Shop Merchandise</a> |
+            <a href="#">Contact Us</a>
+        </p>
+    </div>
+
+    <script>
+        // Função para redimensionar imagens com alta qualidade
+        function resizeImage(file, maxWidth, maxHeight, callback) {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width = Math.round(width * ratio);
+                height = Math.round(height * ratio);
+
+                let srcCanvas = document.createElement('canvas');
+                let srcCtx = srcCanvas.getContext('2d');
+                srcCanvas.width = img.width;
+                srcCanvas.height = img.height;
+                srcCtx.imageSmoothingEnabled = true;
+                srcCtx.imageSmoothingQuality = 'high';
+                srcCtx.drawImage(img, 0, 0);
+
+                let currentWidth = img.width;
+                let currentHeight = img.height;
+                while (currentWidth > width * 1.5 && currentHeight > height * 1.5) {
+                    currentWidth = Math.round(currentWidth / 1.5);
+                    currentHeight = Math.round(currentHeight / 1.5);
+                    const stepCanvas = document.createElement('canvas');
+                    const stepCtx = stepCanvas.getContext('2d');
+                    stepCanvas.width = currentWidth;
+                    stepCanvas.height = currentHeight;
+                    stepCtx.imageSmoothingEnabled = true;
+                    stepCtx.imageSmoothingQuality = 'high';
+                    stepCtx.drawImage(srcCanvas, 0, 0, currentWidth, currentHeight);
+                    srcCanvas = stepCanvas;
+                }
+
+                const finalCanvas = document.createElement('canvas');
+                const finalCtx = finalCanvas.getContext('2d');
+                finalCanvas.width = maxWidth;
+                finalCanvas.height = maxHeight;
+                finalCtx.imageSmoothingEnabled = true;
+                finalCtx.imageSmoothingQuality = 'high';
+                const xOffset = (maxWidth - width) / 2;
+                const yOffset = (maxHeight - height) / 2;
+                finalCtx.drawImage(srcCanvas, xOffset, yOffset, width, height);
+
+                callback(finalCanvas.toDataURL('image/png', 1.0));
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        // Função para alternar entre as séries
+        function showSeries(series) {
+            document.querySelectorAll('.series-table').forEach(table => table.classList.add('hidden'));
+            document.getElementById(`${series}-series`).classList.remove('hidden');
+        }
+
+        // Função para salvar os dados da tabela no localStorage
+        function saveTable(seriesName) {
+            const table = document.querySelector(`#${seriesName}-table`);
+            const rows = table.querySelectorAll('tbody tr');
+            let data = [];
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                data.push({
+                    position: cells[0].innerText,
+                    driver: cells[1].innerText,
+                    ownerSrc: cells[2].querySelector('img').src,
+                    ownerAlt: cells[2].querySelector('img').alt,
+                    manufacturerSrc: cells[3].querySelector('img').src,
+                    manufacturerAlt: cells[3].querySelector('img').alt,
+                    points: cells[4].innerText,
+                    wins: cells[5].innerText,
+                    top5: cells[6].innerText,
+                    top10: cells[7].innerText,
+                    poles: cells[8].innerText,
+                    stageWins: cells[9].innerText
+                });
+            });
+            localStorage.setItem(`nascar_${seriesName}_data`, JSON.stringify(data));
+            console.log(`[${seriesName.toUpperCase()}] Saved Data:`, data);
+            alert(`Changes saved for NASCAR ${seriesName.charAt(0).toUpperCase() + seriesName.slice(1)} Series!`);
+        }
+
+        // Função para carregar os dados da tabela do localStorage
+        function loadTable(seriesName) {
+            const tbody = document.querySelector(`#${seriesName}-tbody`);
+            const savedData = localStorage.getItem(`nascar_${seriesName}_data`);
+            let data = savedData ? JSON.parse(savedData) : getDefaultData(seriesName);
+
+            tbody.innerHTML = '';
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td contenteditable="true">${row.driver}</td>
+                    <td>
+                        <img src="${row.ownerSrc}" alt="${row.ownerAlt}" class="owner-logo" data-row="${index}" data-table="${seriesName}">
+                        <input type="file" accept="image/*" class="owner-input" data-row="${index}" data-table="${seriesName}">
+                    </td>
+                    <td>
+                        <img src="${row.manufacturerSrc}" alt="${row.manufacturerAlt}" class="manufacturer-logo" data-row="${index}" data-table="${seriesName}">
+                        <input type="file" accept="image/*" class="manufacturer-input" data-row="${index}" data-table="${seriesName}">
+                    </td>
+                    <td contenteditable="true" class="points">${row.points}</td>
+                    <td contenteditable="true" class="wins">${row.wins}</td>
+                    <td contenteditable="true">${row.top5}</td>
+                    <td contenteditable="true">${row.top10}</td>
+                    <td contenteditable="true">${row.poles}</td>
+                    <td contenteditable="true">${row.stageWins}</td>
+                `;
+                tbody.appendChild(tr);
+
+                // Adicionar eventos para a nova linha
+                const ownerLogo = tr.querySelector('.owner-logo');
+                const ownerInput = tr.querySelector('.owner-input');
+                const manufacturerLogo = tr.querySelector('.manufacturer-logo');
+                const manufacturerInput = tr.querySelector('.manufacturer-input');
+                const pointsCell = tr.querySelector('.points');
+
+                ownerLogo.addEventListener('click', () => ownerInput.click());
+                ownerInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        resizeImage(file, 50, 30, (dataUrl) => {
+                            ownerLogo.src = dataUrl;
+                            ownerLogo.alt = file.name.split('.')[0];
+                        });
+                    }
+                });
+
+                manufacturerLogo.addEventListener('click', () => manufacturerInput.click());
+                manufacturerInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        resizeImage(file, 50, 30, (dataUrl) => {
+                            manufacturerLogo.src = dataUrl;
+                            manufacturerLogo.alt = file.name.split('.')[0];
+                        });
+                    }
+                });
+
+                pointsCell.addEventListener('blur', () => updateTable(`${seriesName}-table`));
+                pointsCell.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        pointsCell.blur();
+                    }
+                });
+            });
+        }
+
+        // Dados padrão para cada série
+        function getDefaultData(seriesName) {
+            const defaultData = {
+                cup: [
+                    { driver: 'John Doe', ownerSrc: './images/hendrick-logo.png', ownerAlt: 'Hendrick Motorsports', manufacturerSrc: './images/chevrolet-logo.png', manufacturerAlt: 'Chevrolet', points: '1000', wins: '3', top5: '8', top10: '12', poles: '2', stageWins: '5' },
+                    { driver: 'Jane Smith', ownerSrc: './images/joe-gibbs-logo.png', ownerAlt: 'Joe Gibbs Racing', manufacturerSrc: './images/toyota-logo.png', manufacturerAlt: 'Toyota', points: '950', wins: '2', top5: '7', top10: '10', poles: '1', stageWins: '3' },
+                    { driver: 'Mike Johnson', ownerSrc: './images/penske-logo.png', ownerAlt: 'Team Penske', manufacturerSrc: './images/ford-logo.png', manufacturerAlt: 'Ford', points: '900', wins: '1', top5: '5', top10: '9', poles: '0', stageWins: '2' }
+                ],
+                xfinity: [
+                    { driver: 'Alex Brown', ownerSrc: './images/jr-motorsports-logo.png', ownerAlt: 'JR Motorsports', manufacturerSrc: './images/chevrolet-logo.png', manufacturerAlt: 'Chevrolet', points: '850', wins: '2', top5: '6', top10: '10', poles: '1', stageWins: '4' },
+                    { driver: 'Sarah Lee', ownerSrc: './images/kaulig-logo.png', ownerAlt: 'Kaulig Racing', manufacturerSrc: './images/chevrolet-logo.png', manufacturerAlt: 'Chevrolet', points: '800', wins: '1', top5: '5', top10: '8', poles: '0', stageWins: '2' },
+                    { driver: 'Tom Wilson', ownerSrc: './images/stewart-haas-logo.png', ownerAlt: 'Stewart-Haas Racing', manufacturerSrc: './images/ford-logo.png', manufacturerAlt: 'Ford', points: '750', wins: '0', top5: '4', top10: '7', poles: '1', stageWins: '1' }
+                ],
+                truck: [
+                    { driver: 'Chris Taylor', ownerSrc: './images/thorsport-logo.png', ownerAlt: 'ThorSport Racing', manufacturerSrc: './images/toyota-logo.png', manufacturerAlt: 'Toyota', points: '700', wins: '3', top5: '7', top10: '9', poles: '2', stageWins: '3' },
+                    { driver: 'Emma Davis', ownerSrc: './images/gms-logo.png', ownerAlt: 'GMS Racing', manufacturerSrc: './images/chevrolet-logo.png', manufacturerAlt: 'Chevrolet', points: '650', wins: '1', top5: '5', top10: '8', poles: '0', stageWins: '2' },
+                    { driver: 'Jake Miller', ownerSrc: './images/front-row-logo.png', ownerAlt: 'Front Row Motorsports', manufacturerSrc: './images/ford-logo.png', manufacturerAlt: 'Ford', points: '600', wins: '0', top5: '3', top10: '6', poles: '1', stageWins: '1' }
+                ]
+            };
+            return defaultData[seriesName];
+        }
+
+        // Função para atualizar a tabela com base nos pontos
+        function updateTable(tableId) {
+            const table = document.getElementById(tableId);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            const drivers = rows.map(row => {
+                const cells = row.querySelectorAll('td');
+                return {
+                    row: row,
+                    position: cells[0],
+                    driver: cells[1].innerText,
+                    owner: cells[2].querySelector('img'),
+                    ownerAlt: cells[2].querySelector('img').alt,
+                    manufacturer: cells[3].querySelector('img'),
+                    manufacturerAlt: cells[3].querySelector('img').alt,
+                    points: parseInt(cells[4].innerText) || 0,
+                    wins: parseInt(cells[5].innerText) || 0,
+                    top5: parseInt(cells[6].innerText) || 0,
+                    top10: parseInt(cells[7].innerText) || 0,
+                    poles: parseInt(cells[8].innerText) || 0,
+                    stageWins: parseInt(cells[9].innerText) || 0
+                };
+            });
+
+            drivers.sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                return b.wins - a.wins;
+            });
+
+            drivers.forEach((driver, index) => {
+                driver.position.innerText = index + 1;
+                driver.owner.setAttribute('data-row', index);
+                driver.owner.nextElementSibling.setAttribute('data-row', index);
+                driver.manufacturer.setAttribute('data-row', index);
+                driver.manufacturer.nextElementSibling.setAttribute('data-row', index);
+                tbody.appendChild(driver.row);
+            });
+        }
+
+        // Função para adicionar novo piloto
+        function addDriver(series) {
+            const table = document.getElementById(`${series}-table`);
+            const tbody = table.querySelector('tbody');
+            const rowCount = tbody.children.length;
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td contenteditable="true">New Driver</td>
+                <td>
+                    <img src="./images/placeholder-logo.png" alt="New Team" class="owner-logo" data-row="${rowCount}" data-table="${series}">
+                    <input type="file" accept="image/*" class="owner-input" data-row="${rowCount}" data-table="${series}">
+                </td>
+                <td>
+                    <img src="./images/placeholder-logo.png" alt="New Manufacturer" class="manufacturer-logo" data-row="${rowCount}" data-table="${series}">
+                    <input type="file" accept="image/*" class="manufacturer-input" data-row="${rowCount}" data-table="${series}">
+                </td>
+                <td contenteditable="true" class="points">0</td>
+                <td contenteditable="true" class="wins">0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+                <td contenteditable="true">0</td>
+            `;
+
+            tbody.appendChild(newRow);
+
+            // Adicionar eventos para a nova linha
+            const newOwnerLogo = newRow.querySelector('.owner-logo');
+            const newOwnerInput = newRow.querySelector('.owner-input');
+            const newManufacturerLogo = newRow.querySelector('.manufacturer-logo');
+            const newManufacturerInput = newRow.querySelector('.manufacturer-input');
+            const newPointsCell = newRow.querySelector('.points');
+
+            newOwnerLogo.addEventListener('click', () => newOwnerInput.click());
+            newOwnerInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    resizeImage(file, 50, 30, (dataUrl) => {
+                        newOwnerLogo.src = dataUrl;
+                        newOwnerLogo.alt = file.name.split('.')[0];
+                    });
+                }
+            });
+
+            newManufacturerLogo.addEventListener('click', () => newManufacturerInput.click());
+            newManufacturerInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    resizeImage(file, 50, 30, (dataUrl) => {
+                        newManufacturerLogo.src = dataUrl;
+                        newManufacturerLogo.alt = file.name.split('.')[0];
+                    });
+                }
+            });
+
+            newPointsCell.addEventListener('blur', () => updateTable(`${series}-table`));
+            newPointsCell.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    newPointsCell.blur();
+                }
+            });
+        }
+
+        // Carregar dados ao iniciar a página
+        loadTable('cup');
+        loadTable('xfinity');
+        loadTable('truck');
+
+        // Mostrar Cup Series por padrão
+        document.querySelector('#cup-series').classList.remove('hidden');
+    </script>
+</body>
+</html>
