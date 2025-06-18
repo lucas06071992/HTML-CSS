@@ -14,27 +14,25 @@
         }
         .header {
             text-align: center;
-            background-color: #003087;
-            padding: 20px;
+            background-color: #080808;
+            padding: 10px;
             color: white;
         }
         .nav-menu {
-            background-color: #002366;
+            background-color: #000000;
             padding: 10px;
             text-align: center;
         }
         .nav-menu a {
-            color: #ffd700;
+            font-family: 'Bebas Kai';
+            color: #ffffff;
             margin: 0 20px;
             text-decoration: none;
-            font-size: 18px;
-        }
-        .nav-menu a:hover {
-            text-decoration: underline;
+            font-size: 20px;
         }
         .header img.nascar-logo {
-            width: 200px;
-            margin-bottom: 10px;
+            width: 400px;
+            margin-bottom: 1px;
         }
         .series-logos {
             display: flex;
@@ -69,7 +67,7 @@
             border-bottom: 1px solid #ddd;
         }
         .standings-table th {
-            background-color: #003087;
+            background-color: #000000;
             color: white;
             font-weight: bold;
         }
@@ -97,7 +95,7 @@
             display: inline-block;
             margin: 10px 5px;
             padding: 10px 20px;
-            background-color: #003087;
+            background-color: #000000;
             color: white;
             border: none;
             border-radius: 5px;
@@ -105,10 +103,10 @@
             font-size: 16px;
         }
         .save-button:hover, .add-button:hover {
-            background-color: #002366;
+            background-color: #000000;
         }
         .footer {
-            background-color: #003087;
+            background-color: #000000;
             color: white;
             text-align: center;
             padding: 20px;
@@ -140,11 +138,11 @@
     <a href="nascar_news.html" class="${window.location.pathname.includes('news') ? 'active' : ''}">News</a>
 </div>
     <div class="header">
-        <img src="./images/nascar-logo.png" alt="NASCAR Logo" class="nascar-logo">
+        <img src="./images/Nascar.png" alt="NASCAR Logo" class="nascar-logo">
         <div class="series-logos">
-            <img src="./images/cup-series-logo.png" alt="NASCAR Cup Series Logo" onclick="showSeries('cup')">
-            <img src="./images/xfinity-series-logo.png" alt="NASCAR Xfinity Series Logo" onclick="showSeries('xfinity')">
-            <img src="./images/truck-series-logo.png" alt="NASCAR Truck Series Logo" onclick="showSeries('truck')">
+            <img src="./images/NASCAR_Cup_Series.png" alt="NASCAR Cup Series Logo" onclick="showSeries('cup')">
+            <img src="./images/NASCAR_Xfinity_Series.png" alt="NASCAR Xfinity Series Logo" onclick="showSeries('xfinity')">
+            <img src="./images/NASCAR_Craftsman_Truck_Series.png" alt="NASCAR Truck Series Logo" onclick="showSeries('truck')">
         </div>
     </div>
 
