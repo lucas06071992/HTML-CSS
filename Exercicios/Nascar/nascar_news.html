@@ -202,10 +202,12 @@
 </head>
 <body>
     <div class="nav-menu">
-        <a href="nascar_standings.html">Standings</a>
-        <a href="nascar_titles.html">Titles</a>
-        <a href="nascar_news.html" class="active">News</a>
-    </div>
+    <a href="nascar_standings.html" class="${window.location.pathname.includes('standings') ? 'active' : ''}">Standings</a>
+    <a href="nascar_titles.html" class="${window.location.pathname.includes('titles') ? 'active' : ''}">Titles</a>
+    <a href="nascar_news.html" class="${window.location.pathname.includes('news') ? 'active' : ''}">News</a>
+    <a href="nascar_admin.html" class="${window.location.pathname.includes('admin') ? 'active' : ''}">Admin</a>
+    <a href="titles-esports.html">eSports Titles</a>
+</div>
     <div class="header">
         <img src="./images/Nascar.png" alt="NASCAR Logo" class="nascar-logo">
     </div>
@@ -339,10 +341,10 @@
             const savedNews = localStorage.getItem('nascar_news_data');
             let newsData = savedNews ? JSON.parse(savedNews) : [
                 {
-                    title: 'NASCAR Cup Series: Thrilling Finish at Daytona',
-                    image: './images/news1.jpg',
-                    summary: 'The latest race at Daytona saw an unexpected winner after a dramatic final lap.',
-                    fullText: 'In a heart-pounding finish at Daytona International Speedway, underdog driver Alex Brown clinched their first NASCAR Cup Series victory. The final lap saw a three-wide battle, with Brown edging out veterans John Doe and Jane Smith by mere inches. Fans were on their feet as the race concluded under caution after a multi-car incident in Turn 4. Brown credited their team’s strategy and pit crew for the win, marking a significant upset in the 2025 season.'
+                    title: 'Monster Energy lança equipe Monster Racing para competir na NASCAR Xfinity Series em parceria com a Honda',
+                    image: './images/News/mONSTER.png',
+                    summary: 'A Monster Energy anunciou a criação da equipe Monster Racing para competir na NASCAR Xfinity Series, em parceria com a Honda como fabricante.',
+                    fullText: 'A Monster Energy anunciou a criação de sua própria equipe para competir na NASCAR Xfinity Series. Com o nome Monster Racing, a equipe promete trazer toda a energia e agressividade da marca para as pistas em uma parceria inédita com a Honda como fabricante. Ainda sem revelar o piloto que comandará o carro, a Monster Racing já desperta grande expectativa entre os fãs do automobilismo. A empresa, que já tem uma longa história de envolvimento com esportes radicais e competições de alto nível, agora expande sua atuação na NASCAR de maneira independente. A parceria com a Honda reforça a estratégia da Monster Energy de buscar desempenho máximo e inovação na categoria. “Estamos empolgados em iniciar essa jornada com a Honda e levar a Monster Racing para um novo patamar na NASCAR Xfinity Series”, afirmou um porta-voz da marca. Com o anúncio, os fãs aguardam ansiosamente pela revelação do piloto que será responsável por conduzir o carro da Monster Racing nas pistas. A estreia da equipe está prevista para a próxima temporada, prometendo emoções fortes e disputas acirradas. O que você acha dessa ideia? Quem você gostaria de ver como piloto desse novo time?'
                 },
                 {
                     title: 'Jimmie Johnson Aims for Record-Breaking Title',

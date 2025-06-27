@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supercross Standings - Editable</title>
+    <style>
+        body {
+            font-family: 'Kiona Regular';
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            background-color: #080808;
+            padding: 20px;
+            color: white;
+        }
+        .nav-menu {
+            background-color: #080808;
+            padding: 10px;
+            text-align: center;
+        }
+        .nav-menu a {
+            font-family: 'Kiona Regular';
+            color: #08ff08;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .header img.supercross-logo {
+            width: 400px;
+            margin-bottom: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        .standings-table th, .standings-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .standings-table th {
+            background-color: #080808;
+            color: white;
+            font-weight: bold;
+        }
+        .standings-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .standings-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .standings-table td[contenteditable="true"] {
+            cursor: text;
+            background-color: #fffbe6;
+        }
+        .standings-table td[contenteditable="true"]:hover {
+            background-color: #fff5cc;
+        }
+        .save-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #080808;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .save-button:hover {
+            background-color: #080808;
+        }
+        .footer {
+            background-color: #080808;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #08ff08;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="nav-menu">
+        <a href="supercross_standings.html">Standings</a>
+        <a href="supercross_titles.html">Titles</a>
+        <a href="supercross_news.html" class="active">News</a>
+        <a href="supercross_admin.html">Admin</a>
+        <a href="esports-titles.html">eSports Titles</a>
+    </div>
+    <div class="header">
+        <img src="./images/supercross-live-logo.png" alt="Supercross Logo" class="supercross-logo">
+    </div>
+
+    <div class="container">
+        <!-- 450SX Standings -->
+        <div id="standings-450sx">
+            <h2>Monster Energy AMA Supercross 450SX Standings</h2>
+            <table class="standings-table" id="standings-table-450sx">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Rider</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody id="standings-tbody-450sx">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+            <button class="save-button" onclick="saveTable('450sx')">Save 450SX Changes</button>
+        </div>
+
+        <!-- 250SX East Standings -->
+        <div id="standings-250sx-east">
+            <h2>Monster Energy AMA Supercross 250SX East Standings</h2>
+            <table class="standings-table" id="standings-table-250sx-east">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Rider</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody id="standings-tbody-250sx-east">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+            <button class="save-button" onclick="saveTable('250sx-east')">Save 250SX East Changes</button>
+        </div>
+
+        <!-- 250SX West Standings -->
+        <div id="standings-250sx-west">
+            <h2>Monster Energy AMA Supercross 250SX West Standings</h2>
+            <table class="standings-table" id="standings-table-250sx-west">
+                <thead>
+                    <tr>
+                        <th>Position</th>
+                        <th>Rider</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody id="standings-tbody-250sx-west">
+                    <!-- Dados serão carregados via JavaScript -->
+                </tbody>
+            </table>
+            <button class="save-button" onclick="saveTable('250sx-west')">Save 250SX West Changes</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Supercross Fan Template | All Rights Reserved</p>
+        <p>
+            <a href="#">Race Schedule</a> |
+            <a href="#">Latest News</a> |
+            <a href="#">Rider Profiles</a> |
+            <a href="#">Shop Merchandise</a> |
+            <a href="#">Contact Us</a>
+        </p>
+    </div>
+
+    <script>
+        // Função para salvar os dados da tabela
+        function saveTable(category) {
+            const table = document.getElementById(`standings-table-${category}`);
+            const rows = table.querySelectorAll(`tbody tr`);
+            let data = [];
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                data.push({
+                    rider: cells[1].innerText,
+                    points: cells[2].innerText
+                });
+            });
+            data.sort((a, b) => parseInt(b.points) - parseInt(a.points));
+            localStorage.setItem(`supercross_${category}_data`, JSON.stringify(data));
+            console.log(`[${category.toUpperCase()}] Saved Data:`, data);
+            loadTable(category);
+            alert(`Changes saved for ${category.toUpperCase()} Standings!`);
+        }
+
+        // Função para carregar os dados da tabela
+        function loadTable(category) {
+            const tbody = document.getElementById(`standings-tbody-${category}`);
+            const savedData = localStorage.getItem(`supercross_${category}_data`);
+            let data = savedData ? JSON.parse(savedData) : getDefaultData(category);
+
+            data.sort((a, b) => parseInt(b.points) - parseInt(a.points));
+
+            tbody.innerHTML = '';
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td contenteditable="true">${row.rider}</td>
+                    <td contenteditable="true">${row.points}</td>
+                `;
+                tbody.appendChild(tr);
+
+                const pointsCell = tr.cells[2];
+                pointsCell.addEventListener('blur', () => saveTable(category));
+                pointsCell.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        pointsCell.blur();
+                    }
+                });
+            });
+        }
+
+        // Dados padrão para cada categoria
+        function getDefaultData(category) {
+            const defaultData = {
+                '450sx': [
+                    { rider: 'Eli Tomac', points: '350' },
+                    { rider: 'Cooper Webb', points: '330' },
+                    { rider: 'Chase Sexton', points: '310' },
+                    { rider: 'Jason Anderson', points: '290' },
+                    { rider: 'Ken Roczen', points: '270' }
+                ],
+                '250sx-east': [
+                    { rider: 'Haiden Deegan', points: '180' },
+                    { rider: 'Tom Vialle', points: '170' },
+                    { rider: 'Hunter Lawrence', points: '160' },
+                    { rider: 'Max Anstie', points: '150' },
+                    { rider: 'Chance Hymas', points: '140' }
+                ],
+                '250sx-west': [
+                    { rider: 'Jett Lawrence', points: '185' },
+                    { rider: 'Levi Kitchen', points: '175' },
+                    { rider: 'RJ Hampshire', points: '165' },
+                    { rider: 'Jo Shimoda', points: '155' },
+                    { rider: 'Nate Thrasher', points: '145' }
+                ]
+            };
+            return defaultData[category];
+        }
+
+        // Carregar dados ao iniciar a página
+        loadTable('450sx');
+        loadTable('250sx-east');
+        loadTable('250sx-west');
+    </script>
+</body>
+</html>

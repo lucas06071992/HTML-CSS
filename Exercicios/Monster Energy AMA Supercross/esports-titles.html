@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster Energy AMA Supercross eSports Titles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="nav-menu">
+        <a href="supercross_standings.html">Standings</a>
+        <a href="supercross_titles.html">Titles</a>
+        <a href="supercross_news.html" class="active">News</a>
+        <a href="supercross_admin.html">Admin</a>
+        <a href="esports-titles.html">eSports Titles</a>
+    </div>
+    <div class="header">
+        <img src="./images/supercross-live-logo.png" alt="Monster Energy AMA Supercross Logo" class="sx-logo">
+    </div>
+
+    <div class="container">
+        <h2>Monster Energy AMA Supercross eSports Titles</h2>
+        <!-- New Driver Form -->
+        <div class="add-driver-form">
+            <h4>Add New Driver</h4>
+            <input type="text" id="driver-name" placeholder="Driver Name">
+            <button onclick="addDriver()">Add Driver</button>
+        </div>
+        <!-- Modified Title Form -->
+        <div class="add-title-form">
+            <h4>Add New eSports Champion</h4>
+            <select id="title-rider" required>
+                <option value="" disabled selected>Select Driver</option>
+            </select>
+            <input type="text" id="title-category" placeholder="Category (e.g., 450SX eSports)">
+            <input type="text" id="title-event" placeholder="Event (e.g., Virtual Anaheim 1)">
+            <input type="text" id="title-year" placeholder="Year (e.g., 2025)">
+            <button onclick="addEsportsTitle()">Add Champion</button>
+        </div>
+        <table class="esports-titles-table" id="esports-titles-table">
+            <thead>
+                <tr>
+                    <th>Rider</th>
+                    <th>Category</th>
+                    <th>Event</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody id="esports-titles-tbody"></tbody>
+        </table>
+        <button class="save-button" onclick="saveEsportsTitles()">Save Changes</button>
+
+        <!-- Drivers and Titles Section -->
+        <h2>Drivers and Their Titles</h2>
+        <div id="drivers-titles-section"></div>
+        <button class="save-button" onclick="saveEsportsTitles()">Save Changes</button>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Monster Energy AMA Supercross | All Rights Reserved</p>
+        <p>
+            <a href="#">Schedule</a> |
+            <a href="#">News</a> |
+            <a href="#">FanFest</a> |
+            <a href="#">Shop</a> |
+            <a href="#">Contact</a>
+        </p>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

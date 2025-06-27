@@ -1,0 +1,205 @@
+/* Existing styles (unchanged) */
+body {
+    font-family: 'Kiona Regular';
+    margin: 0;
+    padding: 0;
+    background-color: #1A1A1A;
+    color: #FFF;
+}
+
+.header {
+    text-align: center;
+    background-color: #000;
+    padding: 20px;
+}
+
+.nav-menu {
+    background-color: #000;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-menu a {
+    color: #00FF00;
+    margin: 0 20px;
+    text-decoration: none;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.header img.sx-logo {
+    width: 400px;
+    margin-bottom: 10px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+h2 {
+    color: #00FF00;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.add-title-form, .add-driver-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #2A2A2A;
+    border: 1px solid #00FF00;
+}
+
+.add-title-form input, .add-title-form select, .add-driver-form input {
+    width: calc(100% - 16px);
+    padding: 8px;
+    margin: 4px 0;
+    border: 1px solid #00FF00;
+    border-radius: 3px;
+    background-color: #1A1A1A;
+    color: #FFF;
+}
+
+.add-title-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%2300FF00" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 8px top 50%;
+}
+
+.add-title-form button, .add-driver-form button {
+    background-color: #00FF00;
+    color: #000;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.add-title-form button:hover, .add-driver-form button:hover {
+    background-color: #00CC00;
+}
+
+.esports-titles-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+.esports-titles-table th, .esports-titles-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #00FF00;
+}
+
+.esports-titles-table th {
+    background-color: #000;
+    color: #00FF00;
+    text-transform: uppercase;
+}
+
+.esports-titles-table td[contenteditable="true"] {
+    cursor: text;
+    background-color: #2A2A2A;
+}
+
+.esports-titles-table td[contenteditable="true"]:hover {
+    background-color: #3A3A3A;
+}
+
+.save-button {
+    background-color: #00FF00;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.save-button:hover {
+    background-color: #00CC00;
+}
+
+.drivers-titles-section {
+    margin-top: 30px;
+}
+
+.driver-block {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #2A2A2A;
+    border: 1px solid #00FF00;
+}
+
+.driver-block h3 {
+    color: #00FF00;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+}
+
+.driver-titles-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.driver-titles-table th, .driver-titles-table td_resolve {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #00FF00;
+}
+
+.driver-titles-table th {
+    background-color: #000;
+    color: #00FF00;
+    text-transform: uppercase;
+}
+
+.driver-titles-table td[contenteditable="true"] {
+    cursor: text;
+    background-color: #2A2A2A;
+}
+
+.driver-titles-table td[contenteditable="true"]:hover {
+    background-color: #3A3A3A;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    .add-title-form input, .add-title-form select, .add-driver-form input {
+        width: calc(100% - 16px);
+    }
+    .esports-titles-table th, .esports-titles-table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+    .driver-titles-table th, .driver-titles-table td {
+        padding: 6px;
+        font-size: 13px;
+    }
+    .driver-block {
+        padding: 10px;
+    }
+}
+.footer {
+            background-color: #080808;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #08ff08;
+            margin: 0 10px;
+            text-decoration: none;
+        }

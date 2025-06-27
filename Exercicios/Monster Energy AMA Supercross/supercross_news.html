@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NASCAR News</title>
+    <title>Supercross News</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Kiona Regular';
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -14,26 +14,24 @@
         }
         .header {
             text-align: center;
-            background-color: #003087;
+            background-color: #080808;
             padding: 20px;
             color: white;
         }
         .nav-menu {
-            background-color: #002366;
+            background-color: #080808;
             padding: 10px;
             text-align: center;
         }
         .nav-menu a {
-            color: #ffd700;
+            font-family: 'Kiona Regular';
+            color: #08ff08;
             margin: 0 20px;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 20px;
         }
-        .nav-menu a:hover, .nav-menu a.active {
-            text-decoration: underline;
-        }
-        .header img.nascar-logo {
-            width: 200px;
+        .header img.supercross-logo {
+            width: 400px;
             margin-bottom: 10px;
         }
         .container {
@@ -70,7 +68,7 @@
         }
         .news-card h3 {
             margin: 0 0 10px;
-            color: #003087;
+            color: #080808;
         }
         .news-card p {
             margin: 0 0 10px;
@@ -83,7 +81,7 @@
             margin-bottom: 15px;
         }
         .news-full h2 {
-            color: #003087;
+            color: #080808;
             margin-top: 0;
         }
         .news-full .summary {
@@ -95,7 +93,7 @@
             margin-bottom: 20px;
         }
         .news-full .back-button {
-            background-color: #003087;
+            background-color: #080808;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -104,7 +102,7 @@
             font-size: 16px;
         }
         .news-full .back-button:hover {
-            background-color: #002366;
+            background-color: #080808;
         }
         .sidebar-table {
             width: 100%;
@@ -117,7 +115,7 @@
             border-bottom: 1px solid #ddd;
         }
         .sidebar-table th {
-            background-color: #003087;
+            background-color: #080808;
             color: white;
         }
         .sidebar-table img {
@@ -127,7 +125,7 @@
             vertical-align: middle;
         }
         .next-race h3, .sidebar-left h3, .sidebar-right h3 {
-            color: #003087;
+            color: #080808;
             margin-top: 0;
         }
         .next-race input, .next-race button {
@@ -138,13 +136,13 @@
             border-radius: 3px;
         }
         .next-race button {
-            background-color: #003087;
+            background-color: #080808;
             color: white;
             border: none;
             cursor: pointer;
         }
         .next-race button:hover {
-            background-color: #002366;
+            background-color: #080808;
         }
         .add-news-form {
             margin-bottom: 20px;
@@ -160,7 +158,7 @@
             border-radius: 3px;
         }
         .add-news-form button {
-            background-color: #003087;
+            background-color: #080808;
             color: white;
             border: none;
             padding: 10px;
@@ -168,23 +166,44 @@
             border-radius: 3px;
         }
         .add-news-form button:hover {
-            background-color: #002366;
+            background-color: #080808;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .tab {
+            padding: 10px 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+        .tab.active {
+            background-color: #080808;
+            color: white;
+            border-color: #080808;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
         .footer {
-            background-color: #003087;
+            background-color: #080808;
             color: white;
             text-align: center;
             padding: 20px;
             margin-top: 40px;
         }
         .footer a {
-            color: #ffd700;
+            color: #08ff08;
             margin: 0 10px;
             text-decoration: none;
         }
-        .footer a:hover {
-            text-decoration: underline;
-        }
+
         input[type="file"] {
             display: none;
         }
@@ -199,40 +218,83 @@
                 flex: none;
                 width: 100%;
             }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="nav-menu">
-        <a href="nascar_standings.html">Standings</a>
-        <a href="nascar_titles.html">Titles</a>
-        <a href="nascar_news.html" class="active">News</a>
+        <a href="supercross_standings.html">Standings</a>
+        <a href="supercross_titles.html">Titles</a>
+        <a href="supercross_news.html" class="active">News</a>
+        <a href="supercross_admin.html">Admin</a>
+        <a href="esports-titles.html">eSports Titles</a>
     </div>
     <div class="header">
-        <img src="./images/nascar-logo.png" alt="NASCAR Logo" class="nascar-logo">
+        <img src="./images/supercross-live-logo.png" alt="Supercross Logo" class="supercross-logo">
     </div>
 
     <div class="container">
         <!-- Sidebar Esquerda: Standings -->
         <aside class="sidebar-left">
-            <h3>Cup Series Standings (Top 5)</h3>
-            <table class="sidebar-table" id="standings-table">
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th>Driver</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody id="standings-tbody">
-                    <!-- Dados serão carregados via JavaScript -->
-                </tbody>
-            </table>
+            <h3>Supercross Standings (Top 5)</h3>
+            <div class="tabs">
+                <div class="tab active" onclick="showTab('450sx')">450SX</div>
+                <div class="tab" onclick="showTab('250sx-east')">250SX East</div>
+                <div class="tab" onclick="showTab('250sx-west')">250SX West</div>
+            </div>
+            <div id="standings-450sx" class="tab-content active">
+                <table class="sidebar-table" id="standings-table-450sx">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Rider</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-tbody-450sx">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="standings-250sx-east" class="tab-content">
+                <table class="sidebar-table" id="standings-table-250sx-east">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Rider</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-tbody-250sx-east">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="standings-250sx-west" class="tab-content">
+                <table class="sidebar-table" id="standings-table-250sx-west">
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Rider</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-tbody-250sx-west">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </aside>
 
         <!-- Seção Central: Notícias -->
         <main class="news-section">
-            <h2>NASCAR News</h2>
+            <h2>Supercross News</h2>
             <div class="news-list" id="news-list">
                 <div class="add-news-form">
                     <h3>Add New News</h3>
@@ -260,9 +322,18 @@
         <aside class="sidebar-right">
             <h3>Titles Leaders</h3>
             <div id="titles-leaders">
-                <p><strong>Driver:</strong> <span id="leader-driver"></span></p>
-                <p><strong>Owner:</strong> <span id="leader-owner"></span></p>
-                <p><strong>Manufacturer:</strong> <span id="leader-manufacturer"></span></p>
+                <h4>450SX</h4>
+                <p><strong>Rider:</strong> <span id="leader-rider-450sx"></span></p>
+                <p><strong>Team:</strong> <span id="leader-team-450sx"></span></p>
+                <p><strong>Manufacturer:</strong> <span id="leader-manufacturer-450sx"></span></p>
+                <h4>250SX East</h4>
+                <p><strong>Rider:</strong> <span id="leader-rider-250sx-east"></span></p>
+                <p><strong>Team:</strong> <span id="leader-team-250sx-east"></span></p>
+                <p><strong>Manufacturer:</strong> <span id="leader-manufacturer-250sx-east"></span></p>
+                <h4>250SX West</h4>
+                <p><strong>Rider:</strong> <span id="leader-rider-250sx-west"></span></p>
+                <p><strong>Team:</strong> <span id="leader-team-250sx-west"></span></p>
+                <p><strong>Manufacturer:</strong> <span id="leader-manufacturer-250sx-west"></span></p>
             </div>
             <div class="next-race">
                 <h3>Next Race</h3>
@@ -276,11 +347,11 @@
     </div>
 
     <div class="footer">
-        <p>© 2025 NASCAR Fan Template | All Rights Reserved</p>
+        <p>© 2025 Supercross Fan Template | All Rights Reserved</p>
         <p>
             <a href="#">Race Schedule</a> |
             <a href="#">Latest News</a> |
-            <a href="#">Driver Profiles</a> |
+            <a href="#">Rider Profiles</a> |
             <a href="#">Shop Merchandise</a> |
             <a href="#">Contact Us</a>
         </p>
@@ -338,29 +409,28 @@
         // Função para carregar notícias do localStorage
         function loadNews() {
             const newsContainer = document.getElementById('news-container');
-            const savedNews = localStorage.getItem('nascar_news_data');
+            const savedNews = localStorage.getItem('supercross_news_data');
             let newsData = savedNews ? JSON.parse(savedNews) : [
                 {
-                    title: 'NASCAR Cup Series: Thrilling Finish at Daytona',
-                    image: './images/news1.jpg',
-                    summary: 'The latest race at Daytona saw an unexpected winner after a dramatic final lap.',
-                    fullText: 'In a heart-pounding finish at Daytona International Speedway, underdog driver Alex Brown clinched their first NASCAR Cup Series victory. The final lap saw a three-wide battle, with Brown edging out veterans John Doe and Jane Smith by mere inches. Fans were on their feet as the race concluded under caution after a multi-car incident in Turn 4. Brown credited their team’s strategy and pit crew for the win, marking a significant upset in the 2025 season.'
+                    title: 'Eli Tomac Dominates Anaheim Opener',
+                    image: './images/sx-news1.jpg',
+                    summary: 'Eli Tomac takes a commanding win at the 2025 season opener in Anaheim.',
+                    fullText: 'Eli Tomac kicked off the 2025 Monster Energy AMA Supercross season with a stunning victory at Anaheim 1. Mastering the challenging track, Tomac led from start to finish, fending off a strong challenge from Cooper Webb. His performance sets the tone for another championship chase, with fans buzzing about his aggressive riding style and flawless execution.'
                 },
                 {
-                    title: 'Jimmie Johnson Aims for Record-Breaking Title',
-                    image: './images/news2.jpg',
-                    summary: 'Jimmie Johnson discusses his strategy for the 2025 season and his pursuit of another championship.',
-                    fullText: 'Seven-time NASCAR Cup Series champion Jimmie Johnson is back with renewed focus for the 2025 season, aiming to break the tie with Richard Petty and Dale Earnhardt for the most titles. In an exclusive interview, Johnson revealed his team’s off-season preparations, including advanced simulations and a new fitness regimen. “We’re leaving no stone unturned,” Johnson said. With a strong start at Daytona, fans are eager to see if the veteran can reclaim the top spot.'
+                    title: 'New Rules Shake Up Supercross 2025',
+                    image: './images/sx-news2.jpg',
+                    summary: 'The 2025 season introduces new regulations impacting bike setups and race formats.',
+                    fullText: 'The 2025 Monster Energy AMA Supercross season brings significant rule changes, including updated bike weight limits and a revised points system. Teams like Red Bull KTM and Monster Energy Kawasaki have been testing new setups to adapt. Riders have mixed reactions, with some praising the focus on safety and others concerned about competitive balance. The changes debuted at Anaheim 1, sparking heated discussions among fans.'
                 },
                 {
-                    title: 'New Manufacturer Joins NASCAR in 2026',
-                    image: './images/news3.jpg',
-                    summary: 'A major automotive brand has announced its entry into NASCAR starting next season.',
-                    fullText: 'NASCAR announced a groundbreaking addition to its roster, with a new manufacturer set to debut in the 2026 season. The brand, known for its innovation in electric and hybrid vehicles, aims to compete with Chevrolet, Ford, and Toyota. Details remain scarce, but insiders suggest the manufacturer has been testing prototypes at select tracks. This move is expected to shake up the competition and bring new technology to the sport, exciting fans and teams alike.'
+                    title: 'Chase Sexton Signs with New Team',
+                    image: './images/sx-news3.jpg',
+                    summary: 'Chase Sexton joins a top team for the 2025 Supercross season, raising expectations.',
+                    fullText: 'Chase Sexton has signed with Rockstar Energy Husqvarna for the 2025 season, a move that has shocked the Supercross community. After a strong 2024, Sexton aims to challenge for the title with his new team. His debut at Anaheim 1 showed promise, finishing in the top three. Fans and analysts are eager to see how this partnership will shape the championship race.'
                 }
             ];
 
-            // Migrar dados antigos, se necessário
             newsData = newsData.map(news => ({
                 title: news.title,
                 image: news.image,
@@ -368,7 +438,7 @@
                 fullText: news.fullText || 'No full text available for this news.'
             }));
 
-            localStorage.setItem('nascar_news_data', JSON.stringify(newsData));
+            localStorage.setItem('supercross_news_data', JSON.stringify(newsData));
 
             newsContainer.innerHTML = '';
             newsData.forEach((news, index) => {
@@ -386,7 +456,7 @@
 
         // Função para exibir a notícia completa
         function showFullNews(index) {
-            const savedNews = JSON.parse(localStorage.getItem('nascar_news_data'));
+            const savedNews = JSON.parse(localStorage.getItem('supercross_news_data'));
             const news = savedNews[index];
 
             document.getElementById('news-list').classList.add('hidden');
@@ -417,7 +487,7 @@
                 return;
             }
 
-            const savedNews = localStorage.getItem('nascar_news_data');
+            const savedNews = localStorage.getItem('supercross_news_data');
             let newsData = savedNews ? JSON.parse(savedNews) : [];
 
             if (imageInput.files[0]) {
@@ -428,7 +498,7 @@
                         summary,
                         fullText
                     });
-                    localStorage.setItem('nascar_news_data', JSON.stringify(newsData));
+                    localStorage.setItem('supercross_news_data', JSON.stringify(newsData));
                     loadNews();
                     clearNewsForm();
                 });
@@ -439,7 +509,7 @@
                     summary,
                     fullText
                 });
-                localStorage.setItem('nascar_news_data', JSON.stringify(newsData));
+                localStorage.setItem('supercross_news_data', JSON.stringify(newsData));
                 loadNews();
                 clearNewsForm();
             }
@@ -455,60 +525,101 @@
         }
 
         // Função para carregar standings na sidebar esquerda
-        function loadStandings() {
-            const tbody = document.getElementById('standings-tbody');
-            const savedData = localStorage.getItem('nascar_cup_data');
-            let data = savedData ? JSON.parse(savedData) : [
-                { driver: 'John Doe', points: '1000' },
-                { driver: 'Jane Smith', points: '950' },
-                { driver: 'Mike Johnson', points: '900' },
-                { driver: 'Alex Brown', points: '850' },
-                { driver: 'Sarah Lee', points: '800' }
-            ];
+        function loadStandings(category) {
+            const tbody = document.getElementById(`standings-tbody-${category}`);
+            const savedData = localStorage.getItem(`supercross_${category}_data`);
+            let data = savedData ? JSON.parse(savedData) : getDefaultStandingsData(category);
 
             data.sort((a, b) => parseInt(b.points) - parseInt(a.points));
-            data = data.slice(0, 5); // Top 5
+            data = data.slice(0, 5);
 
             tbody.innerHTML = '';
             data.forEach((row, index) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${row.driver}</td>
+                    <td>${row.rider}</td>
                     <td>${row.points}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
+        // Dados padrão para standings
+        function getDefaultStandingsData(category) {
+            const defaultData = {
+                '450sx': [
+                    { rider: 'Eli Tomac', points: '350' },
+                    { rider: 'Cooper Webb', points: '330' },
+                    { rider: 'Chase Sexton', points: '310' },
+                    { rider: 'Jason Anderson', points: '290' },
+                    { rider: 'Ken Roczen', points: '270' }
+                ],
+                '250sx-east': [
+                    { rider: 'Haiden Deegan', points: '180' },
+                    { rider: 'Tom Vialle', points: '170' },
+                    { rider: 'Hunter Lawrence', points: '160' },
+                    { rider: 'Max Anstie', points: '150' },
+                    { rider: 'Chance Hymas', points: '140' }
+                ],
+                '250sx-west': [
+                    { rider: 'Jett Lawrence', points: '185' },
+                    { rider: 'Levi Kitchen', points: '175' },
+                    { rider: 'RJ Hampshire', points: '165' },
+                    { rider: 'Jo Shimoda', points: '155' },
+                    { rider: 'Nate Thrasher', points: '145' }
+                ]
+            };
+            return defaultData[category];
+        }
+
         // Função para carregar líderes de títulos na sidebar direita
-        function loadTitlesLeaders() {
-            const driverLeader = document.getElementById('leader-driver');
-            const ownerLeader = document.getElementById('leader-owner');
-            const manufacturerLeader = document.getElementById('leader-manufacturer');
+        function loadTitlesLeaders(category) {
+            const riderLeader = document.getElementById(`leader-rider-${category}`);
+            const teamLeader = document.getElementById(`leader-team-${category}`);
+            const manufacturerLeader = document.getElementById(`leader-manufacturer-${category}`);
 
-            // Drivers
-            let driversData = localStorage.getItem('nascar_drivers_titles');
-            driversData = driversData ? JSON.parse(driversData) : [{ driver: 'Richard Petty', titles: '7' }];
-            driversData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
-            driverLeader.innerText = `${driversData[0].driver} (${driversData[0].titles} titles)`;
+            let ridersData = localStorage.getItem(`supercross_riders_titles_${category}`);
+            ridersData = ridersData ? JSON.parse(ridersData) : getDefaultTitlesData('riders', category);
+            ridersData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
+            riderLeader.innerText = `${ridersData[0].rider} (${ridersData[0].titles} titles)`;
 
-            // Owners
-            let ownersData = localStorage.getItem('nascar_owners_titles');
-            ownersData = ownersData ? JSON.parse(ownersData) : [{ nameAlt: 'Hendrick Motorsports', titles: '14' }];
-            ownersData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
-            ownerLeader.innerHTML = `<img src="${ownersData[0].nameSrc}" alt="${ownersData[0].nameAlt}" style="width: 40px; height: 24px; vertical-align: middle;"> ${ownersData[0].nameAlt} (${ownersData[0].titles} titles)`;
+            let teamsData = localStorage.getItem(`supercross_teams_titles_${category}`);
+            teamsData = teamsData ? JSON.parse(teamsData) : getDefaultTitlesData('teams', category);
+            teamsData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
+            teamLeader.innerHTML = `<img src="${teamsData[0].nameSrc}" alt="${teamsData[0].nameAlt}" style="width: 40px; height: 24px; vertical-align: middle;"> ${teamsData[0].nameAlt} (${teamsData[0].titles} titles)`;
 
-            // Manufacturers
-            let manufacturersData = localStorage.getItem('nascar_manufacturers_titles');
-            manufacturersData = manufacturersData ? JSON.parse(manufacturersData) : [{ nameAlt: 'Chevrolet', titles: '39' }];
+            let manufacturersData = localStorage.getItem(`supercross_manufacturers_titles_${category}`);
+            manufacturersData = manufacturersData ? JSON.parse(manufacturersData) : getDefaultTitlesData('manufacturers', category);
             manufacturersData.sort((a, b) => parseInt(b.titles) - parseInt(a.titles));
             manufacturerLeader.innerHTML = `<img src="${manufacturersData[0].nameSrc}" alt="${manufacturersData[0].nameAlt}" style="width: 40px; height: 24px; vertical-align: middle;"> ${manufacturersData[0].nameAlt} (${manufacturersData[0].titles} titles)`;
         }
 
+        // Dados padrão para títulos
+        function getDefaultTitlesData(tableName, category) {
+            const defaultData = {
+                riders: {
+                    '450sx': [{ rider: 'Ricky Carmichael', titles: '7' }],
+                    '250sx-east': [{ rider: 'Hunter Lawrence', titles: '2' }],
+                    '250sx-west': [{ rider: 'Jett Lawrence', titles: '2' }]
+                },
+                teams: {
+                    '450sx': [{ nameSrc: './images/monster-energy-kawasaki-logo.png', nameAlt: 'Monster Energy Kawasaki', titles: '3' }],
+                    '250sx-east': [{ nameSrc: './images/monster-energy-yamaha-logo.png', nameAlt: 'Monster Energy Yamaha', titles: '3' }],
+                    '250sx-west': [{ nameSrc: './images/monster-energy-yamaha-logo.png', nameAlt: 'Monster Energy Yamaha', titles: '2' }]
+                },
+                manufacturers: {
+                    '450sx': [{ nameSrc: './images/honda-logo.png', nameAlt: 'Honda', titles: '15' }],
+                    '250sx-east': [{ nameSrc: './images/yamaha-logo.png', nameAlt: 'Yamaha', titles: '8' }],
+                    '250sx-west': [{ nameSrc: './images/yamaha-logo.png', nameAlt: 'Yamaha', titles: '7' }]
+                }
+            };
+            return defaultData[tableName][category];
+        }
+
         // Função para carregar informações da próxima corrida
         function loadNextRace() {
-            const savedRace = localStorage.getItem('nascar_next_race');
+            const savedRace = localStorage.getItem('supercross_next_race');
             const raceData = savedRace ? JSON.parse(savedRace) : {
                 name: 'Next Race TBD',
                 date: 'TBD',
@@ -531,14 +642,24 @@
                 time: document.getElementById('race-time').value || 'TBD'
             };
 
-            localStorage.setItem('nascar_next_race', JSON.stringify(raceData));
+            localStorage.setItem('supercross_next_race', JSON.stringify(raceData));
             alert('Next race information saved!');
+        }
+
+        // Função para alternar abas
+        function showTab(category) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`.tab[onclick="showTab('${category}')"]`).classList.add('active');
+            document.getElementById(`standings-${category}`).classList.add('active');
         }
 
         // Carregar dados ao iniciar a página
         loadNews();
-        loadStandings();
-        loadTitlesLeaders();
+        ['450sx', '250sx-east', '250sx-west'].forEach(category => {
+            loadStandings(category);
+            loadTitlesLeaders(category);
+        });
         loadNextRace();
 
         // Adicionar evento para o input de imagem de notícias

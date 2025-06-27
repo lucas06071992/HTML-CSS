@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supercross Titles - Editable</title>
+    <style>
+        body {
+            font-family: 'Kiona Regular';
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            background-color: #080808;
+            padding: 20px;
+            color: white;
+        }
+        .nav-menu {
+            background-color: #080808;
+            padding: 10px;
+            text-align: center;
+        }
+        .nav-menu a {
+            font-family: 'Kiona Regular';
+            color: #08ff08;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .header img.supercross-logo {
+            width: 400px;
+            margin-bottom: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .titles-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        .titles-table th, .titles-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .titles-table th {
+            background-color: #080808;
+            color: white;
+            font-weight: bold;
+        }
+        .titles-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .titles-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .titles-table td[contenteditable="true"] {
+            cursor: text;
+            background-color: #fffbe6;
+        }
+        .titles-table td[contenteditable="true"]:hover {
+            background-color: #fff5cc;
+        }
+        .team-logo, .manufacturer-logo {
+            width: 50px;
+            height: 30px;
+            cursor: pointer;
+            vertical-align: middle;
+            object-fit: contain;
+        }
+        .save-button, .add-button {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background-color: #080808;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .save-button:hover, .add-button:hover {
+            background-color: #080808;
+        }
+        .category-section {
+            margin-bottom: 60px;
+        }
+        .footer {
+            background-color: #080808;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #08ff08;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-menu">
+        <a href="supercross_standings.html">Standings</a>
+        <a href="supercross_titles.html">Titles</a>
+        <a href="supercross_news.html" class="active">News</a>
+        <a href="supercross_admin.html">Admin</a>
+        <a href="esports-titles.html">eSports Titles</a>
+    </div>
+    <div class="header">
+        <img src="./images/supercross-live-logo.png" alt="Supercross Logo" class="supercross-logo">
+    </div>
+
+    <div class="container">
+        <!-- 450SX Titles -->
+        <div class="category-section" id="titles-450sx">
+            <h2>Supercross 450SX Titles</h2>
+            <!-- Riders Titles -->
+            <div id="riders-titles-450sx">
+                <h3>Riders Titles</h3>
+                <table class="titles-table" id="riders-table-450sx">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Rider</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="riders-tbody-450sx">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('riders', '450sx')">Save Riders Titles Changes</button>
+                <button class="add-button" onclick="addRiderTitles('450sx')">Add New Rider</button>
+            </div>
+            <!-- Teams Titles -->
+            <div id="teams-titles-450sx">
+                <h3>Teams Titles</h3>
+                <table class="titles-table" id="teams-table-450sx">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Team</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teams-tbody-450sx">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('teams', '450sx')">Save Teams Titles Changes</button>
+                <button class="add-button" onclick="addTeam('450sx')">Add New Team</button>
+            </div>
+            <!-- Manufacturers Titles -->
+            <div id="manufacturers-titles-450sx">
+                <h3>Manufacturers Titles</h3>
+                <table class="titles-table" id="manufacturers-table-450sx">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Manufacturer</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manufacturers-tbody-450sx">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('manufacturers', '450sx')">Save Manufacturers Titles Changes</button>
+                <button class="add-button" onclick="addManufacturer('450sx')">Add New Manufacturer</button>
+            </div>
+        </div>
+
+        <!-- 250SX East Titles -->
+        <div class="category-section" id="titles-250sx-east">
+            <h2>Supercross 250SX East Titles</h2>
+            <!-- Riders Titles -->
+            <div id="riders-titles-250sx-east">
+                <h3>Riders Titles</h3>
+                <table class="titles-table" id="riders-table-250sx-east">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Rider</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="riders-tbody-250sx-east">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('riders', '250sx-east')">Save Riders Titles Changes</button>
+                <button class="add-button" onclick="addRiderTitles('250sx-east')">Add New Rider</button>
+            </div>
+            <!-- Teams Titles -->
+            <div id="teams-titles-250sx-east">
+                <h3>Teams Titles</h3>
+                <table class="titles-table" id="teams-table-250sx-east">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Team</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teams-tbody-250sx-east">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('teams', '250sx-east')">Save Teams Titles Changes</button>
+                <button class="add-button" onclick="addTeam('250sx-east')">Add New Team</button>
+            </div>
+            <!-- Manufacturers Titles -->
+            <div id="manufacturers-titles-250sx-east">
+                <h3>Manufacturers Titles</h3>
+                <table class="titles-table" id="manufacturers-table-250sx-east">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Manufacturer</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manufacturers-tbody-250sx-east">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('manufacturers', '250sx-east')">Save Manufacturers Titles Changes</button>
+                <button class="add-button" onclick="addManufacturer('250sx-east')">Add New Manufacturer</button>
+            </div>
+        </div>
+
+        <!-- 250SX West Titles -->
+        <div class="category-section" id="titles-250sx-west">
+            <h2>Supercross 250SX West Titles</h2>
+            <!-- Riders Titles -->
+            <div id="riders-titles-250sx-west">
+                <h3>Riders Titles</h3>
+                <table class="titles-table" id="riders-table-250sx-west">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Rider</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="riders-tbody-250sx-west">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('riders', '250sx-west')">Save Riders Titles Changes</button>
+                <button class="add-button" onclick="addRiderTitles('250sx-west')">Add New Rider</button>
+            </div>
+            <!-- Teams Titles -->
+            <div id="teams-titles-250sx-west">
+                <h3>Teams Titles</h3>
+                <table class="titles-table" id="teams-table-250sx-west">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Team</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teams-tbody-250sx-west">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('teams', '250sx-west')">Save Teams Titles Changes</button>
+                <button class="add-button" onclick="addTeam('250sx-west')">Add New Team</button>
+            </div>
+            <!-- Manufacturers Titles -->
+            <div id="manufacturers-titles-250sx-west">
+                <h3>Manufacturers Titles</h3>
+                <table class="titles-table" id="manufacturers-table-250sx-west">
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Manufacturer</th>
+                            <th>Titles</th>
+                            <th>Years</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manufacturers-tbody-250sx-west">
+                        <!-- Dados serão carregados via JavaScript -->
+                    </tbody>
+                </table>
+                <button class="save-button" onclick="saveTable('manufacturers', '250sx-west')">Save Manufacturers Titles Changes</button>
+                <button class="add-button" onclick="addManufacturer('250sx-west')">Add New Manufacturer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Supercross Fan Template | All Rights Reserved</p>
+        <p>
+            <a href="#">Race Schedule</a> |
+            <a href="#">Latest News</a> |
+            <a href="#">Rider Profiles</a> |
+            <a href="#">Shop Merchandise</a> |
+            <a href="#">Contact Us</a>
+        </p>
+    </div>
+
+    <script>
+        // Função para redimensionar imagens com alta qualidade
+        function resizeImage(file, maxWidth, maxHeight, callback) {
+            const img = new Image();
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+                const ratio = Math.min(maxWidth / width, maxHeight / height);
+                width = Math.round(width * ratio);
+                height = Math.round(height * ratio);
+
+                let srcCanvas = document.createElement('canvas');
+                let srcCtx = srcCanvas.getContext('2d');
+                srcCanvas.width = img.width;
+                srcCanvas.height = img.height;
+                srcCtx.imageSmoothingEnabled = true;
+                srcCtx.imageSmoothingQuality = 'high';
+                srcCtx.drawImage(img, 0, 0);
+
+                let currentWidth = img.width;
+                let currentHeight = img.height;
+                while (currentWidth > width * 1.5 && currentHeight > height * 1.5) {
+                    currentWidth = Math.round(currentWidth / 1.5);
+                    currentHeight = Math.round(currentHeight / 1.5);
+                    const stepCanvas = document.createElement('canvas');
+                    const stepCtx = stepCanvas.getContext('2d');
+                    stepCanvas.width = currentWidth;
+                    stepCanvas.height = currentHeight;
+                    stepCtx.imageSmoothingEnabled = true;
+                    stepCtx.imageSmoothingQuality = 'high';
+                    stepCtx.drawImage(srcCanvas, 0, 0, currentWidth, currentHeight);
+                    srcCanvas = stepCanvas;
+                }
+
+                const finalCanvas = document.createElement('canvas');
+                const finalCtx = finalCanvas.getContext('2d');
+                finalCanvas.width = maxWidth;
+                finalCanvas.height = maxHeight;
+                finalCtx.imageSmoothingEnabled = true;
+                finalCtx.imageSmoothingQuality = 'high';
+                const xOffset = (maxWidth - width) / 2;
+                const yOffset = (maxHeight - height) / 2;
+                finalCtx.drawImage(srcCanvas, xOffset, yOffset, width, height);
+
+                callback(finalCanvas.toDataURL('image/png', 1.0));
+            };
+            img.src = URL.createObjectURL(file);
+        }
+
+        // Função para ordenar a tabela por títulos
+        function sortTable(tableName, category) {
+            const table = document.querySelector(`#${tableName}-table-${category}`);
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            const sortedRows = rows.sort((a, b) => {
+                const titlesA = parseInt(a.cells[2].innerText) || 0;
+                const titlesB = parseInt(b.cells[2].innerText) || 0;
+                return titlesB - titlesA;
+            });
+
+            sortedRows.forEach((row, index) => {
+                row.cells[0].innerText = index + 1;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Função para salvar os dados da tabela no localStorage
+        function saveTable(tableName, category) {
+            const table = document.querySelector(`#${tableName}-table-${category}`);
+            const rows = table.querySelectorAll('tbody tr');
+            let data = [];
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (tableName === 'riders') {
+                    data.push({
+                        position: cells[0].innerText,
+                        rider: cells[1].innerText,
+                        titles: cells[2].innerText,
+                        years: cells[3].innerText
+                    });
+                } else {
+                    data.push({
+                        position: cells[0].innerText,
+                        nameSrc: cells[1].querySelector('img').src,
+                        nameAlt: cells[1].querySelector('img').alt,
+                        titles: cells[2].innerText,
+                        years: cells[3].innerText
+                    });
+                }
+            });
+            sortTable(tableName, category);
+            localStorage.setItem(`supercross_${tableName}_titles_${category}`, JSON.stringify(data));
+            console.log(`[${tableName.toUpperCase()}][${category.toUpperCase()}] Saved Data:`, data);
+            alert(`Changes saved for Supercross ${category.toUpperCase()} ${tableName.charAt(0).toUpperCase() + tableName.slice(1)} Titles!`);
+        }
+
+        // Função para carregar os dados da tabela do localStorage
+        function loadTable(tableName, category) {
+            const tbody = document.querySelector(`#${tableName}-tbody-${category}`);
+            const savedData = localStorage.getItem(`supercross_${tableName}_titles_${category}`);
+            let data = savedData ? JSON.parse(savedData) : getDefaultData(tableName, category);
+
+            data.sort((a, b) => {
+                const titlesA = parseInt(a.titles) || 0;
+                const titlesB = parseInt(b.titles) || 0;
+                return titlesB - titlesA;
+            });
+
+            tbody.innerHTML = '';
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                if (tableName === 'riders') {
+                    tr.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td contenteditable="true">${row.rider}</td>
+                        <td contenteditable="true" class="titles">${row.titles}</td>
+                        <td contenteditable="true">${row.years}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>
+                            <img src="${row.nameSrc}" alt="${row.nameAlt}" class="${tableName === 'teams' ? 'team-logo' : 'manufacturer-logo'}" data-row="${index}" data-table="${tableName}" data-category="${category}">
+                            <input type="file" accept="image/*" class="${tableName === 'teams' ? 'team-input' : 'manufacturer-input'}" data-row="${index}" data-table="${tableName}" data-category="${category}">
+                        </td>
+                        <td contenteditable="true" class="titles">${row.titles}</td>
+                        <td contenteditable="true">${row.years}</td>
+                    `;
+                    const logo = tr.querySelector(`.${tableName === 'teams' ? 'team-logo' : 'manufacturer-logo'}`);
+                    const input = tr.querySelector(`.${tableName === 'teams' ? 'team-input' : 'manufacturer-input'}`);
+                    logo.addEventListener('click', () => input.click());
+                    input.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            resizeImage(file, 50, 30, (dataUrl) => {
+                                logo.src = dataUrl;
+                                logo.alt = file.name.split('.')[0];
+                            });
+                        }
+                    });
+                }
+                tbody.appendChild(tr);
+
+                const titlesCell = tr.querySelector('.titles');
+                titlesCell.addEventListener('blur', () => sortTable(tableName, category));
+                titlesCell.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        titlesCell.blur();
+                    }
+                });
+            });
+        }
+
+        // Dados padrão para cada tabela e categoria
+        function getDefaultData(tableName, category) {
+            const defaultData = {
+                riders: {
+                    '450sx': [
+                        { rider: 'Ricky Carmichael', titles: '7', years: '2001, 2002, 2003, 2004, 2005, 2006, 2007' },
+                        { rider: 'Jeremy McGrath', titles: '7', years: '1993, 1994, 1995, 1996, 1998, 1999, 2000' },
+                        { rider: 'James Stewart', titles: '3', years: '2006, 2007, 2009' }
+                    ],
+                    '250sx-east': [
+                        { rider: 'Hunter Lawrence', titles: '2', years: '2021, 2022' },
+                        { rider: 'Colt Nichols', titles: '1', years: '2021' },
+                        { rider: 'Austin Forkner', titles: '1', years: '2019' }
+                    ],
+                    '250sx-west': [
+                        { rider: 'Jett Lawrence', titles: '2', years: '2020, 2022' },
+                        { rider: 'Justin Cooper', titles: '1', years: '2021' },
+                        { rider: 'Christian Craig', titles: '1', years: '2022' }
+                    ]
+                },
+                teams: {
+                    '450sx': [
+                        { nameSrc: './images/rockstar-husqvarna-logo.png', nameAlt: 'Rockstar Energy Husqvarna', titles: '2', years: '2018, 2020' },
+                        { nameSrc: './images/red-bull-ktm-logo.png', nameAlt: 'Red Bull KTM', titles: '2', years: '2019, 2021' },
+                        { nameSrc: './images/monster-energy-kawasaki-logo.png', nameAlt: 'Monster Energy Kawasaki', titles: '3', years: '2011, 2016, 2017' }
+                    ],
+                    '250sx-east': [
+                        { nameSrc: './images/monster-energy-yamaha-logo.png', nameAlt: 'Monster Energy Yamaha', titles: '3', years: '2019, 2021, 2022' },
+                        { nameSrc: './images/red-bull-ktm-logo.png', nameAlt: 'Red Bull KTM', titles: '1', years: '2020' }
+                    ],
+                    '250sx-west': [
+                        { nameSrc: './images/monster-energy-yamaha-logo.png', nameAlt: 'Monster Energy Yamaha', titles: '2', years: '2020, 2021' },
+                        { nameSrc: './images/rockstar-husqvarna-logo.png', nameAlt: 'Rockstar Energy Husqvarna', titles: '1', years: '2022' }
+                    ]
+                },
+                manufacturers: {
+                    '450sx': [
+                        { nameSrc: './images/honda-logo.png', nameAlt: 'Honda', titles: '15', years: '1973-1976, 1981-1983, 1986-1988, 2002-2004, 2009, 2020' },
+                        { nameSrc: './images/yamaha-logo.png', nameAlt: 'Yamaha', titles: '10', years: '1977-1979, 1990-1992, 2000, 2006, 2007, 2018' },
+                        { nameSrc: './images/kawasaki-logo.png', nameAlt: 'Kawasaki', titles: '8', years: '1985, 1989, 1996, 1997, 1998, 2011, 2016, 2017' }
+                    ],
+                    '250sx-east': [
+                        { nameSrc: './images/yamaha-logo.png', nameAlt: 'Yamaha', titles: '8', years: '1986, 1990, 1991, 2000, 2019, 2021, 2022, 2023' },
+                        { nameSrc: './images/honda-logo.png', nameAlt: 'Honda', titles: '5', years: '1985, 1987, 1988, 2002, 2020' }
+                    ],
+                    '250sx-west': [
+                        { nameSrc: './images/yamaha-logo.png', nameAlt: 'Yamaha', titles: '7', years: '1986, 1990, 2000, 2004, 2020, 2021, 2022' },
+                        { nameSrc: './images/kawasaki-logo.png', nameAlt: 'Kawasaki', titles: '5', years: '1987, 1989, 1997, 1998, 2011' }
+                    ]
+                }
+            };
+            return defaultData[tableName][category];
+        }
+
+        // Função para adicionar novo piloto na tabela de títulos
+        function addRiderTitles(category) {
+            const table = document.getElementById(`riders-table-${category}`);
+            const tbody = table.querySelector('tbody');
+            const rowCount = tbody.children.length;
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td contenteditable="true">New Rider</td>
+                <td contenteditable="true" class="titles">0</td>
+                <td contenteditable="true">-</td>
+            `;
+
+            tbody.appendChild(newRow);
+
+            const titlesCell = newRow.querySelector('.titles');
+            titlesCell.addEventListener('blur', () => sortTable('riders', category));
+            titlesCell.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    titlesCell.blur();
+                }
+            });
+        }
+
+        // Função para adicionar nova equipe na tabela de títulos
+        function addTeam(category) {
+            const table = document.getElementById(`teams-table-${category}`);
+            const tbody = table.querySelector('tbody');
+            const rowCount = tbody.children.length;
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td>
+                    <img src="./images/placeholder-logo.png" alt="New Team" class="team-logo" data-row="${rowCount}" data-table="teams" data-category="${category}">
+                    <input type="file" accept="image/*" class="team-input" data-row="${rowCount}" data-table="teams" data-category="${category}">
+                </td>
+                <td contenteditable="true" class="titles">0</td>
+                <td contenteditable="true">-</td>
+            `;
+
+            tbody.appendChild(newRow);
+
+            const newTeamLogo = newRow.querySelector('.team-logo');
+            const newTeamInput = newRow.querySelector('.team-input');
+            const titlesCell = newRow.querySelector('.titles');
+
+            newTeamLogo.addEventListener('click', () => newTeamInput.click());
+            newTeamInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    resizeImage(file, 50, 30, (dataUrl) => {
+                        newTeamLogo.src = dataUrl;
+                        newTeamLogo.alt = file.name.split('.')[0];
+                    });
+                }
+            });
+
+            titlesCell.addEventListener('blur', () => sortTable('teams', category));
+            titlesCell.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    titlesCell.blur();
+                }
+            });
+        }
+
+        // Função para adicionar novo fabricante na tabela de títulos
+        function addManufacturer(category) {
+            const table = document.getElementById(`manufacturers-table-${category}`);
+            const tbody = table.querySelector('tbody');
+            const rowCount = tbody.children.length;
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>${rowCount + 1}</td>
+                <td>
+                    <img src="./images/placeholder-logo.png" alt="New Manufacturer" class="manufacturer-logo" data-row="${rowCount}" data-table="manufacturers" data-category="${category}">
+                    <input type="file" accept="image/*" class="manufacturer-input" data-row="${rowCount}" data-table="manufacturers" data-category="${category}">
+                </td>
+                <td contenteditable="true" class="titles">0</td>
+                <td contenteditable="true">-</td>
+            `;
+
+            tbody.appendChild(newRow);
+
+            const newManufacturerLogo = newRow.querySelector('.manufacturer-logo');
+            const newManufacturerInput = newRow.querySelector('.manufacturer-input');
+            const titlesCell = newRow.querySelector('.titles');
+
+            newManufacturerLogo.addEventListener('click', () => newManufacturerInput.click());
+            newManufacturerInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    resizeImage(file, 50, 30, (dataUrl) => {
+                        newManufacturerLogo.src = dataUrl;
+                        newManufacturerLogo.alt = file.name.split('.')[0];
+                    });
+                }
+            });
+
+            titlesCell.addEventListener('blur', () => sortTable('manufacturers', category));
+            titlesCell.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    titlesCell.blur();
+                }
+            });
+        }
+
+        // Carregar dados ao iniciar a página
+        ['450sx', '250sx-east', '250sx-west'].forEach(category => {
+            loadTable('riders', category);
+            loadTable('teams', category);
+            loadTable('manufacturers', category);
+        });
+    </script>
+</body>
+</html>

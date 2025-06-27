@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASCAR eSports Titles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="nav-menu">
+    <a href="nascar_standings.html" class="${window.location.pathname.includes('standings') ? 'active' : ''}">Standings</a>
+    <a href="nascar_titles.html" class="${window.location.pathname.includes('titles') ? 'active' : ''}">Titles</a>
+    <a href="nascar_news.html" class="${window.location.pathname.includes('news') ? 'active' : ''}">News</a>
+    <a href="nascar_admin.html" class="${window.location.pathname.includes('admin') ? 'active' : ''}">Admin</a>
+    <a href="titles-esports.html">eSports Titles</a>
+</div>
+    <div class="header">
+        <img src="./images/Nascar.png" alt="NASCAR Logo" class="nascar-logo">
+    </div>
+
+    <div class="container">
+        <!-- Existing eSports Titles Section -->
+        <h2>NASCAR eSports Titles</h2>
+        <div class="add-title-form">
+            <h4>Add New eSports Title</h4>
+            <input type="text" id="title-category" placeholder="Category (e.g., eNASCAR Coca-Cola iRacing Series)" required>
+            <input type="number" id="title-year" placeholder="Year" required min="2000" max="2025">
+            <input type="text" id="title-driver" placeholder="Driver Name" required>
+            <input type="text" id="title-event" placeholder="Event (e.g., Daytona 500 eNASCAR)" required>
+            <button onclick="addEsportsTitle()">Add Title</button>
+        </div>
+        <table class="titles-table" id="esports-titles-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Year</th>
+                    <th>Driver</th>
+                    <th>Event</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="esports-titles-tbody"></tbody>
+        </table>
+
+        <!-- New Driver Titles Section -->
+        <h2>eSports Drivers and Their Titles</h2>
+        <div class="add-driver-title-form">
+            <h4>Add Driver and Title</h4>
+            <input type="text" id="driver-title-driver" placeholder="Driver Name" required>
+            <input type="text" id="driver-title-category" placeholder="Category (e.g., eNASCAR Coca-Cola iRacing Series)" required>
+            <input type="number" id="driver-title-year" placeholder="Year" required min="2000" max="2025">
+            <input type="text" id="driver-title-event" placeholder="Event (e.g., eNASCAR Championship at Homestead)" required>
+            <button onclick="addDriverTitle()">Add Driver Title</button>
+        </div>
+        <div class="driver-titles-container" id="driver-titles-container"></div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 NASCAR Fan Template | All Rights Reserved</p>
+        <p>
+            <a href="#">Schedule</a> |
+            <a href="#">News</a> |
+            <a href="#">Drivers</a> |
+            <a href="#">Tracks</a> |
+            <a href="#">Contact</a>
+        </p>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
