@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archives - PGA TOUR</title>
+    <style>
+        :root { --pga-green: #006633; --pga-navy: #002d62; --pga-gold: #c5a059; }
+        body { font-family: "Montserrat", sans-serif; margin: 0; background: #f8f9fa; color: #333; }
+        
+        .admin-bar { background: var(--pga-gold); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 1000; }
+
+        /* ==================== NAVBAR (ESTILO REPLICADO) ==================== */
+        nav {
+            background: #ffffff;
+            padding: 02px 06px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .nav-left {
+            flex: 1;
+        }
+
+        .nav-logo {
+            max-height: 50px;
+            width: auto;
+        }
+
+        .nav-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: rgb(2, 2, 2);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--pga-gold);
+        }
+
+        .nav-right {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* ==================== CONTEÚDO E TABELAS ==================== */
+        .container { 
+            max-width: 1200px; 
+            margin: 25px auto; 
+            padding: 25px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--pga-navy); color: white; padding: 14px; text-align: left; }
+        td { padding: 14px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f0f7ff; }
+        .clickable-row { cursor: pointer; }
+        .clickable-row:hover { background: #e3f2fd !important; }
+
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--pga-green); color: white; }
+        .btn-del { background: #d32f2f; color: white; }
+
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); 
+            z-index: 2000; 
+        }
+        .modal-content { 
+            background: white; 
+            margin: 3% auto; 
+            width: 90%; 
+            max-width: 1100px; 
+            border-radius: 12px; 
+            overflow: hidden; 
+        }
+
+        .tournament-logo {
+            max-height: 120px;
+            max-width: 280px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-bar">
+        <span>🔨 MODO EDIÇÃO:</span>
+        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
+        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar</button>
+    </div>
+
+    <!-- ==================== NAVBAR REPLICADA ==================== -->
+    <nav>
+        <div class="nav-left">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
+                 alt="PGA TOUR" 
+                 class="nav-logo">
+        </div>
+
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="standings.html">STANDINGS</a>
+                <a href="news.html">NEWS</a>
+                <a href="schedule.html">SCHEDULE</a>
+                <a href="archives.html">ARCHIVES</a>
+                <a href="titles.html">ALL-TIME TITLES</a>
+                <a href="current-tournament.html">CURRENT TOURNAMENT</a>
+            </div>
+        </div>
+
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="container">
+        <h2 contenteditable="true">Tournament Archives (Recent Results)</h2>
+        <p><small>* Clique em um torneio para ver e editar o leaderboard.</small></p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Tournament</th>
+                    <th>Date</th>
+                    <th>Champion</th>
+                    <th>Winning Score</th>
+                    <th class="admin-only" style="display:none;">Ação</th>
+                </tr>
+            </thead>
+            <tbody id="archivesBody"></tbody>
+        </table>
+        <br>
+        <button class="btn btn-add admin-only" onclick="addTournament()" style="display:none;">+ Arquivar Torneio</button>
+    </div>
+
+    <!-- MODAL EDITÁVEL -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let archives = JSON.parse(localStorage.getItem('pga_archives')) || [
+            {
+                id: 1,
+                name: "The Players Championship",
+                date: "March 2026",
+                champ: "Scottie Scheffler",
+                score: "-20",
+                logo: "",
+                players: [
+                    {rank:1, name:"Scottie Scheffler", score:"-20", thru:"25.4", drive:"318", gir:"82%", birdies:"28", earnings:"4.5"},
+                    {rank:2, name:"Rory McIlroy", score:"-18", thru:"26.8", drive:"328", gir:"78%", birdies:"25", earnings:"2.7"},
+                    {rank:3, name:"Xander Schauffele", score:"-16", thru:"27.1", drive:"312", gir:"76%", birdies:"23", earnings:"1.7"}
+                ]
+            }
+        ];
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            document.getElementById('editBtn').innerText = isEditMode ? "ATIVADO" : "DESATIVADO";
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? '' : 'none');
+            renderArchives();
+        }
+
+        function renderArchives() {
+            document.getElementById('archivesBody').innerHTML = archives.map((t, i) => `
+                <tr class="clickable-row" onclick="openArchive(${i})">
+                    <td contenteditable="${isEditMode}" onblur="event.stopPropagation(); archives[${i}].name=this.innerText">${t.name}</td>
+                    <td contenteditable="${isEditMode}" onblur="event.stopPropagation(); archives[${i}].date=this.innerText">${t.date}</td>
+                    <td contenteditable="${isEditMode}" onblur="event.stopPropagation(); archives[${i}].champ=this.innerText">🏆 ${t.champ}</td>
+                    <td contenteditable="${isEditMode}" onblur="event.stopPropagation(); archives[${i}].score=this.innerText">${t.score}</td>
+                    <td class="admin-only" style="display:${isEditMode ? '' : 'none'}">
+                        <button class="btn-del" onclick="event.stopPropagation(); removeTournament(${i})">X</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openArchive(index) {
+            const t = archives[index];
+            let playersHTML = t.players.map((p, j) => `
+                <tr>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].rank=this.innerText">${p.rank}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].name=this.innerText">${p.name}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].score=this.innerText"><strong>${p.score}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].thru=this.innerText">${p.thru}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].round=this.innerText">${p.round || '-'}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].r1=this.innerText">${p.r1 || '-'}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].r2=this.innerText">${p.r2 || '-'}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].r3=this.innerText">${p.r3 || '-'}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].r4=this.innerText">${p.r4 || '-'}</td>
+                    <td contenteditable="${isEditMode}" onblur="archives[${index}].players[${j}].strokes=this.innerText">${p.strokes || '-'}</td>
+                </tr>
+            `).join('');
+
+            const content = `
+                <div style="padding:25px; background:#002d62; color:white; text-align:center;">
+                    ${t.logo ? `<img src="${t.logo}" class="tournament-logo" alt="Logo ${t.name}">` : ''}
+                    
+                    ${isEditMode ? `
+                    <div style="margin-top:10px;">
+                        <input type="file" id="logoUpload" accept="image/*">
+                        <button onclick="uploadLogo(${index})" style="padding:6px 12px;">📤 Carregar Logo</button>
+                    </div>
+                    ` : ''}
+
+                    <h1 contenteditable="${isEditMode}" onblur="archives[${index}].name=this.innerText">${t.name}</h1>
+                </div>
+                <div style="padding:30px;">
+                    <p><strong>Data:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].date=this.innerText">${t.date}</span></p>
+                    <p><strong>Campeão:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].champ=this.innerText">${t.champ}</span></p>
+                    <p><strong>Winning Score:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].score=this.innerText">${t.score}</span></p>
+
+                    <h3>Leaderboard & Estatísticas</h3>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background:#111; color:white;">
+                                <th>Pos</th><th>Jogador</th><th>Score</th><th>Thru</th><th>Round</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>Strokes</th>
+                            </tr>
+                        </thead>
+                        <tbody>${playersHTML}</tbody>
+                    </table>
+
+                    <br>
+                    <button onclick="closeModal()" style="margin-right:10px;">Fechar</button>
+                    <button onclick="saveData()" style="background:var(--pga-green); color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">💾 Salvar Alterações</button>
+                </div>
+            `;
+
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function uploadLogo(index) {
+            const fileInput = document.getElementById('logoUpload');
+            if (!fileInput.files[0]) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                archives[index].logo = e.target.result;
+                openArchive(index);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function addTournament() {
+            archives.push({
+                id: Date.now(),
+                name: "Novo Torneio",
+                date: "2026",
+                champ: "TBD",
+                score: "-10",
+                logo: "",
+                players: []
+            });
+            renderArchives();
+        }
+
+        function removeTournament(i) {
+            if(confirm("Excluir torneio?")) {
+                archives.splice(i, 1);
+                renderArchives();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('pga_archives', JSON.stringify(archives));
+            alert("✅ Torneio salvo com sucesso!");
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        renderArchives();
+    </script>
+</body>
+</html>

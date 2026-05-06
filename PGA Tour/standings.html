@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Standings - PGA TOUR</title>
+    <style>
+        :root { 
+            --pga-green: #006633; 
+            --pga-navy: #002d62; 
+            --pga-gold: #c5a059; 
+        }
+
+        body { 
+            font-family: "Montserrat", sans-serif; 
+            margin: 0; 
+            background: #f8f9fa; 
+            color: #333; 
+        }
+
+        .admin-bar { 
+            background: var(--pga-gold); 
+            padding: 12px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+
+        /* ==================== NAVBAR (ESTILO REPLICADO) ==================== */
+        nav {
+            background: #ffffff;
+            padding: 02px 06px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .nav-left {
+            flex: 1;
+        }
+
+        .nav-logo {
+            max-height: 50px;
+            width: auto;
+        }
+
+        .nav-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: rgb(2, 2, 2);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--pga-gold);
+        }
+
+        .nav-right {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* ==================== CONTEÚDO DA TABELA ==================== */
+        .container { 
+            max-width: 1200px; 
+            margin: 25px auto; 
+            padding: 25px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--pga-navy); color: white; padding: 14px; text-align: left; }
+        td { padding: 14px; border-bottom: 1px solid #eee; }
+        tr:hover { background: #f0f7ff; }
+
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--pga-green); color: white; margin-top: 15px; }
+        .btn-del { background: #d32f2f; color: white; }
+        
+        .admin-only { display: none; } /* Controlado via JS */
+    </style>
+</head>
+<body>
+    <div class="admin-bar">
+        <span>🔨 MODO EDIÇÃO:</span>
+        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
+        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar</button>
+    </div>
+
+    <!-- ==================== NAVBAR REPLICADA ==================== -->
+    <nav>
+        <div class="nav-left">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
+                 alt="PGA TOUR" 
+                 class="nav-logo">
+        </div>
+
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="standings.html">STANDINGS</a>
+                <a href="news.html">NEWS</a>
+                <a href="schedule.html">SCHEDULE</a>
+                <a href="archives.html">ARCHIVES</a>
+                <a href="titles.html">ALL-TIME TITLES</a>
+                <a href="current-tournament.html">CURRENT TOURNAMENT</a>
+            </div>
+        </div>
+
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="container">
+        <h2 contenteditable="true">2026 FedExCup Standings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Jogador</th>
+                    <th>Events</th>
+                    <th>Points</th>
+                    <th>Points Behind Lead</th>
+                    <th>Wins</th>
+                    <th>Of Top-10s</th>
+                    <th class="admin-only">Delete</th>
+                </tr>
+            </thead>
+            <tbody id="standingsBody"></tbody>
+        </table>
+        <button class="btn btn-add admin-only" onclick="addRow()">+ Adicionar Jogador</button>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let db = JSON.parse(localStorage.getItem('pga_standings')) || [
+            {pos:"1", name:"Scottie Scheffler", events:"9", pts:"2,431", ptsBehindLead:"-", wins:"1", top10s:"6"},
+            {pos:"2", name:"Matt Fitzpatrick", events:"10", pts:"2,394", ptsBehindLead:"37", wins:"3", top10s:"5"}
+        ];
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            document.getElementById('editBtn').innerText = isEditMode ? "ATIVADO" : "DESATIVADO";
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? 'table-cell' : 'none');
+            // Ajuste específico para o botão que não é table-cell
+            const addBtn = document.querySelector('.btn-add');
+            if(addBtn) addBtn.style.display = isEditMode ? 'block' : 'none';
+            
+            render();
+        }
+
+        function render() {
+            document.getElementById('standingsBody').innerHTML = db.map((item,i) => `
+                <tr>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].pos=this.innerText">${item.pos}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].name=this.innerText">${item.name}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].events=this.innerText">${item.events}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].pts=this.innerText">${item.pts}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].ptsBehindLead=this.innerText">${item.ptsBehindLead}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].wins=this.innerText">${item.wins}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].top10s=this.innerText">${item.top10s}</td>
+                    <td class="admin-only" style="display: ${isEditMode ? 'table-cell' : 'none'}">
+                        <button class="btn-del" onclick="removeRow(${i})">X</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addRow() { 
+            db.push({pos:(db.length+1).toString(), name:"Novo Jogador", events:"0", pts:"0", ptsBehindLead:"0", wins:"0", top10s:"0"}); 
+            render(); 
+        }
+
+        function removeRow(i) { 
+            if(confirm('Excluir?')) { 
+                db.splice(i,1); 
+                render(); 
+            } 
+        }
+
+        function saveData() { 
+            localStorage.setItem('pga_standings', JSON.stringify(db)); 
+            alert('✅ Salvo!'); 
+        }
+
+        render();
+    </script>
+</body>
+</html>

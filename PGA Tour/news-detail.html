@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - PGA TOUR</title>
+    <style>
+        :root { 
+            --pga-green: #006633; 
+            --pga-navy: #002d62; 
+            --pga-gold: #c5a059; 
+        }
+        body { 
+            font-family: "Montserrat", sans-serif; 
+            margin: 0; 
+            background: #f8f9fa; 
+            color: #333; 
+            transition: background 0.3s;
+        }
+        
+        .admin-bar { 
+            background: var(--pga-gold); 
+            padding: 12px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .admin-bar button {
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        
+        /* ==================== NAVBAR (PADRONIZADA) ==================== */
+        nav {
+            background: #ffffff;
+            padding: 02px 06px; /* Ajustado para bater com o código 2 */
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-left { flex: 1; }
+        .nav-logo { max-height: 50px; width: auto; }
+        .nav-center { flex: 2; display: flex; justify-content: center; }
+        .nav-links { display: flex; align-items: center; gap: 28px; }
+        
+        .nav-links a {
+            color: #111;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links a:hover { color: var(--pga-gold); }
+        .nav-right { flex: 1; }
+
+        /* ==================== ESTRUTURA DO CONTEÚDO ==================== */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+            padding: 0 20px;
+        }
+        .content { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05); 
+        }
+        .sidebar-box { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); 
+            margin-bottom: 20px;
+        }
+        
+        /* Estilo para edição de imagem */
+        .img-edit-container { margin: 15px 0; position: relative; }
+        #newsImg { max-width: 100%; border-radius: 8px; display: block; }
+        .file-edit-btn { 
+            display: none; 
+            margin-top: 10px; 
+            padding: 8px; 
+            background: #eee; 
+            border-radius: 4px; 
+            font-size: 0.8rem; 
+        }
+        body.edit-active .file-edit-btn { display: block; }
+
+    </style>
+</head>
+<body id="pageBody">
+    <div class="admin-bar">
+        <span>🔨 MODO EDIÇÃO:</span>
+        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
+        <button onclick="saveNews()" style="margin-left:15px;">💾 Salvar Alterações</button>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-left">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" alt="PGA TOUR" class="nav-logo">
+        </div>
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="standings.html">STANDINGS</a>
+                <a href="news.html">NEWS</a>
+                <a href="schedule.html">SCHEDULE</a>
+                <a href="archives.html">ARCHIVES</a>
+                <a href="titles.html">ALL-TIME TITLES</a>
+                <a href="current-tournament.html">CURRENT TOURNAMENT</a>
+            </div>
+        </div>
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="main-container">
+        <div class="content" id="newsContent">
+            <!-- Conteúdo carregado via JS -->
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-box">
+                <h3 style="border-left: 4px solid var(--pga-navy); padding-left: 10px;">2026 FedExCup Standings</h3>
+                <div id="sidebarStandings">Carregando...</div>
+            </div>
+            
+            <div class="sidebar-box">
+                <h3 style="border-left: 4px solid var(--pga-navy); padding-left: 10px;">Próximos Eventos</h3>
+                <div id="sidebarSchedule">Carregando...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = parseInt(urlParams.get('id'));
+
+        let news = JSON.parse(localStorage.getItem('pga_news')) || [];
+        let currentNews = news.find(n => n.id === id);
+        let isEditMode = false;
+        let tempImgBase64 = null;
+
+        function loadNews() {
+            if (!currentNews) {
+                document.getElementById('newsContent').innerHTML = `<h2>Notícia não encontrada.</h2><a href="news.html">← Voltar para Notícias</a>`;
+                return;
+            }
+
+            document.getElementById('newsContent').innerHTML = `
+                <h1 contenteditable="${isEditMode}" id="title" style="margin-top:0;">${currentNews.title}</h1>
+                ${currentNews.subtitle ? `<p contenteditable="${isEditMode}" id="subtitle" style="font-size:1.2rem;color:#555;margin-bottom:20px;">${currentNews.subtitle}</p>` : ''}
+                
+                <div class="img-edit-container">
+                    <img src="${currentNews.img}" id="newsImg">
+                    <div class="file-edit-btn">
+                        <label>Alterar Imagem: </label>
+                        <input type="file" id="changeImg" accept="image/*" onchange="previewImage(this)">
+                    </div>
+                </div>
+
+                <div contenteditable="${isEditMode}" id="textContent" style="line-height:1.8; font-size:1.08rem; margin-top:20px; min-height: 100px;">
+                    ${currentNews.content.replace(/\n/g, '<br><br>')}
+                </div>
+                <br><a href="news.html" style="color:var(--pga-green); font-weight:bold; text-decoration:none;">← Voltar para Notícias</a>
+            `;
+        }
+
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('newsImg').src = e.target.result;
+                    tempImgBase64 = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            const btn = document.getElementById('editBtn');
+            const body = document.getElementById('pageBody');
+            
+            if (isEditMode) {
+                btn.innerText = "ATIVADO";
+                btn.style.background = "#006633";
+                btn.style.color = "white";
+                body.classList.add('edit-active');
+            } else {
+                btn.innerText = "DESATIVADO";
+                btn.style.background = "";
+                btn.style.color = "";
+                body.classList.remove('edit-active');
+            }
+            loadNews();
+        }
+
+        function saveNews() {
+            if (!currentNews) return;
+            
+            currentNews.title = document.getElementById('title').innerText;
+            if (document.getElementById('subtitle')) {
+                currentNews.subtitle = document.getElementById('subtitle').innerText;
+            }
+            currentNews.content = document.getElementById('textContent').innerText;
+            
+            if (tempImgBase64) {
+                currentNews.img = tempImgBase64;
+            }
+
+            localStorage.setItem('pga_news', JSON.stringify(news));
+            alert("✅ Notícia e imagem salvas com sucesso!");
+            tempImgBase64 = null;
+        }
+
+        function updateSidebar() {
+            let standings = JSON.parse(localStorage.getItem('pga_standings')) || [];
+            document.getElementById('sidebarStandings').innerHTML = standings.length > 0 
+                ? standings.slice(0, 5).map(s => `<p style="font-size:0.9rem;"><strong>${s.pos}.</strong> ${s.name} <span style="float:right">${s.pts}</span></p>`).join('')
+                : `<p><em>Sem dados.</em></p>`;
+
+            let schedule = JSON.parse(localStorage.getItem('pga_schedule')) || [];
+            document.getElementById('sidebarSchedule').innerHTML = schedule.length > 0 
+                ? schedule.slice(0, 5).map(s => `<p style="font-size:0.85rem; margin-bottom:15px;"><strong>${s.date}</strong><br>${s.event}</p>`).join('')
+                : `<p><em>Sem eventos.</em></p>`;
+        }
+
+        loadNews();
+        updateSidebar();
+    </script>
+</body>
+</html>

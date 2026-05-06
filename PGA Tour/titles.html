@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-Time Titles - PGA TOUR</title>
+    <style>
+        :root { 
+            --pga-green: #006633; 
+            --pga-navy: #002d62; 
+            --pga-gold: #c5a059; 
+        }
+        body { 
+            font-family: "Montserrat", sans-serif; 
+            margin: 0; 
+            background: #f8f9fa; 
+            color: #333; 
+        }
+
+        .admin-bar { 
+            background: var(--pga-gold); 
+            padding: 12px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+
+        /* ==================== NAVBAR (REPLICADA) ==================== */
+        nav {
+            background: #ffffff;
+            padding: 02px 06px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .nav-left {
+            flex: 1;
+        }
+
+        .nav-logo {
+            max-height: 50px;
+            width: auto;
+        }
+
+        .nav-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: rgb(2, 2, 2);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--pga-gold);
+        }
+
+        .nav-right {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* ==================== CONTEÚDO ==================== */
+        .container { 
+            max-width: 1200px; 
+            margin: 25px auto; 
+            padding: 25px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th { 
+            background: var(--pga-navy); 
+            color: white; 
+            padding: 14px; 
+            text-align: left; 
+        }
+        td { 
+            padding: 14px; 
+            border-bottom: 1px solid #eee; 
+        }
+        tr:hover { background: #f0f7ff; }
+
+        .player-name { font-weight: bold; font-size: 1.05rem; }
+        .player-info { font-size: 0.9rem; color: #555; }
+
+        select.country-select {
+            width: 100%;
+            padding: 8px 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            background: white;
+        }
+
+        .btn-add {
+            background: var(--pga-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .btn-del {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-bar">
+        <span>🔨 MODO EDIÇÃO:</span>
+        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
+        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar</button>
+    </div>
+
+    <!-- ==================== NAVBAR REPLICADA ==================== -->
+    <nav>
+        <div class="nav-left">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
+                 alt="PGA TOUR" 
+                 class="nav-logo">
+        </div>
+
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="standings.html">STANDINGS</a>
+                <a href="news.html">NEWS</a>
+                <a href="schedule.html">SCHEDULE</a>
+                <a href="archives.html">ARCHIVES</a>
+                <a href="titles.html">ALL-TIME TITLES</a>
+                <a href="current-tournament.html">CURRENT TOURNAMENT</a>
+            </div>
+        </div>
+
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="container">
+        <h2 contenteditable="true">Career Major Records</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Jogador</th>
+                    <th>Masters</th>
+                    <th>US Open</th>
+                    <th>The Open</th>
+                    <th>PGA Championship</th>
+                    <th>Total</th>
+                    <th>Wins</th>
+                    <th class="admin-only" style="display:none;">Ação</th>
+                </tr>
+            </thead>
+            <tbody id="titlesBody"></tbody>
+        </table>
+        <button class="btn-add admin-only" onclick="addPlayer()" style="display:none;">+ Adicionar Jogador</button>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        
+        let titles = JSON.parse(localStorage.getItem('pga_titles')) || [
+            {name: "Jack Nicklaus", country: "🇺🇸 EUA", career: "1962–2005", masters: "6", usopen: "4", open: "3", pga: "5", total: "18", wins: "117"},
+            {name: "Tiger Woods", country: "🇺🇸 EUA", career: "1996–presente", masters: "5", usopen: "3", open: "3", pga: "4", total: "15", wins: "110"},
+            {name: "Walter Hagen", country: "🇺🇸 EUA", career: "1914–1936", masters: "0", usopen: "2", open: "4", pga: "5", total: "11", wins: "58"}
+        ];
+
+        const countries = [
+            "🇺🇸 EUA", "🇬🇧 Reino Unido", "🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra", "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia",
+            "🏴󠁧󠁢󠁷󠁬󠁳󠁿 País de Gales", "🇮🇪 Irlanda", "🇮🇪 Irlanda do Norte",
+            "🇿🇦 África do Sul", "🇦🇺 Austrália", "🇳🇿 Nova Zelândia", "🇨🇦 Canadá",
+            "🇪🇸 Espanha", "🇸🇪 Suécia", "🇳🇴 Noruega", "🇩🇰 Dinamarca", "🇫🇮 Finlândia",
+            "🇩🇪 Alemanha", "🇫🇷 França", "🇮🇹 Itália", "🇳🇱 Países Baixos", "🇧🇪 Bélgica",
+            "🇨🇭 Suíça", "🇦🇹 Áustria", "🇵🇹 Portugal", "🇷🇺 Rússia", "🇯🇵 Japão",
+            "🇰🇷 Coreia do Sul", "🇹🇭 Tailândia", "🇮🇳 Índia", "🇨🇳 China", "🇹🇼 Taiwan",
+            "🇧🇷 Brasil", "🇦🇷 Argentina", "🇨🇱 Chile", "🇲🇽 México", "🇨🇴 Colômbia",
+            "🇵🇪 Peru", "🇻🇪 Venezuela", "🇵🇾 Paraguai", "🇺🇾 Uruguai",
+            "🇿🇼 Zimbabwe", "🇳🇬 Nigéria", "🇰🇪 Quênia", "🇪🇬 Egito",
+            "🇫🇯 Fiji", "🇵🇬 Papua Nova Guiné", "🇸🇬 Singapura", "🇲🇾 Malásia",
+            "🇵🇭 Filipinas", "🇮🇩 Indonésia", "🇻🇳 Vietnã", "🇰🇿 Cazaquistão",
+            "🇺🇦 Ucrânia", "🇵🇱 Polônia", "🇨🇿 República Tcheca", "🇭🇺 Hungria",
+            "🇬🇷 Grécia", "🇹🇷 Turquia", "🇮🇱 Israel", "🇸🇦 Arábia Saudita",
+            "🇦🇪 Emirados Árabes Unidos", "🇶🇦 Catar", "🇮🇷 Irã", "🇲🇦 Marrocos",
+            "🇩🇿 Argélia", "🇹🇳 Tunísia"
+        ].sort();
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            document.getElementById('editBtn').innerText = isEditMode ? "ATIVADO" : "DESATIVADO";
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? '' : 'none');
+            renderTitles();
+        }
+
+        function renderTitles() {
+            const tbody = document.getElementById('titlesBody');
+            tbody.innerHTML = titles.map((t, i) => `
+                <tr>
+                    <td>
+                        <span contenteditable="${isEditMode}" class="player-name" onblur="titles[${i}].name=this.innerText">${t.name}</span><br>
+                        
+                        ${isEditMode ? `
+                        <select class="country-select" onchange="titles[${i}].country=this.value">
+                            ${countries.map(c => `
+                                <option value="${c}" ${c === t.country ? 'selected' : ''}>${c}</option>
+                            `).join('')}
+                        </select>` : `
+                        <span class="player-info">${t.country}</span>`}
+                        
+                        • 
+                        <span contenteditable="${isEditMode}" class="player-info" onblur="titles[${i}].career=this.innerText">${t.career}</span>
+                    </td>
+                    <td contenteditable="${isEditMode}" onblur="titles[${i}].masters=this.innerText">${t.masters}</td>
+                    <td contenteditable="${isEditMode}" onblur="titles[${i}].usopen=this.innerText">${t.usopen}</td>
+                    <td contenteditable="${isEditMode}" onblur="titles[${i}].open=this.innerText">${t.open}</td>
+                    <td contenteditable="${isEditMode}" onblur="titles[${i}].pga=this.innerText">${t.pga}</td>
+                    <td contenteditable="${isEditMode}" onblur="titles[${i}].total=this.innerText"><strong>${t.total}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="titles[${i}].wins=this.innerText"><strong>${t.wins}</strong></td>
+                    ${isEditMode ? `<td><button class="btn-del" onclick="removePlayer(${i})">X</button></td>` : ''}
+                </tr>
+            `).join('');
+        }
+
+        function addPlayer() {
+            titles.push({
+                name: "Novo Jogador",
+                country: "🇺🇸 EUA",
+                career: "Ano–Ano",
+                masters: "0",
+                usopen: "0",
+                open: "0",
+                pga: "0",
+                total: "0",
+                wins: "0"
+            });
+            renderTitles();
+        }
+
+        function removePlayer(i) {
+            if (confirm("Excluir este jogador?")) {
+                titles.splice(i, 1);
+                renderTitles();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('pga_titles', JSON.stringify(titles));
+            alert("✅ Dados salvos com sucesso!");
+        }
+
+        renderTitles();
+    </script>
+</body>
+</html>

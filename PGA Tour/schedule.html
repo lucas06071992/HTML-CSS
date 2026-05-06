@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule - PGA TOUR</title>
+    <style>
+        :root { 
+            --pga-green: #006633; 
+            --pga-navy: #002d62; 
+            --pga-gold: #c5a059; 
+        }
+        body { 
+            font-family: "Montserrat", sans-serif; 
+            margin: 0; 
+            background: #f8f9fa; 
+            color: #333; 
+        }
+
+        .admin-bar { 
+            background: var(--pga-gold); 
+            padding: 12px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+        }
+
+        /* ==================== NAVBAR REPLICADA ==================== */
+        nav {
+            background: #ffffff;
+            padding: 02px 06px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .nav-left {
+            flex: 1;
+        }
+
+        .nav-logo {
+            max-height: 50px;
+            width: auto;
+        }
+
+        .nav-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-links a {
+            color: rgb(2, 2, 2);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--pga-gold);
+        }
+
+        .nav-right {
+            flex: 1;
+            text-align: right;
+        }
+
+        /* ==================== CONTEÚDO SCHEDULE ==================== */
+        .container { 
+            max-width: 1200px; 
+            margin: 25px auto; 
+            padding: 25px; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1); 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th { 
+            background: var(--pga-navy); 
+            color: white; 
+            padding: 14px; 
+            text-align: left; 
+        }
+        td { 
+            padding: 14px; 
+            border-bottom: 1px solid #eee; 
+        }
+        tr:hover { 
+            background: #f0f7ff; 
+        }
+        .btn { 
+            padding: 8px 16px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+        .btn-add { background: var(--pga-green); color: white; margin-top: 15px; }
+        .btn-del { background: #d32f2f; color: white; }
+    </style>
+</head>
+<body>
+    <div class="admin-bar">
+        <span>🔨 MODO EDIÇÃO:</span>
+        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
+        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar</button>
+    </div>
+
+    <!-- ==================== NAVBAR REPLICADA ==================== -->
+    <nav>
+        <div class="nav-left">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
+                 alt="PGA TOUR" 
+                 class="nav-logo">
+        </div>
+
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="standings.html">STANDINGS</a>
+                <a href="news.html">NEWS</a>
+                <a href="schedule.html">SCHEDULE</a>
+                <a href="archives.html">ARCHIVES</a>
+                <a href="titles.html">ALL-TIME TITLES</a>
+                <a href="current-tournament.html">CURRENT TOURNAMENT</a>
+            </div>
+        </div>
+
+        <div class="nav-right">
+            <!-- Espaço reservado -->
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 contenteditable="true">Upcoming Events - 2026 Season</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Evento</th>
+                    <th>Campo</th>
+                    <th>Purse</th>
+                    <th class="admin-only" style="display: none;">Ação</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleBody"></tbody>
+        </table>
+        <button class="btn btn-add admin-only" onclick="addRow()" style="display: none;">+ Adicionar Evento</button>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let schedule = JSON.parse(localStorage.getItem('pga_schedule')) || [
+            {date: "June 18-21", event: "U.S. Open", course: "Winged Foot GC", purse: "$20M"},
+            {date: "July 16-19", event: "The Open Championship", course: "Royal Portrush", purse: "$17M"},
+            {date: "August 13-16", event: "PGA Championship", course: "Quail Hollow Club", purse: "$18M"}
+        ];
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            document.getElementById('editBtn').innerText = isEditMode ? "ATIVADO" : "DESATIVADO";
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? '' : 'none');
+            render();
+        }
+
+        function render() {
+            document.getElementById('scheduleBody').innerHTML = schedule.map((item, i) => `
+                <tr>
+                    <td contenteditable="${isEditMode}" onblur="schedule[${i}].date=this.innerText">${item.date}</td>
+                    <td contenteditable="${isEditMode}" onblur="schedule[${i}].event=this.innerText">${item.event}</td>
+                    <td contenteditable="${isEditMode}" onblur="schedule[${i}].course=this.innerText">${item.course}</td>
+                    <td contenteditable="${isEditMode}" onblur="schedule[${i}].purse=this.innerText">${item.purse}</td>
+                    <td class="admin-only" style="display: ${isEditMode ? '' : 'none'};">
+                        <button class="btn-del" onclick="removeRow(${i})">X</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addRow() {
+            schedule.push({
+                date: "TBD", 
+                event: "Novo Evento", 
+                course: "TBD", 
+                purse: "$0"
+            });
+            render();
+        }
+
+        function removeRow(i) {
+            if (confirm("Excluir este evento?")) {
+                schedule.splice(i, 1);
+                render();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('pga_schedule', JSON.stringify(schedule));
+            alert("✅ Schedule salvo com sucesso!");
+        }
+
+        // Inicializar
+        render();
+    </script>
+</body>
+</html>

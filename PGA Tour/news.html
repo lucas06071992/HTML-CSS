@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - PGA TOUR</title>
+    <style>
+        :root { 
+            --pga-green: #006633; 
+            --pga-navy: #002d62; 
+            --pga-gold: #c5a059; 
+        }
+
+        body { 
+            font-family: "Montserrat", sans-serif; 
+            margin: 0; 
+            background: #f8f9fa; 
+            color: #333; 
+            transition: background 0.3s;
+        }
+
+        .admin-bar { 
+            background: var(--pga-gold); 
+            padding: 12px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .admin-bar button {
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        /* ==================== NAVBAR ==================== */
+        nav {
+            background: #ffffff;
+            padding: 02px 06px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-left { flex: 1; }
+        .nav-logo { max-height: 50px; width: auto; }
+        .nav-center { flex: 2; display: flex; justify-content: center; }
+        .nav-links { display: flex; align-items: center; gap: 28px; }
+        .nav-links a {
+            color: #111;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .nav-links a:hover { color: var(--pga-gold); }
+        .nav-right { flex: 1; }
+
+        /* ==================== CONTAINER & GRID ==================== */
+        .container { 
+            max-width: 1200px; 
+            margin: 40px auto; 
+            padding: 0 20px; 
+        }
+
+        h2 { 
+            font-size: 2rem; 
+            margin-bottom: 30px; 
+            border-left: 5px solid var(--pga-navy); 
+            padding-left: 15px;
+        }
+
+        .news-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 30px; 
+        }
+
+        .news-card { 
+            background: white; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            cursor: pointer; 
+            transition: transform 0.3s, box-shadow 0.3s; 
+        }
+
+        .news-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        }
+
+        .news-img { 
+            width: 100%; 
+            height: 220px; 
+            object-fit: cover; 
+        }
+
+        /* ==================== ÁREA DE ADMIN (ESCONDIDA) ==================== */
+        .admin-only { 
+            display: none; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            margin-bottom: 40px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+
+        body.edit-active .admin-only {
+            display: block;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-only input, .admin-only textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        /* Estilo para o campo de upload */
+        .file-input-wrapper {
+            margin-bottom: 15px;
+        }
+        .file-input-wrapper label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .admin-only button {
+            background: var(--pga-navy);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-only button:hover { background: #001d42; }
+
+    </style>
+</head>
+<body>
+
+    <div class="admin-bar">
+        <span>🔨 MODO EDIÇÃO:</span>
+        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
+        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar Alterações</button>
+    </div>
+
+    <nav>
+        <div class="nav-left">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" alt="PGA TOUR" class="nav-logo">
+        </div>
+        <div class="nav-center">
+            <div class="nav-links">
+                <a href="standings.html">STANDINGS</a>
+                <a href="news.html">NEWS</a>
+                <a href="schedule.html">SCHEDULE</a>
+                <a href="archives.html">ARCHIVES</a>
+                <a href="titles.html">ALL-TIME TITLES</a>
+                <a href="current-tournament.html">CURRENT TOURNAMENT</a>
+            </div>
+        </div>
+        <div class="nav-right"></div>
+    </nav>
+
+    <div class="container">
+        <h2>Latest Headlines</h2>
+        
+        <div class="admin-only">
+            <h3 style="margin-top:0; color: var(--pga-navy);">✨ Criar Nova Notícia</h3>
+            <input type="text" id="newTitle" placeholder="Título da notícia principal">
+            <input type="text" id="newSubtitle" placeholder="Subtítulo ou resumo">
+            
+            <div class="file-input-wrapper">
+                <label for="newImage">🖼️ Selecionar Imagem (Local):</label>
+                <input type="file" id="newImage" accept="image/*">
+            </div>
+
+            <textarea id="newContent" placeholder="Conteúdo completo da matéria..." style="height: 120px;"></textarea>
+            <button onclick="addNews()">+ Postar no Feed</button>
+        </div>
+
+        <div class="news-grid" id="newsGrid"></div>
+    </div>
+
+    <script>
+        let isEditMode = false;
+        let news = JSON.parse(localStorage.getItem('pga_news')) || [];
+
+        if (news.length === 0) {
+            news = [
+                {
+                    id: 1,
+                    title: "Scottie Scheffler domina The Players Championship",
+                    subtitle: "Maior vitória do ano até agora",
+                    content: "Scottie Scheffler mostrou mais uma vez porque é o número 1 do mundo...",
+                    img: "https://picsum.photos/id/1015/1200/800"
+                }
+            ];
+            localStorage.setItem('pga_news', JSON.stringify(news));
+        }
+
+        function toggleEdit() {
+            isEditMode = !isEditMode;
+            const btn = document.getElementById('editBtn');
+            
+            if (isEditMode) {
+                btn.innerText = "ATIVADO";
+                btn.style.background = "#006633";
+                btn.style.color = "white";
+                document.body.classList.add('edit-active');
+            } else {
+                btn.innerText = "DESATIVADO";
+                btn.style.background = "";
+                btn.style.color = "";
+                document.body.classList.remove('edit-active');
+            }
+        }
+
+        function renderNews() {
+            const grid = document.getElementById('newsGrid');
+            grid.innerHTML = news.map(n => `
+                <div class="news-card" onclick="openNews(${n.id})">
+                    <img src="${n.img}" class="news-img" alt="Imagem da notícia">
+                    <div style="padding:20px;">
+                        <h3 style="margin:0 0 10px 0; font-size:1.2rem; color:#111;">${n.title}</h3>
+                        ${n.subtitle ? `<p style="color:#666; font-size:0.9rem; line-height:1.4;">${n.subtitle}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openNews(id) {
+            if(!isEditMode) {
+                window.location.href = `news-detail.html?id=${id}`;
+            } else {
+                alert("Modo Edição Ativo. Para visualizar como o usuário, desative o modo edição.");
+            }
+        }
+
+        // Função para converter arquivo local em Base64
+        function addNews() {
+            const titleInput = document.getElementById('newTitle');
+            const subtitleInput = document.getElementById('newSubtitle');
+            const contentInput = document.getElementById('newContent');
+            const imageInput = document.getElementById('newImage');
+
+            if (!titleInput.value.trim()) {
+                alert("Por favor, insira ao menos um título.");
+                return;
+            }
+
+            const file = imageInput.files[0];
+            
+            // Se houver arquivo, lemos como DataURL (Base64)
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    processNewEntry(titleInput.value, subtitleInput.value, contentInput.value, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // Caso não selecione imagem, usa uma aleatória
+                const fallbackImg = "https://picsum.photos/id/" + Math.floor(Math.random() * 1000) + "/1200/800";
+                processNewEntry(titleInput.value, subtitleInput.value, contentInput.value, fallbackImg);
+            }
+        }
+
+        function processNewEntry(title, subtitle, content, imgSrc) {
+            const newEntry = {
+                id: Date.now(),
+                title: title.trim(),
+                subtitle: subtitle.trim(),
+                content: content.trim() || "Conteúdo da notícia...",
+                img: imgSrc
+            };
+
+            news.unshift(newEntry);
+            
+            // Limpar campos
+            document.getElementById('newTitle').value = '';
+            document.getElementById('newSubtitle').value = '';
+            document.getElementById('newContent').value = '';
+            document.getElementById('newImage').value = '';
+
+            renderNews();
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem('pga_news', JSON.stringify(news));
+                alert("✅ Alterações salvas com sucesso!");
+            } catch (e) {
+                // localStorage tem limite de ~5MB. Imagens Base64 muito grandes podem estourar isso.
+                alert("⚠️ Erro ao salvar: O arquivo de imagem pode ser muito grande para o armazenamento do navegador.");
+                console.error(e);
+            }
+        }
+
+        renderNews();
+    </script>
+</body>
+</html>

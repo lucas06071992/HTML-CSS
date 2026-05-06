@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGA Tour - Official Fan Site</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .pga-gold {
+            color: #d4af37;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(to right, #003087, #002255);
+        }
+        
+        .nav-link {
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #d4af37 !important;
+            border-bottom: 3px solid #d4af37;
+        }
+        
+        .active-nav {
+            color: #d4af37;
+            border-bottom: 3px solid #d4af37;
+        }
+        
+        table {
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #111827;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        .player-row:hover {
+            background: #fefce8;
+            transform: scale(1.02);
+            transition: all 0.2s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <!-- HEADER -->
+    <header class="header-gradient text-white">
+        <div class="max-w-7xl mx-auto">
+            <!-- Top Bar -->
+            <div class="flex justify-between items-center px-6 py-3 text-sm border-b border-blue-800">
+                <div class="flex items-center gap-6">
+                    <a href="#" class="flex items-center gap-2 text-white hover:text-amber-300">
+                        <i class="fas fa-home"></i>
+                        <span class="font-medium">PGA Tour</span>
+                    </a>
+                    <div class="h-5 w-px bg-blue-700"></div>
+                    <span class="text-amber-300 font-medium">2025-26 Season</span>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                    <button onclick="switchPage(0)" class="px-4 py-1 hover:bg-white/10 rounded">EN</button>
+                    <a href="#" class="hover:text-amber-300">Login</a>
+                    <a href="#" class="bg-amber-400 text-black px-5 py-1.5 rounded font-medium hover:bg-amber-300">Ticketmaster</a>
+                </div>
+            </div>
+
+            <!-- Logo & Navigation -->
+            <div class="px-6 py-6 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-28 h-16 bg-white rounded flex items-center justify-center text-4xl font-black tracking-tighter border-4 border-amber-400 text-blue-950">
+                        PGA
+                    </div>
+                    <div>
+                        <h1 class="text-5xl font-black tracking-tighter">PGA TOUR</h1>
+                        <p class="text-amber-300 text-sm -mt-1">OFFICIAL FAN TEMPLATE</p>
+                    </div>
+                </div>
+                
+                <nav class="flex gap-8 text-lg font-medium">
+                    <a onclick="switchPage(0)" class="nav-link cursor-pointer active-nav px-3 py-2" id="nav-standings">STANDINGS</a>
+                    <a onclick="switchPage(1)" class="nav-link cursor-pointer px-3 py-2" id="nav-tournaments">TOURNAMENTS</a>
+                    <a onclick="switchPage(2)" class="nav-link cursor-pointer px-3 py-2" id="nav-titles">TITLES</a>
+                    <a onclick="switchPage(3)" class="nav-link cursor-pointer px-3 py-2" id="nav-news">NEWS</a>
+                    <a onclick="switchPage(4)" class="nav-link cursor-pointer px-3 py-2" id="nav-admin">ADMIN</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto">
+        <!-- PAGE 1: STANDINGS -->
+        <div id="page-0" class="page">
+            <div class="bg-white py-8 px-8 shadow">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-4xl font-bold">FedEx Cup Standings</h2>
+                        <p class="text-gray-500">2025-26 Season • Updated May 5, 2026</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="addPlayer()" 
+                                class="bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded font-medium flex items-center gap-2">
+                            <i class="fas fa-plus"></i> Add New Player
+                        </button>
+                    </div>
+                </div>
+
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b-2 border-gray-800">
+                            <th class="px-6 py-4 w-16">Pos</th>
+                            <th class="px-6 py-4">Player</th>
+                            <th class="px-6 py-4">Country</th>
+                            <th class="px-6 py-4">Events</th>
+                            <th class="px-6 py-4 text-center">Wins</th>
+                            <th class="px-6 py-4 text-center">Top 10s</th>
+                            <th class="px-6 py-4 text-right">Points</th>
+                            <th class="px-6 py-4 text-right">Earnings</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+
+                <div class="flex justify-center gap-4 mt-10">
+                    <button onclick="saveStandings()" 
+                            class="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded font-medium">
+                        💾 Save FedEx Cup Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: TOURNAMENTS -->
+        <div id="page-1" class="page hidden">
+            <div class="bg-white p-8">
+                <h2 class="text-4xl font-bold mb-6">Tournament Leaderboards</h2>
+                
+                <!-- Tournament Selector -->
+                <div class="mb-8">
+                    <label class="block text-sm font-medium text-gray-500 mb-2">Select Tournament</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="tournament-selector">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="selected-tournament" class="text-3xl font-bold">THE MASTERS 2026</h3>
+                    <span id="tournament-date" class="text-gray-500">April 9 - 12, 2026 • Augusta National</span>
+                </div>
+
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-900 text-white">
+                            <th class="px-6 py-4">Pos</th>
+                            <th class="px-6 py-4">Player</th>
+                            <th class="px-6 py-4 text-center">R1</th>
+                            <th class="px-6 py-4 text-center">R2</th>
+                            <th class="px-6 py-4 text-center">R3</th>
+                            <th class="px-6 py-4 text-center">R4</th>
+                            <th class="px-6 py-4 text-center">Total</th>
+                            <th class="px-6 py-4 text-center">To Par</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body" class="text-lg">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAGE 3: TITLES -->
+        <div id="page-2" class="page hidden bg-white p-8">
+            <h2 class="text-4xl font-bold mb-10">PGA Tour Titles & Records</h2>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                <!-- Most Wins -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 border-b pb-3">Most Tournament Wins</h3>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-900 text-white">
+                                <th class="px-6 py-3">Player</th>
+                                <th class="px-6 py-3 text-center">Wins</th>
+                                <th class="px-6 py-3">Years</th>
+                            </tr>
+                        </thead>
+                        <tbody id="titles-body">
+                            <!-- JS populated -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Major Champions -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 border-b pb-3">Major Champions (Last 10 Years)</h3>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-900 text-white">
+                                <th class="px-6 py-3">Major</th>
+                                <th class="px-6 py-3">Winner</th>
+                                <th class="px-6 py-3">Year</th>
+                            </tr>
+                        </thead>
+                        <tbody id="majors-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 4: NEWS -->
+        <div id="page-3" class="page hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8">
+                <!-- Latest News -->
+                <div class="lg:col-span-7">
+                    <h2 class="text-4xl font-bold mb-6">PGA Tour News</h2>
+                    <div id="news-container" class="space-y-8">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div class="bg-white p-6 rounded shadow">
+                        <h3 class="font-bold text-xl mb-4">Current FedEx Cup Leader</h3>
+                        <div class="flex items-center gap-6">
+                            <div class="w-24 h-24 bg-amber-300 rounded-full flex items-center justify-center text-5xl font-black">1</div>
+                            <div>
+                                <p class="text-3xl font-bold">Scottie Scheffler</p>
+                                <p class="text-green-600 text-2xl">3,850 pts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 5: ADMIN -->
+        <div id="page-4" class="page hidden bg-white p-8">
+            <h2 class="text-4xl font-bold mb-8">Admin Panel</h2>
+            <div class="border rounded-xl p-8">
+                <h3 class="text-2xl font-semibold mb-6">Manage News</h3>
+                <button onclick="addNewsItem()" 
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded mb-8">
+                    + Add New Article
+                </button>
+                
+                <div id="admin-news-list" class="space-y-6">
+                    <!-- JS populated -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-8 text-center">
+            <p class="text-amber-400 text-xl mb-2">© 2026 PGA Tour Fan Template | All Rights Reserved</p>
+            <div class="flex justify-center gap-8 text-sm mt-6">
+                <a href="#" class="hover:text-amber-400">Schedule</a>
+                <a href="#" class="hover:text-amber-400">Players</a>
+                <a href="#" class="hover:text-amber-400">Stats</a>
+                <a href="#" class="hover:text-amber-400">Shop</a>
+                <a href="#" class="hover:text-amber-400">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample Data
+        let standingsData = [
+            { pos: 1, player: "Scottie Scheffler", country: "🇺🇸", events: 12, wins: 4, top10: 9, points: 3850, earnings: "$12.8M" },
+            { pos: 2, player: "Rory McIlroy", country: "🇬🇧", events: 11, wins: 2, top10: 8, points: 3120, earnings: "$9.4M" },
+            { pos: 3, player: "Xander Schauffele", country: "🇺🇸", events: 13, wins: 3, top10: 7, points: 2980, earnings: "$8.7M" },
+            { pos: 4, player: "Ludvig Åberg", country: "🇸🇪", events: 14, wins: 1, top10: 10, points: 2650, earnings: "$7.2M" },
+            { pos: 5, player: "Collin Morikawa", country: "🇺🇸", events: 12, wins: 1, top10: 6, points: 2420, earnings: "$6.9M" }
+        ];
+
+        let tournaments = [
+            { name: "THE MASTERS 2026", date: "April 9-12 • Augusta", active: true },
+            { name: "PGA Championship", date: "May 14-17 • Quail Hollow", active: false },
+            { name: "U.S. Open", date: "June 18-21 • Oakmont", active: false },
+            { name: "The Open Championship", date: "July 16-19 • Royal Portrush", active: false }
+        ];
+
+        let currentTournament = 0;
+
+        const leaderboardData = [
+            [
+                {pos:1, player:"Scottie Scheffler", r1:68, r2:67, r3:69, r4:70, total:274, topar:"-14"},
+                {pos:2, player:"Rory McIlroy", r1:71, r2:68, r3:70, r4:68, total:277, topar:"-11"},
+                {pos:3, player:"Xander Schauffele", r1:70, r2:69, r3:72, r4:67, total:278, topar:"-10"}
+            ],
+            // Add more if needed
+        ];
+
+        // Render Standings
+        function renderStandings() {
+            const tbody = document.getElementById('standings-body');
+            tbody.innerHTML = '';
+            
+            standingsData.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'player-row border-b border-gray-200 hover:bg-yellow-50 cursor-pointer';
+                row.innerHTML = `
+                    <td class="px-6 py-5 font-bold text-xl">${item.pos}</td>
+                    <td class="px-6 py-5 font-semibold">${item.player}</td>
+                    <td class="px-6 py-5">${item.country}</td>
+                    <td class="px-6 py-5">${item.events}</td>
+                    <td class="px-6 py-5 text-center font-medium">${item.wins}</td>
+                    <td class="px-6 py-5 text-center font-medium">${item.top10}</td>
+                    <td class="px-6 py-5 text-right font-bold">${item.points}</td>
+                    <td class="px-6 py-5 text-right font-medium">${item.earnings}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Render Tournament Selector
+        function renderTournamentSelector() {
+            const container = document.getElementById('tournament-selector');
+            container.innerHTML = '';
+            
+            tournaments.forEach((t, index) => {
+                const btn = document.createElement('button');
+                btn.className = `p-6 text-left border-2 rounded-xl transition-all ${index === currentTournament ? 'border-amber-400 bg-amber-50 shadow-md' : 'border-gray-200 hover:border-gray-300'}`;
+                btn.innerHTML = `
+                    <div class="font-bold text-lg">${t.name}</div>
+                    <div class="text-sm text-gray-500">${t.date}</div>
+                `;
+                btn.onclick = () => {
+                    currentTournament = index;
+                    renderTournamentSelector();
+                    renderLeaderboard();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function renderLeaderboard() {
+            document.getElementById('selected-tournament').textContent = tournaments[currentTournament].name;
+            document.getElementById('tournament-date').textContent = tournaments[currentTournament].date;
+            
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+            
+            const data = leaderboardData[0] || [];
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b hover:bg-amber-50';
+                tr.innerHTML = `
+                    <td class="px-6 py-6 font-bold">${row.pos}</td>
+                    <td class="px-6 py-6 font-semibold">${row.player}</td>
+                    <td class="px-6 py-6 text-center">${row.r1}</td>
+                    <td class="px-6 py-6 text-center">${row.r2}</td>
+                    <td class="px-6 py-6 text-center">${row.r3}</td>
+                    <td class="px-6 py-6 text-center">${row.r4}</td>
+                    <td class="px-6 py-6 text-center font-bold">${row.total}</td>
+                    <td class="px-6 py-6 text-center font-bold text-green-600">${row.topar}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render Titles
+        function renderTitles() {
+            // Most Wins
+            const titlesBody = document.getElementById('titles-body');
+            titlesBody.innerHTML = `
+                <tr class="border-b"><td class="px-6 py-4 font-semibold">Tiger Woods</td><td class="px-6 py-4 text-center font-bold">82</td><td class="px-6 py-4 text-sm">1996-2019</td></tr>
+                <tr class="border-b"><td class="px-6 py-4 font-semibold">Sam Snead</td><td class="px-6 py-4 text-center font-bold">82</td><td class="px-6 py-4 text-sm">1936-1964</td></tr>
+            `;
+            
+            // Majors
+            const majorsBody = document.getElementById('majors-body');
+            majorsBody.innerHTML = `
+                <tr><td class="px-6 py-4">Masters</td><td class="px-6 py-4 font-medium">Scottie Scheffler</td><td class="px-6 py-4">2025</td></tr>
+                <tr><td class="px-6 py-4">PGA Champ</td><td class="px-6 py-4 font-medium">Xander Schauffele</td><td class="px-6 py-4">2025</td></tr>
+            `;
+        }
+
+        // Simple News
+        function renderNews() {
+            const container = document.getElementById('news-container');
+            container.innerHTML = `
+                <div class="flex gap-6 bg-white p-6 rounded-xl shadow">
+                    <img src="https://picsum.photos/id/1015/300/200" class="w-80 h-48 object-cover rounded-lg">
+                    <div>
+                        <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded">BREAKING</span>
+                        <h4 class="text-2xl font-bold mt-3">Scheffler dominates at Augusta, wins second Green Jacket</h4>
+                        <p class="text-gray-600 mt-2">Scottie Scheffler claimed his second Masters title with a final round 70...</p>
+                        <button onclick="alert('News opened! (Demo)')" class="mt-6 text-blue-600 font-medium">Read Full Story →</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Admin News
+        function renderAdminNews() {
+            const container = document.getElementById('admin-news-list');
+            container.innerHTML = `
+                <div class="border p-6 rounded-lg">
+                    <div class="flex justify-between">
+                        <div>
+                            <h4 class="font-bold">Scheffler wins Masters 2026</h4>
+                            <p class="text-sm text-gray-500">2 hours ago</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="alert('Edit clicked')" class="bg-blue-600 text-white px-5 py-2 rounded text-sm">Edit</button>
+                            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="bg-red-600 text-white px-5 py-2 rounded text-sm">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addPlayer() {
+            const name = prompt("Player name:");
+            if (!name) return;
+            standingsData.unshift({
+                pos: standingsData.length + 1,
+                player: name,
+                country: "🇧🇷",
+                events: 5,
+                wins: 0,
+                top10: 2,
+                points: 1200,
+                earnings: "$1.2M"
+            });
+            renderStandings();
+        }
+
+        function saveStandings() {
+            alert("✅ Changes saved successfully! (Demo)");
+        }
+
+        function addNewsItem() {
+            alert("New article form would open here (Demo)");
+        }
+
+        // Page Switching
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${page}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active-nav'));
+            const activeNav = document.getElementById(`nav-${['standings','tournaments','titles','news','admin'][page]}`);
+            if (activeNav) activeNav.classList.add('active-nav');
+        }
+
+        // Initialize
+        window.onload = function() {
+            renderStandings();
+            renderTournamentSelector();
+            renderLeaderboard();
+            renderTitles();
+            renderNews();
+            renderAdminNews();
+            
+            // Default to standings
+            switchPage(0);
+            
+            // Tailwind script already loaded
+            console.log("%cPGA Tour Fan Site loaded successfully! 🎾", "color: #d4af37; font-size: 16px; font-weight: bold");
+        };
+    </script>
+</body>
+</html>
