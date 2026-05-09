@@ -16,26 +16,6 @@
             margin: 0; 
             background: #f8f9fa; 
             color: #333; 
-            transition: background 0.3s;
-        }
-
-        .admin-bar { 
-            background: var(--pga-gold); 
-            padding: 12px; 
-            text-align: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .admin-bar button {
-            cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.1);
-            padding: 5px 15px;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: 0.2s;
         }
 
         /* ==================== NAVBAR ==================== */
@@ -60,7 +40,36 @@
             letter-spacing: 0.5px;
         }
         .nav-links a:hover { color: var(--pga-gold); }
-        .nav-right { flex: 1; }
+
+        .nav-right {
+            flex: 1;
+            text-align: right;
+            padding-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .login-link {
+            background: var(--pga-navy);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-btn {
+            background: var(--pga-green);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
         /* ==================== CONTAINER & GRID ==================== */
         .container { 
@@ -102,7 +111,7 @@
             object-fit: cover; 
         }
 
-        /* ==================== ÁREA DE ADMIN (ESCONDIDA) ==================== */
+        /* ==================== ÁREA DE ADMIN ==================== */
         .admin-only { 
             display: none; 
             background: white; 
@@ -113,7 +122,7 @@
             border: 1px solid #eee;
         }
 
-        body.edit-active .admin-only {
+        .admin-only.show {
             display: block;
             animation: slideDown 0.4s ease-out;
         }
@@ -133,7 +142,6 @@
             box-sizing: border-box;
         }
 
-        /* Estilo para o campo de upload */
         .file-input-wrapper {
             margin-bottom: 15px;
         }
@@ -157,16 +165,51 @@
 
         .admin-only button:hover { background: #001d42; }
 
+        /* LOGIN MODAL */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); 
+            z-index: 2000; 
+            align-items: center;
+            justify-content: center;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .login-box h2 { margin-bottom: 25px; color: var(--pga-navy); }
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .login-btn {
+            background: var(--pga-green);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <div class="admin-bar">
-        <span>🔨 MODO EDIÇÃO:</span>
-        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
-        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar Alterações</button>
-    </div>
-
+    <!-- ==================== NAVBAR ==================== -->
     <nav>
         <div class="nav-left">
             <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" alt="PGA TOUR" class="nav-logo">
@@ -181,13 +224,16 @@
                 <a href="current-tournament.html">CURRENT TOURNAMENT</a>
             </div>
         </div>
-        <div class="nav-right"></div>
+        <div class="nav-right">
+            <span id="loginLink" class="login-link" onclick="openLoginModal()">Login</span>
+            <button id="logoutBtn" class="admin-btn" onclick="logout()" style="display:none;">Sair (Admin)</button>
+        </div>
     </nav>
 
     <div class="container">
         <h2>Latest Headlines</h2>
         
-        <div class="admin-only">
+        <div class="admin-only" id="adminPanel">
             <h3 style="margin-top:0; color: var(--pga-navy);">✨ Criar Nova Notícia</h3>
             <input type="text" id="newTitle" placeholder="Título da notícia principal">
             <input type="text" id="newSubtitle" placeholder="Subtítulo ou resumo">
@@ -204,8 +250,23 @@
         <div class="news-grid" id="newsGrid"></div>
     </div>
 
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="login-box">
+            <h2>🔑 Acesso Administrativo</h2>
+            <input type="text" id="username" class="login-input" placeholder="Usuário" autocomplete="off">
+            <input type="password" id="password" class="login-input" placeholder="Senha" autocomplete="off">
+            <button class="login-btn" onclick="login()">Entrar como Administrador</button>
+            <p style="margin-top:15px; color:#666; font-size:0.9rem;">
+                Usuário: <strong>ADMIN</strong><br>
+                Senha: <strong>ADMIN</strong>
+            </p>
+        </div>
+    </div>
+
     <script>
         let isEditMode = false;
+        let isLoggedIn = false;
         let news = JSON.parse(localStorage.getItem('pga_news')) || [];
 
         if (news.length === 0) {
@@ -221,20 +282,41 @@
             localStorage.setItem('pga_news', JSON.stringify(news));
         }
 
-        function toggleEdit() {
-            isEditMode = !isEditMode;
-            const btn = document.getElementById('editBtn');
-            
-            if (isEditMode) {
-                btn.innerText = "ATIVADO";
-                btn.style.background = "#006633";
-                btn.style.color = "white";
-                document.body.classList.add('edit-active');
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim().toUpperCase();
+            const password = document.getElementById('password').value.trim().toUpperCase();
+
+            if (username === "ADMIN" && password === "ADMIN") {
+                isLoggedIn = true;
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+                
+                enableFullEditMode();
             } else {
-                btn.innerText = "DESATIVADO";
-                btn.style.background = "";
-                btn.style.color = "";
-                document.body.classList.remove('edit-active');
+                alert("❌ Usuário ou senha incorretos!\n\nUse:\nUsuário: ADMIN\nSenha: ADMIN");
+            }
+        }
+
+        function enableFullEditMode() {
+            isEditMode = true;
+            document.getElementById('adminPanel').classList.add('show');
+            renderNews();
+            alert("✅ Modo Editor Completo ativado!\nVocê agora pode criar e gerenciar notícias.");
+        }
+
+        function logout() {
+            if (confirm("Deseja sair do modo administrador?")) {
+                isLoggedIn = false;
+                isEditMode = false;
+                document.getElementById('loginLink').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('adminPanel').classList.remove('show');
+                renderNews();
             }
         }
 
@@ -252,14 +334,13 @@
         }
 
         function openNews(id) {
-            if(!isEditMode) {
+            if (!isEditMode) {
                 window.location.href = `news-detail.html?id=${id}`;
             } else {
-                alert("Modo Edição Ativo. Para visualizar como o usuário, desative o modo edição.");
+                alert("Modo Edição Ativo.\nPara visualizar como usuário normal, saia do modo administrador.");
             }
         }
 
-        // Função para converter arquivo local em Base64
         function addNews() {
             const titleInput = document.getElementById('newTitle');
             const subtitleInput = document.getElementById('newSubtitle');
@@ -273,7 +354,6 @@
 
             const file = imageInput.files[0];
             
-            // Se houver arquivo, lemos como DataURL (Base64)
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -281,7 +361,6 @@
                 };
                 reader.readAsDataURL(file);
             } else {
-                // Caso não selecione imagem, usa uma aleatória
                 const fallbackImg = "https://picsum.photos/id/" + Math.floor(Math.random() * 1000) + "/1200/800";
                 processNewEntry(titleInput.value, subtitleInput.value, contentInput.value, fallbackImg);
             }
@@ -298,7 +377,6 @@
 
             news.unshift(newEntry);
             
-            // Limpar campos
             document.getElementById('newTitle').value = '';
             document.getElementById('newSubtitle').value = '';
             document.getElementById('newContent').value = '';
@@ -312,12 +390,12 @@
                 localStorage.setItem('pga_news', JSON.stringify(news));
                 alert("✅ Alterações salvas com sucesso!");
             } catch (e) {
-                // localStorage tem limite de ~5MB. Imagens Base64 muito grandes podem estourar isso.
-                alert("⚠️ Erro ao salvar: O arquivo de imagem pode ser muito grande para o armazenamento do navegador.");
+                alert("⚠️ Erro ao salvar: O arquivo de imagem pode ser muito grande.");
                 console.error(e);
             }
         }
 
+        // Inicialização
         renderNews();
     </script>
 </body>

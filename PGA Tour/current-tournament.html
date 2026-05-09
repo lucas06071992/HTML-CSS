@@ -18,16 +18,7 @@
             color: #333; 
         }
 
-        .admin-bar { 
-            background: var(--pga-gold); 
-            padding: 12px; 
-            text-align: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 1000; 
-        }
-
-        /* ==================== NAVBAR (REPLICADA) ==================== */
+        /* ==================== NAVBAR ==================== */
         nav {
             background: #ffffff;
             padding: 2px 6px;
@@ -36,14 +27,8 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        .nav-left {
-            flex: 1;
-        }
-
-        .nav-logo {
-            max-height: 50px;
-            width: auto;
-        }
+        .nav-left { flex: 1; }
+        .nav-logo { max-height: 50px; width: auto; }
 
         .nav-center {
             flex: 2;
@@ -65,13 +50,36 @@
             transition: color 0.3s;
         }
 
-        .nav-links a:hover {
-            color: var(--pga-gold);
-        }
+        .nav-links a:hover { color: var(--pga-gold); }
 
         .nav-right {
             flex: 1;
             text-align: right;
+            padding-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .login-link {
+            background: var(--pga-navy);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-btn {
+            background: var(--pga-green);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         /* ==================== CONTEÚDO ==================== */
@@ -117,16 +125,52 @@
 
         .btn-add { background: var(--pga-green); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
         .btn-del { background: #d32f2f; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+
+        /* LOGIN MODAL */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); 
+            z-index: 2000; 
+            align-items: center;
+            justify-content: center;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .login-box h2 { margin-bottom: 25px; color: var(--pga-navy); }
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .login-btn {
+            background: var(--pga-green);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div class="admin-bar">
-        <span>🔨 MODO EDIÇÃO:</span>
-        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
-        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar</button>
-    </div>
 
-    <!-- ==================== NAVBAR REPLICADA ==================== -->
+    <!-- ==================== NAVBAR ==================== -->
     <nav>
         <div class="nav-left">
             <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
@@ -145,7 +189,10 @@
             </div>
         </div>
 
-        <div class="nav-right"></div>
+        <div class="nav-right">
+            <span id="loginLink" class="login-link" onclick="openLoginModal()">Login</span>
+            <button id="logoutBtn" class="admin-btn" onclick="logout()" style="display:none;">Sair (Admin)</button>
+        </div>
     </nav>
 
     <div class="container">
@@ -200,18 +247,72 @@
         </button>
     </div>
 
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="login-box">
+            <h2>🔑 Acesso Administrativo</h2>
+            <input type="text" id="username" class="login-input" placeholder="Usuário" autocomplete="off">
+            <input type="password" id="password" class="login-input" placeholder="Senha" autocomplete="off">
+            <button class="login-btn" onclick="login()">Entrar como Administrador</button>
+            <p style="margin-top:15px; color:#666; font-size:0.9rem;">
+                Usuário: <strong>ADMIN</strong><br>
+                Senha: <strong>ADMIN</strong>
+            </p>
+        </div>
+    </div>
+
     <script>
         let isEditMode = false;
+        let isLoggedIn = false;
+        
         let leaderboard = JSON.parse(localStorage.getItem('pga_current_leaderboard')) || [
             {pos:1, name:"Scottie Scheffler", score:"-27", round:"-6", thru:"F", r1:"63", r2:"64", r3:"68", r4:"66", strokes:"261"},
             {pos:2, name:"Rory McIlroy", score:"-25", round:"-5", thru:"F", r1:"64", r2:"65", r3:"67", r4:"67", strokes:"263"},
         ];
 
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim().toUpperCase();
+            const password = document.getElementById('password').value.trim().toUpperCase();
+
+            if (username === "ADMIN" && password === "ADMIN") {
+                isLoggedIn = true;
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+                
+                enableFullEditMode();
+            } else {
+                alert("❌ Usuário ou senha incorretos!\n\nUse:\nUsuário: ADMIN\nSenha: ADMIN");
+            }
+        }
+
+        function enableFullEditMode() {
+            isEditMode = true;
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+            renderLeaderboard();
+            alert("✅ Modo Editor Completo ativado!\nVocê agora tem acesso total de administrador.");
+        }
+
         function toggleEdit() {
+            if (!isLoggedIn) return;
             isEditMode = !isEditMode;
-            document.getElementById('editBtn').innerText = isEditMode ? "ATIVADO" : "DESATIVADO";
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? '' : 'none');
             renderLeaderboard();
+        }
+
+        function logout() {
+            if (confirm("Deseja sair do modo administrador?")) {
+                isLoggedIn = false;
+                isEditMode = false;
+                document.getElementById('loginLink').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                renderLeaderboard();
+            }
         }
 
         function renderLeaderboard() {
@@ -227,7 +328,9 @@
                     <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r3=this.innerText"><strong>${p.r3}</strong></td>
                     <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r4=this.innerText"><strong>${p.r4}</strong></td>
                     <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].strokes=this.innerText"><strong>${p.strokes}</strong></td>
-                    <td class="admin-only" style="display: ${isEditMode ? '' : 'none'}"><button class="btn-del" onclick="removePlayer(${i})">X</button></td>
+                    <td class="admin-only" style="display: ${isEditMode ? '' : 'none'}">
+                        <button class="btn-del" onclick="removePlayer(${i})">X</button>
+                    </td>
                 </tr>
             `).join('');
         }

@@ -8,9 +8,6 @@
         :root { --pga-green: #006633; --pga-navy: #002d62; --pga-gold: #c5a059; }
         body { font-family: "Montserrat", sans-serif; margin: 0; background: #f8f9fa; color: #333; }
         
-        .admin-bar { background: var(--pga-gold); padding: 12px; text-align: center; position: sticky; top: 0; z-index: 1000; }
-
-        /* ==================== NAVBAR (ESTILO REPLICADO) ==================== */
         nav {
             background: #ffffff;
             padding: 02px 06px;
@@ -19,14 +16,8 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        .nav-left {
-            flex: 1;
-        }
-
-        .nav-logo {
-            max-height: 50px;
-            width: auto;
-        }
+        .nav-left { flex: 1; }
+        .nav-logo { max-height: 50px; width: auto; }
 
         .nav-center {
             flex: 2;
@@ -48,13 +39,36 @@
             transition: color 0.3s;
         }
 
-        .nav-links a:hover {
-            color: var(--pga-gold);
-        }
+        .nav-links a:hover { color: var(--pga-gold); }
 
         .nav-right {
             flex: 1;
             text-align: right;
+            padding-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .login-link {
+            background: var(--pga-navy);
+            color: white;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .admin-btn {
+            background: var(--pga-green);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
         }
 
         /* ==================== CONTEÚDO E TABELAS ==================== */
@@ -84,6 +98,8 @@
             width: 100%; height: 100%; 
             background: rgba(0,0,0,0.85); 
             z-index: 2000; 
+            align-items: center;
+            justify-content: center;
         }
         .modal-content { 
             background: white; 
@@ -92,6 +108,37 @@
             max-width: 1100px; 
             border-radius: 12px; 
             overflow: hidden; 
+        }
+
+        /* LOGIN BOX */
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .login-box h2 { margin-bottom: 25px; color: var(--pga-navy); }
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .login-btn {
+            background: var(--pga-green);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         .tournament-logo {
@@ -103,13 +150,8 @@
     </style>
 </head>
 <body>
-    <div class="admin-bar">
-        <span>🔨 MODO EDIÇÃO:</span>
-        <button id="editBtn" onclick="toggleEdit()">DESATIVADO</button>
-        <button onclick="saveData()" style="margin-left:15px;">💾 Salvar</button>
-    </div>
 
-    <!-- ==================== NAVBAR REPLICADA ==================== -->
+    <!-- ==================== NAVBAR ==================== -->
     <nav>
         <div class="nav-left">
             <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
@@ -128,7 +170,10 @@
             </div>
         </div>
 
-        <div class="nav-right"></div>
+        <div class="nav-right">
+            <span id="loginLink" class="login-link" onclick="openLoginModal()">Login</span>
+            <button id="logoutBtn" class="admin-btn" onclick="logout()" style="display:none;">Sair (Admin)</button>
+        </div>
     </nav>
 
     <div class="container">
@@ -158,8 +203,24 @@
         </div>
     </div>
 
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="login-box">
+            <h2>🔑 Acesso Administrativo</h2>
+            <input type="text" id="username" class="login-input" placeholder="Usuário" autocomplete="off">
+            <input type="password" id="password" class="login-input" placeholder="Senha" autocomplete="off">
+            <button class="login-btn" onclick="login()">Entrar como Administrador</button>
+            <p style="margin-top:15px; color:#666; font-size:0.9rem;">
+                Usuário: <strong>ADMIN</strong><br>
+                Senha: <strong>ADMIN</strong>
+            </p>
+        </div>
+    </div>
+
     <script>
         let isEditMode = false;
+        let isLoggedIn = false;
+        
         let archives = JSON.parse(localStorage.getItem('pga_archives')) || [
             {
                 id: 1,
@@ -176,11 +237,49 @@
             }
         ];
 
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value.trim().toUpperCase();
+            const password = document.getElementById('password').value.trim().toUpperCase();
+
+            if (username === "ADMIN" && password === "ADMIN") {
+                isLoggedIn = true;
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+                
+                enableFullEditMode();
+            } else {
+                alert("❌ Usuário ou senha incorretos!\n\nUse:\nUsuário: ADMIN\nSenha: ADMIN");
+            }
+        }
+
+        function enableFullEditMode() {
+            isEditMode = true;
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+            renderArchives();
+            alert("✅ Modo Editor Completo ativado!\nVocê agora tem acesso total de administrador.");
+        }
+
         function toggleEdit() {
+            if (!isLoggedIn) return;
             isEditMode = !isEditMode;
-            document.getElementById('editBtn').innerText = isEditMode ? "ATIVADO" : "DESATIVADO";
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? '' : 'none');
             renderArchives();
+        }
+
+        function logout() {
+            if (confirm("Deseja sair do modo administrador?")) {
+                isLoggedIn = false;
+                isEditMode = false;
+                document.getElementById('loginLink').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                renderArchives();
+            }
         }
 
         function renderArchives() {
@@ -217,14 +316,11 @@
             const content = `
                 <div style="padding:25px; background:#002d62; color:white; text-align:center;">
                     ${t.logo ? `<img src="${t.logo}" class="tournament-logo" alt="Logo ${t.name}">` : ''}
-                    
                     ${isEditMode ? `
                     <div style="margin-top:10px;">
                         <input type="file" id="logoUpload" accept="image/*">
                         <button onclick="uploadLogo(${index})" style="padding:6px 12px;">📤 Carregar Logo</button>
-                    </div>
-                    ` : ''}
-
+                    </div>` : ''}
                     <h1 contenteditable="${isEditMode}" onblur="archives[${index}].name=this.innerText">${t.name}</h1>
                 </div>
                 <div style="padding:30px;">
@@ -255,7 +351,6 @@
         function uploadLogo(index) {
             const fileInput = document.getElementById('logoUpload');
             if (!fileInput.files[0]) return;
-
             const reader = new FileReader();
             reader.onload = function(e) {
                 archives[index].logo = e.target.result;
@@ -297,6 +392,7 @@
             if (e.target === this) closeModal();
         });
 
+        // Inicialização
         renderArchives();
     </script>
 </body>
