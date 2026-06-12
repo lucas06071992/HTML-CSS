@@ -71,7 +71,6 @@
             font-weight: bold;
         }
 
-        /* ==================== CONTEÚDO E TABELAS ==================== */
         .container { 
             max-width: 1200px; 
             margin: 25px auto; 
@@ -110,7 +109,6 @@
             overflow: hidden; 
         }
 
-        /* LOGIN BOX */
         .login-box {
             background: white;
             padding: 40px;
@@ -151,12 +149,9 @@
 </head>
 <body>
 
-    <!-- ==================== NAVBAR ==================== -->
     <nav>
         <div class="nav-left">
-            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
-                 alt="PGA TOUR" 
-                 class="nav-logo">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" alt="PGA TOUR" class="nav-logo">
         </div>
 
         <div class="nav-center">
@@ -196,14 +191,12 @@
         <button class="btn btn-add admin-only" onclick="addTournament()" style="display:none;">+ Arquivar Torneio</button>
     </div>
 
-    <!-- MODAL EDITÁVEL -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <div id="modalContent"></div>
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal">
         <div class="login-box">
             <h2>🔑 Acesso Administrativo</h2>
@@ -250,7 +243,6 @@
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('loginLink').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'block';
-                
                 enableFullEditMode();
             } else {
                 alert("❌ Usuário ou senha incorretos!\n\nUse:\nUsuário: ADMIN\nSenha: ADMIN");
@@ -262,13 +254,6 @@
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
             renderArchives();
             alert("✅ Modo Editor Completo ativado!\nVocê agora tem acesso total de administrador.");
-        }
-
-        function toggleEdit() {
-            if (!isLoggedIn) return;
-            isEditMode = !isEditMode;
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? '' : 'none');
-            renderArchives();
         }
 
         function logout() {
@@ -324,9 +309,9 @@
                     <h1 contenteditable="${isEditMode}" onblur="archives[${index}].name=this.innerText">${t.name}</h1>
                 </div>
                 <div style="padding:30px;">
-                    <p><strong>Data:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].date=this.innerText">${t.date}</span></p>
-                    <p><strong>Campeão:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].champ=this.innerText">${t.champ}</span></p>
-                    <p><strong>Winning Score:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].score=this.innerText">${t.score}</span></p>
+                    <p><strong>Data:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].date=this.innerText}">${t.date}</span></p>
+                    <p><strong>Campeão:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].champ=this.innerText}">${t.champ}</span></p>
+                    <p><strong>Winning Score:</strong> <span contenteditable="${isEditMode}" onblur="archives[${index}].score=this.innerText}">${t.score}</span></p>
 
                     <h3>Leaderboard & Estatísticas</h3>
                     <table style="width:100%; border-collapse:collapse;">
@@ -379,13 +364,14 @@
         function removeTournament(i) {
             if(confirm("Excluir torneio?")) {
                 archives.splice(i, 1);
+                saveData();           // ← Salva a exclusão permanentemente
                 renderArchives();
             }
         }
 
         function saveData() {
             localStorage.setItem('pga_archives', JSON.stringify(archives));
-            alert("✅ Torneio salvo com sucesso!");
+            alert("✅ Alterações salvas com sucesso!");
         }
 
         document.getElementById('modal').addEventListener('click', function(e) {

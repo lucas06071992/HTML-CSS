@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLTV - Rocket League Esports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --card: #1a1a1a;
+            --text: #e0e0e0;
+            --accent: #ff6200;
+            --accent2: #00b4ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: #111;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .logo span {
+            color: var(--accent2);
+        }
+        
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--accent);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-bar {
+            background: #222;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            width: 280px;
+            color: white;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .left-sidebar {
+            width: 220px;
+            flex-shrink: 0;
+        }
+        
+        .content {
+            flex: 1;
+        }
+        
+        .right-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .section-header {
+            background: #222;
+            padding: 12px 16px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .news-card {
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .news-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        
+        .news-info {
+            padding: 12px;
+        }
+        
+        .match-card {
+            background: var(--card);
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .team {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .team-logo {
+            width: 32px;
+            height: 32px;
+            background: #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .ranking-table td, .ranking-table th {
+            padding: 10px;
+            text-align: left;
+        }
+        
+        .ranking-table tr {
+            border-bottom: 1px solid #333;
+        }
+        
+        .banner {
+            height: 380px;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://picsum.photos/id/1015/1400/400') center/cover;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #111;
+            margin-top: 50px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .left-sidebar, .right-sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="top-bar">
+            <div class="logo">RLTV <span>.gg</span></div>
+            
+            <nav id="main-nav">
+                <a href="index.html" onclick="showSection('home')" class="active">Home</a>
+                <a href="news.html" onclick="showSection('news')">Notícias</a>
+                <a href="matches.html" onclick="showSection('matches')">Partidas</a>
+                <a href="events.html" onclick="showSection('events')">Eventos</a>
+                <a href="teams.html" onclick="showSection('teams')">Times</a>
+                <a href="players.html" onclick="showSection('players')">Jogadores</a>
+                <a href="rankings.html" onclick="showSection('rankings')">Rankings</a>
+            </nav>
+            
+            <div class="header-right">
+                <input type="text" class="search-bar" placeholder="Buscar jogadores, times..." id="search-input">
+                <button class="btn" onclick="toggleDarkMode()">🌙</button>
+                <button class="btn btn-primary" onclick="alert('Login em desenvolvimento')">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- LEFT SIDEBAR -->
+        <div class="left-sidebar">
+            <div class="card">
+                <div class="section-header">Estatísticas Gerais</div>
+                <div style="padding: 15px;">
+                    <p><strong>Melhor Jogador do Mês:</strong> Vatira (Karmine Corp)</p>
+                    <p><strong>Melhor Time do Mês:</strong> Gentle Mates</p>
+                    <p><strong>Maior Sequência:</strong> 12 vitórias (NRG)</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Campeonatos Ativos</div>
+                <div style="padding: 15px; font-size: 14px;">
+                    <div style="margin-bottom: 12px;">
+                        <strong>RLCS 2026 Season</strong><br>
+                        <small>Regular Season - Week 8</small>
+                    </div>
+                    <div>Paris Major 2026 - Finalizado</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Trending</div>
+                <div style="padding: 15px;">
+                    <div>#VatiraGod</div>
+                    <div>#GentleMates</div>
+                    <div>#RLCS2026</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="content">
+            
+            <!-- HOME SECTION -->
+            <div id="home" class="tab-content active">
+                <!-- BANNER -->
+                <div class="banner" onclick="window.location.href='event.html'">
+                    <div>
+                        <h1 style="font-size: 42px; margin-bottom: 10px;">RLCS 2026</h1>
+                        <h2 style="font-size: 24px;">Paris Major • Campeão: Karmine Corp</h2>
+                        <p style="max-width: 500px;">Karmine Corp conquista o título em casa com uma final épica contra Twisted Minds.</p>
+                        <button class="btn btn-primary" style="margin-top: 15px;">Ver Resumo Completo</button>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+                    <!-- Últimas Notícias -->
+                    <div>
+                        <div class="section-header">
+                            <span>Últimas Notícias</span>
+                            <a href="#" onclick="showSection('news')" style="color: var(--accent); font-size: 14px;">Ver todas</a>
+                        </div>
+                        <div class="news-grid" id="news-home"></div>
+                    </div>
+                    
+                    <!-- Próximas Partidas -->
+                    <div>
+                        <div class="section-header">Próximas Partidas</div>
+                        <div id="upcoming-matches"></div>
+                    </div>
+                </div>
+
+                <!-- Resultados Recentes -->
+                <div class="card" style="margin-top: 30px;">
+                    <div class="section-header">Resultados Recentes</div>
+                    <div id="recent-results" style="padding: 10px;"></div>
+                </div>
+            </div>
+
+            <!-- NEWS SECTION -->
+            <div id="news" class="tab-content">
+                <h1>Notícias</h1>
+                <div class="news-grid" id="all-news"></div>
+            </div>
+
+            <!-- MATCHES SECTION -->
+            <div id="matches" class="tab-content">
+                <h1>Partidas</h1>
+                <div style="margin-bottom: 20px;">
+                    <button onclick="filterMatches('all')" class="btn">Todas</button>
+                    <button onclick="filterMatches('live')" class="btn">Ao Vivo</button>
+                    <button onclick="filterMatches('upcoming')" class="btn">Próximas</button>
+                </div>
+                <div id="matches-list"></div>
+            </div>
+
+            <!-- EVENTS SECTION -->
+            <div id="events" class="tab-content">
+                <h1>Eventos</h1>
+                <div id="events-list"></div>
+            </div>
+
+            <!-- TEAMS SECTION -->
+            <div id="teams" class="tab-content">
+                <h1>Times</h1>
+                <div id="teams-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;"></div>
+            </div>
+
+            <!-- PLAYERS SECTION -->
+            <div id="players" class="tab-content">
+                <h1>Jogadores</h1>
+                <div id="players-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px;"></div>
+            </div>
+
+            <!-- RANKINGS SECTION -->
+            <div id="rankings" class="tab-content">
+                <h1>Ranking Mundial RLTV</h1>
+                <table class="ranking-table" id="ranking-table"></table>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="right-sidebar">
+            <!-- Ranking -->
+            <div class="card">
+                <div class="section-header">Ranking Mundial</div>
+                <table class="ranking-table" id="sidebar-ranking"></table>
+            </div>
+            
+            <!-- Transferências -->
+            <div class="card">
+                <div class="section-header">Últimas Transferências</div>
+                <div id="transfers" style="padding: 15px; font-size: 14px;"></div>
+            </div>
+            
+            <!-- Próximos Eventos -->
+            <div class="card">
+                <div class="section-header">Próximos Eventos</div>
+                <div id="next-events" style="padding: 15px;"></div>
+            </div>
+            
+            <!-- Destaques -->
+            <div class="card">
+                <div class="section-header">Jogadores em Destaque</div>
+                <div id="featured-players" style="padding: 15px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 RLTV.gg - Portal não oficial de Rocket League Esports. Inspirado na HLTV.</p>
+        <p>Dados simulados para demonstração.</p>
+    </footer>
+
+    <script>
+        // Dados simulados (baseados em informações reais de 2026)
+        const teams = [
+            {
+                id: 1,
+                name: "Gentle Mates",
+                logo: "GM",
+                country: "🇫🇷",
+                rank: 1,
+                points: 1969,
+                players: ["archie", "nass", "Oski"]
+            },
+            {
+                id: 2,
+                name: "Karmine Corp",
+                logo: "KC",
+                country: "🇫🇷",
+                rank: 2,
+                points: 1936,
+                players: ["Atow.", "juicy", "Vatira"]
+            },
+            {
+                id: 3,
+                name: "Team Vitality",
+                logo: "VIT",
+                country: "🇫🇷",
+                rank: 3,
+                points: 1847,
+                players: ["ExoTiiK", "Stizzy", "zen"]
+            },
+            {
+                id: 4,
+                name: "NRG",
+                logo: "NRG",
+                country: "🇺🇸",
+                rank: 4,
+                points: 1745,
+                players: ["Atomic", "BeastMode", "Daniel"]
+            },
+            {
+                id: 5,
+                name: "Shopify Rebellion",
+                logo: "SR",
+                country: "🇨🇦",
+                rank: 5,
+                points: 1623,
+                players: ["Firstkiller", "kofyr", "Lj"]
+            }
+        ];
+        
+        const players = [
+            {name: "Vatira", team: "Karmine Corp", rating: 98, country: "🇫🇷"},
+            {name: "zen", team: "Team Vitality", rating: 96, country: "🇫🇷"},
+            {name: "Atow.", team: "Karmine Corp", rating: 95, country: "🇧🇪"},
+            {name: "archie", team: "Gentle Mates", rating: 94, country: "🇬🇧"},
+            {name: "ExoTiiK", team: "Team Vitality", rating: 93, country: "🇫🇷"}
+        ];
+        
+        const news = [
+            {
+                title: "Karmine Corp conquista Paris Major 2026",
+                summary: "Em uma final emocionante diante da torcida francesa, KC leva o título.",
+                date: "24/05/2026",
+                image: "https://picsum.photos/id/1015/600/300",
+                category: "Major"
+            },
+            {
+                title: "Gentle Mates assume liderança do ranking",
+                summary: "Com atuações consistentes, o time francês lidera o power ranking.",
+                date: "02/06/2026",
+                image: "https://picsum.photos/id/201/600/300",
+                category: "Ranking"
+            },
+            {
+                title: "Nova atualização do Rocket League chega com balanceamento",
+                summary: "Psyonix ajusta mecânicas para a temporada 2026.",
+                date: "01/06/2026",
+                image: "https://picsum.photos/id/301/600/300",
+                category: "Jogo"
+            }
+        ];
+        
+        const upcomingMatches = [
+            {
+                team1: "NRG",
+                team2: "Shopify Rebellion",
+                time: "Hoje, 20:00",
+                event: "RLCS Regular Season",
+                bo: "BO5"
+            },
+            {
+                team1: "Vitality",
+                team2: "Gentle Mates",
+                time: "Amanhã, 18:00",
+                event: "RLCS Regular Season",
+                bo: "BO7"
+            }
+        ];
+        
+        const recentResults = [
+            {
+                team1: "Karmine Corp",
+                score1: 4,
+                team2: "Twisted Minds",
+                score2: 1,
+                event: "Paris Major Final",
+                mvp: "Vatira"
+            }
+        ];
+        
+        // Render Functions
+        function renderNews(containerId, limit = null) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const data = limit ? news.slice(0, limit) : news;
+            
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'news-card';
+                div.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="news-info">
+                        <span style="color: var(--accent); font-size: 12px;">${item.category}</span>
+                        <h3 style="margin: 8px 0; font-size: 16px;">${item.title}</h3>
+                        <p style="font-size: 14px; color: #aaa;">${item.summary}</p>
+                        <small>${item.date}</small>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function renderUpcomingMatches() {
+            const container = document.getElementById('upcoming-matches');
+            container.innerHTML = '';
+            
+            upcomingMatches.forEach(match => {
+                const div = document.createElement('div');
+                div.className = 'match-card';
+                div.innerHTML = `
+                    <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                        <div class="team">
+                            <div class="team-logo">${match.team1.substring(0,2)}</div>
+                            <span>${match.team1}</span>
+                        </div>
+                        <div class="team">
+                            <div class="team-logo">${match.team2.substring(0,2)}</div>
+                            <span>${match.team2}</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right; font-size: 13px;">
+                        <div>${match.time}</div>
+                        <div style="color: var(--accent2);">${match.bo}</div>
+                        <small>${match.event}</small>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function renderRecentResults() {
+            const container = document.getElementById('recent-results');
+            container.innerHTML = '';
+            
+            recentResults.forEach(result => {
+                const div = document.createElement('div');
+                div.style = "display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #333;";
+                div.innerHTML = `
+                    <div>${result.team1} <strong>${result.score1} - ${result.score2}</strong> ${result.team2}</div>
+                    <div style="text-align: right;">
+                        <small>${result.event}</small><br>
+                        <strong>MVP: ${result.mvp}</strong>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        function renderSidebarRanking() {
+            const tbody = document.createElement('tbody');
+            tbody.innerHTML = teams.slice(0, 5).map(team => `
+                <tr>
+                    <td>#${team.rank}</td>
+                    <td><strong>${team.logo}</strong> ${team.name}</td>
+                    <td style="text-align: right; color: var(--accent);">${team.points}</td>
+                </tr>
+            `).join('');
+            document.getElementById('sidebar-ranking').appendChild(tbody);
+        }
+        
+        function renderFullRanking() {
+            const table = document.getElementById('ranking-table');
+            table.innerHTML = `
+                <thead>
+                    <tr style="background: #222;">
+                        <th>Pos</th>
+                        <th>Time</th>
+                        <th>Pontos</th>
+                        <th>País</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${teams.map(team => `
+                        <tr>
+                            <td>#${team.rank}</td>
+                            <td><strong>${team.logo}</strong> ${team.name}</td>
+                            <td>${team.points}</td>
+                            <td>${team.country}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+        
+        function renderTeams() {
+            const container = document.getElementById('teams-grid');
+            container.innerHTML = teams.map(team => `
+                <div class="card" style="text-align: center; padding: 20px;">
+                    <div style="font-size: 48px; margin-bottom: 10px;">${team.logo}</div>
+                    <h3>${team.name}</h3>
+                    <p>${team.country} • Rank #${team.rank}</p>
+                    <small>Elenco: ${team.players.join(', ')}</small>
+                </div>
+            `).join('');
+        }
+        
+        function renderPlayers() {
+            const container = document.getElementById('players-grid');
+            container.innerHTML = players.map(player => `
+                <div class="card" style="text-align: center; padding: 15px;">
+                    <div style="font-size: 42px; margin: 10px 0;">👤</div>
+                    <h3>${player.name}</h3>
+                    <p>${player.team}</p>
+                    <p>Rating: <strong>${player.rating}</strong></p>
+                </div>
+            `).join('');
+        }
+        
+        function renderTransfers() {
+            const container = document.getElementById('transfers');
+            container.innerHTML = `
+                <p><strong>Vatira</strong> → Karmine Corp <small>(Out/2025)</small></p>
+                <p><strong>zen</strong> permanece na Vitality</p>
+            `;
+        }
+        
+        function renderNextEvents() {
+            const container = document.getElementById('next-events');
+            container.innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <strong>RLCS Regular Season</strong><br>
+                    <small>Semana 8 • NA + EU</small>
+                </div>
+                <div>
+                    <strong>World Championship 2026</strong><br>
+                    <small>Outubro 2026</small>
+                </div>
+            `;
+        }
+        
+        function renderFeaturedPlayers() {
+            const container = document.getElementById('featured-players');
+            container.innerHTML = players.slice(0, 3).map(p => `
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="width: 48px; height: 48px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">👤</div>
+                    <div>
+                        <strong>${p.name}</strong><br>
+                        <small>${p.team} • ${p.rating} rating</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Navegação SPA
+        function showSection(section) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = document.getElementById(section);
+            if (activeTab) activeTab.classList.add('active');
+            
+            // Atualiza nav
+            document.querySelectorAll('#main-nav a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('onclick').includes(`'${section}'`)) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        
+        function toggleDarkMode() {
+            alert("Modo escuro/claro já ativo (tema escuro padrão).");
+        }
+        
+        function filterMatches(type) {
+            alert(`Filtro aplicado: ${type}. (Funcionalidade simulada)`);
+        }
+        
+        // Inicialização
+        function init() {
+            renderNews('news-home', 3);
+            renderNews('all-news');
+            renderUpcomingMatches();
+            renderRecentResults();
+            renderSidebarRanking();
+            renderFullRanking();
+            renderTeams();
+            renderPlayers();
+            renderTransfers();
+            renderNextEvents();
+            renderFeaturedPlayers();
+            
+            // Busca simples
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    alert('Buscando: ' + this.value);
+                }
+            });
+            
+            // Simular live
+            console.log('%c✅ RLTV carregado com sucesso! Tema inspirado na HLTV.', 'color: #ff6200; font-size: 16px;');
+        }
+        
+        window.onload = init;
+    </script>
+</body>
+</html>

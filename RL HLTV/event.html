@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLTV | RLCS 2026 Paris Major</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --card: #1a1a1a;
+            --accent: #ff6200;
+            --accent2: #00b4ff;
+            --text: #e0e0e0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: #111;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logo span { color: var(--accent2); }
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        nav a:hover, nav a.active {
+            color: var(--accent);
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .search-bar {
+            background: #222;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            width: 280px;
+            color: white;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        .btn-primary.admin-active {
+            background: #00b4ff;
+            box-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+        }
+
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+        .left-sidebar {
+            width: 220px;
+            flex-shrink: 0;
+        }
+        .content {
+            flex: 1;
+        }
+        .right-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+        }
+        
+        .banner-hero {
+            height: 380px;
+            background: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('https://picsum.photos/id/1015/1400/400') center/cover;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: background 0.3s;
+        }
+        .hero-inner {
+            width: 100%;
+        }
+        .event-header-box {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .event-logo {
+            width: 90px;
+            height: 90px;
+            background: #222 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="70" x="10">🏆</text></svg>') center/contain no-repeat;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        /* Garante que a aba de times não corte os tooltips flutuantes externos */
+        #tab-3 .card {
+            overflow: visible !important;
+        }
+
+        .section-header {
+            background: #222;
+            padding: 12px 16px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sidebar-padding {
+            padding: 15px;
+        }
+        .tabs {
+            display: flex;
+            background: #111;
+            border-bottom: 1px solid #333;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .tab.active {
+            background: var(--accent);
+            color: white;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        .ranking-table td, .ranking-table th { padding: 10px; text-align: left; font-size: 14px;}
+        .ranking-table tr { border-bottom: 1px solid #333; }
+        
+        .match-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            background: #1a1a1a;
+            padding: 14px 20px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .match-team-left {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            text-align: left;
+        }
+        .match-team-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            text-align: right;
+        }
+        .match-score-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            min-width: 180px;
+            text-align: center;
+        }
+        .score-num {
+            font-size: 20px;
+            font-weight: bold;
+            background: #252525;
+            padding: 2px 10px;
+            border-radius: 4px;
+            min-width: 32px;
+            text-align: center;
+        }
+        .match-status-tag {
+            color: #ff6200;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #111;
+            margin-top: 50px;
+        }
+
+        .admin-mode-on .editable {
+            border: 1px dashed #ff6200 !important;
+            padding: 2px 5px;
+            cursor: text;
+        }
+        .admin-mode-on .banner-hero, 
+        .admin-mode-on .event-logo {
+            cursor: copy !important;
+        }
+
+        .groups-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) { .groups-container { grid-template-columns: 1fr; } }
+        
+        .liquipedia-group-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #333;
+            font-size: 14px;
+        }
+        .liquipedia-group-table th {
+            background: #2c2c2c;
+            color: #fff;
+            font-weight: bold;
+            padding: 6px;
+            text-align: center;
+        }
+        .liquipedia-group-table td {
+            padding: 8px 6px;
+            vertical-align: middle;
+            border: 1px solid #2a2a2a;
+        }
+        .row-advance-high { background-color: rgba(0, 70, 0, 0.4); }
+        .row-advance-low { background-color: rgba(70, 50, 0, 0.3); }
+        .row-eliminated { background-color: rgba(70, 0, 0, 0.3); }
+        
+        .col-pos { width: 30px; text-align: center; font-weight: bold; }
+        .col-team { text-align: left; }
+        .col-team span { margin-right: 8px; }
+        .col-stats { width: 45px; text-align: center; font-weight: bold; }
+        .col-diff { width: 45px; text-align: center; }
+        
+        .table-footer-btn {
+            background: #222;
+            text-align: center;
+            padding: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #333;
+            border-top: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            color: #aaa;
+        }
+
+        .teams-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            padding: 10px;
+        }
+        .team-badge-card {
+            background: #202020;
+            padding: 15px 10px;
+            text-align: center;
+            border-radius: 6px;
+            border: 1px solid #2a2a2a;
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .team-badge-card:hover {
+            border-color: var(--accent);
+            background: #252525;
+        }
+        .team-badge-logo {
+            width: 55px;
+            height: 55px;
+            margin: 0 auto 10px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .team-badge-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Corrigido: Agora abre para baixo (top) evitando o corte nas primeiras linhas */
+        .team-lineup-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: 105%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111111;
+            border: 1px solid #333;
+            border-top: 3px solid var(--accent);
+            border-radius: 6px;
+            padding: 12px;
+            width: 170px;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            z-index: 100;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            pointer-events: none;
+        }
+        .team-badge-card:hover .team-lineup-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .team-lineup-tooltip h5 {
+            color: #aaa;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 3px;
+        }
+        .team-lineup-tooltip ul {
+            list-style: none;
+        }
+        .team-lineup-tooltip li {
+            font-size: 13px;
+            color: #fff;
+            padding: 2px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .team-lineup-tooltip li.coach-row {
+            color: var(--accent2);
+            font-size: 12px;
+            margin-top: 4px;
+            border-top: 1px dashed #222;
+            padding-top: 4px;
+        }
+        
+        .bracket-wrapper {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 15px 5px;
+        }
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            min-width: 200px;
+        }
+        .bracket-round-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+        .bracket-match-node {
+            background: #202020;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 8px;
+            margin: 15px 0;
+        }
+        .bracket-team-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 6px;
+            font-size: 13px;
+        }
+        .bracket-team-line.winner {
+            color: #fff;
+            font-weight: bold;
+            background: rgba(255, 98, 0, 0.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container { flex-direction: column; }
+            .left-sidebar, .right-sidebar { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <input type="file" id="bannerFileInput" accept="image/*" style="display: none;" onchange="loadLocalBanner(this)">
+    <input type="file" id="logoFileInput" accept="image/*" style="display: none;" onchange="loadLocalLogo(this)">
+
+    <header>
+        <div class="top-bar">
+            <a href="index.html" class="logo">RLTV <span>.gg</span></a>
+            
+            <nav id="main-nav">
+                <a href="index.html">Home</a>
+                <a href="news.html">Notícias</a>
+                <a href="matches.html">Partidas</a>
+                <a href="events.html" class="active">Eventos</a>
+                <a href="teams.html">Times</a>
+                <a href="players.html">Jogadores</a>
+                <a href="rankings.html">Rankings</a>
+            </nav>
+            
+            <div class="header-right">
+                <input type="text" class="search-bar" placeholder="Buscar jogadores, times..." id="search-input">
+                <button class="btn">🌙</button>
+                <button class="btn btn-primary" id="adminBtn" onclick="toggleAdminMode()">ADMIN</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="left-sidebar">
+            <div class="card">
+                <div class="section-header">Estatísticas Gerais</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <p style="margin-bottom: 8px;"><strong>Melhor Jogador do Mês:</strong><br>Vatira (Karmine Corp)</p>
+                    <p style="margin-bottom: 8px;"><strong>Melhor Time do Mês:</strong><br>Gentle Mates</p>
+                    <p><strong>Maior Sequência:</strong><br>12 vitórias (NRG)</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Campeonatos Ativos</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <div style="margin-bottom: 12px;">
+                        <strong>RLCS 2026 Season</strong><br>
+                        <small style="color: #aaa;">Regular Season - Week 8</small>
+                    </div>
+                    <div>Paris Major 2026 - Finalizado</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Trending</div>
+                <div class="sidebar-padding" style="font-size: 14px; color: #aaa; display: flex; flex-direction: column; gap: 5px;">
+                    <div>#VatiraGod</div>
+                    <div>#GentleMates</div>
+                    <div>#RLCS2026</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            
+            <div class="banner-hero" id="heroBanner" onclick="triggerBannerChange()">
+                <div class="hero-inner">
+                    <div class="event-header-box">
+                        <div class="event-logo" id="eventLogo" onclick="triggerLogoChange(event)"></div>
+                        <div>
+                            <span style="background:#ff6200; padding:3px 10px; border-radius:4px; font-size:12px; font-weight: bold; color: white;">UPCOMING</span>
+                            <h1 style="font-size:36px; margin:4px 0;" class="editable">IEM Cologne Major 2026</h1>
+                            <p style="font-size:18px; color:#ddd;" class="editable">Lanxess Arena • Colônia, Alemanha</p>
+                        </div>
+                    </div>
+                    <div style="margin-top:20px; display:flex; gap:40px; flex-wrap:wrap; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 6px;">
+                        <div>
+                            <small style="color: #aaa;">Premiação Total</small><br>
+                            <span style="font-size:22px; color:#ff6200; font-weight:bold;" class="editable">$1,250,000</span>
+                        </div>
+                        <div>
+                            <small style="color: #aaa;">Data do Palco Principal</small><br>
+                            <span style="font-size:20px; font-weight:bold;" class="editable">Agosto 2026</span>
+                        </div>
+                        <div>
+                            <small style="color: #aaa;">Status</small><br>
+                            <span style="font-size:16px; color: var(--accent2);" class="editable">Stage 1 Progr.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(0)">Overview</div>
+                <div class="tab" onclick="switchTab(1)">Matches</div>
+                <div class="tab" onclick="switchTab(2)">Bracket</div>
+                <div class="tab" onclick="switchTab(3)">Teams</div>
+                <div class="tab" onclick="switchTab(4)">Standings</div>
+                <div class="tab" onclick="switchTab(5)">Statistics</div>
+            </div>
+
+            <div id="tab-0" class="tab-content">
+                <div class="card" style="padding: 20px;">
+                    <div class="groups-container">
+                        
+                        <div>
+                            <table class="liquipedia-group-table">
+                               <thead>
+                                   <tr>
+                                       <th colspan="5">Group A</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <tr class="row-advance-high">
+                                       <td class="col-pos">1.</td>
+                                       <td class="col-team"><span>🔵</span> Karmine Corp</td>
+                                       <td class="col-stats">3-0</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">9-3</td>
+                                       <td class="col-diff" style="color: #00ff00; font-weight: bold;">+6</td>
+                                   </tr>
+                                   <tr class="row-advance-low">
+                                       <td class="col-pos">2.</td>
+                                       <td class="col-team"><span>🟡</span> Team Vitality</td>
+                                       <td class="col-stats">2-1</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">7-5</td>
+                                       <td class="col-diff" style="color: #00ff00; font-weight: bold;">+2</td>
+                                   </tr>
+                                   <tr class="row-advance-low">
+                                       <td class="col-pos">3.</td>
+                                       <td class="col-team"><span>🔴</span> FUT Esports</td>
+                                       <td class="col-stats">1-2</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">7-7</td>
+                                       <td class="col-diff" style="color: #aaa;">0</td>
+                                   </tr>
+                                   <tr class="row-eliminated">
+                                       <td class="col-pos">4.</td>
+                                       <td class="col-team"><span>🔵</span> Wildcard</td>
+                                       <td class="col-stats">0-3</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">1-9</td>
+                                       <td class="col-diff" style="color: #ff3333; font-weight: bold;">-8</td>
+                                   </tr>
+                               </tbody>
+                            </table>
+                            <div class="table-footer-btn">
+                                <span>Group A Matches</span>
+                                <span style="cursor: pointer;"><i class="fa-solid fa-eye-slash"></i> Hide</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <table class="liquipedia-group-table">
+                               <thead>
+                                   <tr>
+                                       <th colspan="5">Group B</th>
+                                   </tr>
+                               </thead>
+                               <tbody>
+                                   <tr class="row-advance-high">
+                                       <td class="col-pos">1.</td>
+                                       <td class="col-team"><span>🩵</span> Man City Esports</td>
+                                       <td class="col-stats">3-0</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">9-1</td>
+                                       <td class="col-diff" style="color: #00ff00; font-weight: bold;">+8</td>
+                                   </tr>
+                                   <tr class="row-advance-low">
+                                       <td class="col-pos">2.</td>
+                                       <td class="col-team"><span>🟠</span> NRG</td>
+                                       <td class="col-stats">2-1</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">6-5</td>
+                                       <td class="col-diff" style="color: #00ff00; font-weight: bold;">+1</td>
+                                   </tr>
+                                   <tr class="row-advance-low">
+                                       <td class="col-pos">3.</td>
+                                       <td class="col-team"><span>⚪</span> MIBR</td>
+                                       <td class="col-stats">1-2</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">6-6</td>
+                                       <td class="col-diff" style="color: #aaa;">0</td>
+                                   </tr>
+                                   <tr class="row-eliminated">
+                                       <td class="col-pos">4.</td>
+                                       <td class="col-team"><span>⚫</span> Five Fears</td>
+                                       <td class="col-stats">0-3</td>
+                                       <td class="col-stats" style="color: #aaa; font-weight: normal;">0-9</td>
+                                       <td class="col-diff" style="color: #ff3333; font-weight: bold;">-9</td>
+                                   </tr>
+                               </tbody>
+                            </table>
+                            <div class="table-footer-btn">
+                                <span>Group B Matches</span>
+                                <span style="cursor: pointer;"><i class="fa-solid fa-eye-slash"></i> Hide</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 20px;">
+                    <div class="section-header" style="background: none; padding: 0 0 10px 0; margin-bottom: 15px;">Visão Geral do Torneio</div>
+                    <p style="font-size: 14px; margin-bottom: 10px;">A IEM Cologne 2026 é um dos eventos mais tradicionais do ecossistema competitivo global, trazendo as 16 organizações qualificadas no Stage 1 diretamente para o icônico palco da Lanxess Arena na Alemanha.</p>
+                    <p style="font-size: 14px;">Navegue pelas abas superiores <strong>Bracket</strong> para ver o andamento das chaves de eliminação ou <strong>Teams</strong> para visualizar as lineups.</p>
+                </div>
+            </div>
+
+            <div id="tab-1" class="tab-content" style="display:none;">
+                <div class="card" style="padding: 20px;">
+                    <div class="section-header" style="background: none; padding: 0 0 10px 0; margin-bottom: 15px;">Últimas Partidas (Stage 1 Deciders)</div>
+                    
+                    <div class="match-row">
+                        <div class="match-team-left">
+                            <strong>FURIA Esports</strong> <span style="color:#aaa; font-size:12px;">BR</span>
+                        </div>
+                        <div class="match-score-center">
+                            <span class="score-num">2</span>
+                            <span class="match-status-tag">FIM (BO3)</span>
+                            <span class="score-num">1</span>
+                        </div>
+                        <div class="match-team-right">
+                            <span style="color:#aaa; font-size:12px;">US</span> <strong>Complexity</strong>
+                        </div>
+                    </div>
+
+                    <div class="match-row">
+                        <div class="match-team-left">
+                            <strong>Cloud9</strong> <span style="color:#aaa; font-size:12px;">RU</span>
+                        </div>
+                        <div class="match-score-center">
+                            <span class="score-num">2</span>
+                            <span class="match-status-tag">FIM (BO3)</span>
+                            <span class="score-num">0</span>
+                        </div>
+                        <div class="match-team-right">
+                            <span style="color:#aaa; font-size:12px;">DE</span> <strong>BIG</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-2" class="tab-content" style="display:none;">
+                <div class="card" style="padding: 20px;">
+                    <div class="section-header" style="background: none; padding: 0 0 10px 0; margin-bottom: 15px;">Chave de Playoffs - Lanxess Arena</div>
+                    <div class="bracket-wrapper">
+                        <div class="bracket-round">
+                            <div class="bracket-round-title">Quartas de Final</div>
+                            <div class="bracket-match-node">
+                                <div class="bracket-team-line winner"><span>Team Liquid</span> <strong>2</strong></div>
+                                <div class="bracket-team-line"><span>Astralis</span> <strong>0</strong></div>
+                            </div>
+                            <div class="bracket-match-node">
+                                <div class="bracket-team-line winner"><span>Natus Vincere</span> <strong>2</strong></div>
+                                <div class="bracket-team-line"><span>MOUZ</span> <strong>1</strong></div>
+                            </div>
+                        </div>
+                        <div class="bracket-round">
+                            <div class="bracket-round-title">Semifinais</div>
+                            <div class="bracket-match-node">
+                                <div class="bracket-team-line"><span>FaZe Clan</span> <strong>1</strong></div>
+                                <div class="bracket-team-line winner"><span>Team Liquid</span> <strong>2</strong></div>
+                            </div>
+                            <div class="bracket-match-node">
+                                <div class="bracket-team-line winner"><span>Team Vitality</span> <strong>2</strong></div>
+                                <div class="bracket-team-line"><span>Natus Vincere</span> <strong>0</strong></div>
+                            </div>
+                        </div>
+                        <div class="bracket-round">
+                            <div class="bracket-round-title">Grande Final</div>
+                            <div class="bracket-match-node" style="border-color: var(--accent);">
+                                <div class="bracket-team-line"><span>Team Liquid</span> <strong>-</strong></div>
+                                <div class="bracket-team-line"><span>Team Vitality</span> <strong>-</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-3" class="tab-content" style="display:none;">
+                <div class="card" style="padding: 20px;">
+                    <div class="section-header" style="background: none; padding: 0 0 10px 0; margin-bottom: 15px;">Times Participantes Qualificados</div>
+                    <div class="teams-grid-layout">
+                        
+                        <!-- FaZe Clan -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/83uE0u1.png" alt="FaZe Clan">
+                            </div>
+                            <strong>FaZe Clan</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇺🇸 Firstkiller</li>
+                                    <li>🇺🇸 Sypical</li>
+                                    <li>🇺🇸 mist</li>
+                                    <li class="coach-row">👤 Roll Dizz (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Vitality -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/b9Lmsq1.png" alt="Team Vitality">
+                            </div>
+                            <strong>Vitality</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇫🇷 zen</li>
+                                    <li>🇫🇷 Alpha54</li>
+                                    <li>🇫🇷 Radosin</li>
+                                    <li class="coach-row">👤 Ferra (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Team Liquid -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/gK6107L.png" alt="Team Liquid">
+                            </div>
+                            <strong>Team Liquid</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇸🇪 AcroniK.</li>
+                                    <li>🇵🇹 Oski</li>
+                                    <li>🇵🇱 Atow.</li>
+                                    <li class="coach-row">👤 Xrayz (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- MOUZ -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/tLw1j1m.png" alt="MOUZ">
+                            </div>
+                            <strong>MOUZ</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇩🇪 Tox</li>
+                                    <li>🇳🇱 Catalysm</li>
+                                    <li>🇩🇪 Rizex45</li>
+                                    <li class="coach-row">👤 Skyline (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Na'Vi -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/0IbywOf.png" alt="Na'Vi">
+                            </div>
+                            <strong>Na'Vi</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇺🇦 LuiisP</li>
+                                    <li>🇳🇱 Virtuoso</li>
+                                    <li>🇬🇧 Tigreee</li>
+                                    <li class="coach-row">👤 s1n (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Astralis -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/WwW9tms.png" alt="Astralis">
+                            </div>
+                            <strong>Astralis</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇩🇰 Snaski</li>
+                                    <li>🇸🇪 ThO.</li>
+                                    <li>🇩🇰 Mikeboy</li>
+                                    <li class="coach-row">👤 herculys (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Cloud9 -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/ZzR0Fw6.png" alt="Cloud9">
+                            </div>
+                            <strong>Cloud9</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇺🇸 LionBlaze</li>
+                                    <li>🇺🇸 Kinseh</li>
+                                    <li>🇺🇸 Zineel</li>
+                                    <li class="coach-row">👤 Dazerin (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- FURIA -->
+                        <div class="team-badge-card">
+                            <div class="team-badge-logo">
+                                <img src="https://i.imgur.com/N74DByW.png" alt="FURIA">
+                            </div>
+                            <strong>FURIA</strong>
+                            <div class="team-lineup-tooltip">
+                                <h5>Lineup</h5>
+                                <ul>
+                                    <li>🇧🇷 Yanxnz</li>
+                                    <li>🇧🇷 Lostt</li>
+                                    <li>🇧🇷 Drufinho</li>
+                                    <li class="coach-row">👤 STL (C)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-4" class="tab-content" style="display:none;">
+                <div class="card" style="padding: 20px;">
+                    <div class="section-header" style="background: none; padding: 0 0 10px 0; margin-bottom: 15px;">Classificação Final Provisória</div>
+                    <table class="ranking-table">
+                        <thead>
+                            <tr style="background: #252525;">
+                                <th>Posição</th>
+                                <th>Equipe</th>
+                                <th>Premiação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1º - 2º</td><td>A definir (Liquid / Vitality)</td><td>$400,000</td></tr>
+                            <tr><td>3º - 4º</td><td>FaZe Clan / Natus Vincere</td><td>$80,000</td></tr>
+                            <tr><td>5º - 6º</td><td>Astralis / MOUZ</td><td>$40,000</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-5" class="tab-content" style="display:none;">
+                <div class="card" style="padding: 20px;">
+                    <div class="section-header" style="background: none; padding: 0 0 10px 0; margin-bottom: 15px;">Estatísticas de Jogadores (Líderes)</div>
+                    <p style="font-size: 14px;">Dados de performance individuais em processamento pelo sistema interno de rating RLTV.</p>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="right-sidebar">
+            <div class="card">
+                <div class="section-header">Ranking Mundial</div>
+                <table class="ranking-table">
+                    <tbody>
+                        <tr><td>#1</td><td><strong>GM</strong> Gentle Mates</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1969</td></tr>
+                        <tr><td>#2</td><td><strong>KC</strong> Karmine Corp</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1936</td></tr>
+                        <tr><td>#3</td><td><strong>VIT</strong> Team Vitality</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1847</td></tr>
+                        <tr><td>#4</td><td><strong>NRG</strong> NRG</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1745</td></tr>
+                        <tr><td>#5</td><td><strong>SR</strong> Shopify Rebellion</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1623</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="section-header">Últimas Transferências</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <p style="margin-bottom: 8px;"><strong>Vatira</strong> → Karmine Corp <small style="color:#aaa;">(Out/2025)</small></p>
+                    <p><strong>zen</strong> permanece na Vitality</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-header">Próximos Eventos</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <div style="margin-bottom: 10px;">
+                        <strong>RLCS Regular Season</strong><br>
+                        <small style="color:#aaa;">Semana 8 • NA + EU</small>
+                    </div>
+                    <div>
+                        <strong>World Championship 2026</strong><br>
+                        <small style="color:#aaa;">Outubro 2026</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 RLTV.gg - Portal não oficial de Rocket League Esports. Inspirado na HLTV.</p>
+    </footer>
+
+    <script>
+        let adminMode = false;
+
+        const eventData = {
+            name: "IEM Cologne Major 2026",
+            location: "Lanxess Arena, Colônia, Alemanha",
+            date: "Agosto 2026",
+            prize: "$1,250,000",
+            status: "Stage 1",
+            champion: "A definir",
+            mvp: "A definir"
+        };
+
+        function switchTab(n) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            const activeTab = document.getElementById(`tab-${n}`);
+            if (activeTab) activeTab.style.display = 'block';
+
+            document.querySelectorAll('.tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === n);
+            });
+        }
+
+        function toggleAdminMode() {
+            adminMode = !adminMode;
+            const body = document.body;
+            const btn = document.getElementById('adminBtn');
+            const editables = document.querySelectorAll('.editable');
+
+            if (adminMode) {
+                body.classList.add('admin-mode-on');
+                btn.classList.add('admin-active');
+                btn.innerText = "SALVAR";
+                
+                editables.forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                });
+                alert('🔧 Modo ADMIN Ativado. Para trocar o Banner ou Logo, basta clicar em cima deles e selecionar um arquivo do seu PC.');
+            } else {
+                body.classList.remove('admin-mode-on');
+                btn.classList.remove('admin-active');
+                btn.innerText = "ADMIN";
+                
+                editables.forEach(el => {
+                    el.removeAttribute('contenteditable');
+                });
+                saveEdits();
+                alert('💾 Alterações salvas com sucesso e Modo de Edição bloqueado!');
+            }
+        }
+
+        function triggerBannerChange() {
+            if (!adminMode) return;
+            document.getElementById('bannerFileInput').click();
+        }
+
+        function loadLocalBanner(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('heroBanner').style.background = `linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.85)), url('${e.target.result}') center/cover`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function triggerLogoChange(e) {
+            if (!adminMode) return;
+            e.stopPropagation();
+            document.getElementById('logoFileInput').click();
+        }
+
+        function loadLocalLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('eventLogo').style.background = `url('${e.target.result}') center/contain no-repeat`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveEdits() {
+            localStorage.setItem('eventData', JSON.stringify(eventData));
+        }
+
+        window.onload = function() {
+            console.log('%c✅ Bug do overflow corrigido. Tooltips abrindo para baixo livremente.', 'color:#00b4ff; font-size:14px;');
+        };
+    </script>
+</body>
+</html>

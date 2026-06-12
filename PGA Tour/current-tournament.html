@@ -18,7 +18,6 @@
             color: #333; 
         }
 
-        /* ==================== NAVBAR ==================== */
         nav {
             background: #ffffff;
             padding: 2px 6px;
@@ -30,17 +29,9 @@
         .nav-left { flex: 1; }
         .nav-logo { max-height: 50px; width: auto; }
 
-        .nav-center {
-            flex: 2;
-            display: flex;
-            justify-content: center;
-        }
+        .nav-center { flex: 2; display: flex; justify-content: center; }
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-        }
+        .nav-links { display: flex; align-items: center; gap: 28px; }
 
         .nav-links a {
             color: rgb(2, 2, 2);
@@ -82,7 +73,6 @@
             font-weight: bold;
         }
 
-        /* ==================== CONTEÚDO ==================== */
         .container { 
             max-width: 1200px; 
             margin: 25px auto; 
@@ -123,10 +113,11 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
 
-        .btn-add { background: var(--pga-green); color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-del { background: #d32f2f; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--pga-green); color: white; }
+        .btn-del { background: #d32f2f; color: white; }
+        .btn-archive { background: #d32f2f; color: white; margin-top: 15px; }
 
-        /* LOGIN MODAL */
         .modal { 
             display: none; 
             position: fixed; 
@@ -145,6 +136,7 @@
             max-width: 380px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
+            position: relative;
         }
         .login-box h2 { margin-bottom: 25px; color: var(--pga-navy); }
         .login-input {
@@ -166,16 +158,50 @@
             border-radius: 6px;
             cursor: pointer;
         }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+        .close-btn:hover { color: #333; }
+
+        .golfers-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .golfer-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ==================== NAVBAR ==================== -->
     <nav>
         <div class="nav-left">
-            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
-                 alt="PGA TOUR" 
-                 class="nav-logo">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" alt="PGA TOUR" class="nav-logo">
         </div>
 
         <div class="nav-center">
@@ -192,6 +218,7 @@
         <div class="nav-right">
             <span id="loginLink" class="login-link" onclick="openLoginModal()">Login</span>
             <button id="logoutBtn" class="admin-btn" onclick="logout()" style="display:none;">Sair (Admin)</button>
+            <button class="admin-btn" onclick="openGolfersDatabase()" style="margin-left:10px;">📋 Base de Golfistas</button>
         </div>
     </nav>
 
@@ -201,7 +228,6 @@
         <p><strong>Data:</strong> <span contenteditable="true" id="tournamentDate">March 10 - 16, 2026</span> | 
            <strong>Campo:</strong> <span contenteditable="true" id="course">TPC Sawgrass, Ponte Vedra Beach, FL</span></p>
 
-        <!-- Estatísticas Gerais -->
         <div class="stats-grid">
             <div class="stat-card">
                 <h3>Scoring Average</h3>
@@ -221,7 +247,6 @@
             </div>
         </div>
 
-        <!-- Leaderboard -->
         <h3>Leaderboard - Round 3</h3>
         <table>
             <thead>
@@ -243,13 +268,20 @@
         </table>
 
         <button class="btn btn-add admin-only" onclick="addPlayerToLeaderboard()" style="margin-top:15px; display: none;">
-            + Adicionar Jogador
+            + Adicionar Manual
+        </button>
+        <button class="btn btn-add admin-only" onclick="addFromDatabase()" style="margin-top:15px; margin-left:10px; display: none;">
+            + Adicionar da Base
+        </button>
+        <button class="btn btn-archive admin-only" onclick="endCurrentTournament()" style="margin-top:15px; margin-left:10px; display: none;">
+            🏆 Encerrar Torneio Atual
         </button>
     </div>
 
     <!-- LOGIN MODAL -->
     <div id="loginModal" class="modal">
         <div class="login-box">
+            <span class="close-btn" onclick="closeLoginModal()">×</span>
             <h2>🔑 Acesso Administrativo</h2>
             <input type="text" id="username" class="login-input" placeholder="Usuário" autocomplete="off">
             <input type="password" id="password" class="login-input" placeholder="Senha" autocomplete="off">
@@ -258,6 +290,19 @@
                 Usuário: <strong>ADMIN</strong><br>
                 Senha: <strong>ADMIN</strong>
             </p>
+        </div>
+    </div>
+
+    <!-- Base de Golfistas Modal -->
+    <div id="golfersModal" class="modal">
+        <div class="golfers-container">
+            <h2>📊 Base de Dados de Golfistas</h2>
+            <input type="text" id="golferSearch" class="search-input" placeholder="Buscar golfista..." onkeyup="filterGolfers()">
+            
+            <button class="btn btn-add" onclick="addNewGolfer()">+ Adicionar Novo Golfista</button>
+            <button class="btn" onclick="closeGolfersModal()" style="margin-left:10px;">Fechar</button>
+
+            <div id="golfersList" style="margin-top:15px;"></div>
         </div>
     </div>
 
@@ -270,8 +315,32 @@
             {pos:2, name:"Rory McIlroy", score:"-25", round:"-5", thru:"F", r1:"64", r2:"65", r3:"67", r4:"67", strokes:"263"},
         ];
 
+        let allGolfers = JSON.parse(localStorage.getItem('pga_all_golfers')) || [
+            {id:1, name:"Scottie Scheffler", country:"USA", age:29, worldRank:1},
+            {id:2, name:"Matt Fitzpatrick", country:"England", age:31, worldRank:4},
+            {id:3, name:"Rory McIlroy", country:"Northern Ireland", age:37, worldRank:2},
+            {id:4, name:"Xander Schauffele", country:"USA", age:32, worldRank:9},
+            {id:5, name:"Jon Rahm", country:"Spain", age:31, worldRank:10},
+            {id:6, name:"Ludvig Åberg", country:"Sweden", age:26, worldRank:8},
+            {id:7, name:"Collin Morikawa", country:"USA", age:29, worldRank:6},
+        ];
+
+        function saveLeaderboard() {
+            localStorage.setItem('pga_current_leaderboard', JSON.stringify(leaderboard));
+        }
+
+        function saveGolfers() {
+            localStorage.setItem('pga_all_golfers', JSON.stringify(allGolfers));
+        }
+
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         }
 
         function login() {
@@ -283,7 +352,6 @@
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('loginLink').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'block';
-                
                 enableFullEditMode();
             } else {
                 alert("❌ Usuário ou senha incorretos!\n\nUse:\nUsuário: ADMIN\nSenha: ADMIN");
@@ -293,14 +361,6 @@
         function enableFullEditMode() {
             isEditMode = true;
             document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
-            renderLeaderboard();
-            alert("✅ Modo Editor Completo ativado!\nVocê agora tem acesso total de administrador.");
-        }
-
-        function toggleEdit() {
-            if (!isLoggedIn) return;
-            isEditMode = !isEditMode;
-            document.querySelectorAll('.admin-only').forEach(el => el.style.display = isEditMode ? '' : 'none');
             renderLeaderboard();
         }
 
@@ -315,19 +375,94 @@
             }
         }
 
+        function openGolfersDatabase() {
+            document.getElementById('golfersModal').style.display = 'flex';
+            renderGolfersList();
+        }
+
+        function closeGolfersModal() {
+            document.getElementById('golfersModal').style.display = 'none';
+        }
+
+        function filterGolfers() {
+            renderGolfersList();
+        }
+
+        function renderGolfersList() {
+            const search = document.getElementById('golferSearch').value.toLowerCase().trim();
+            const container = document.getElementById('golfersList');
+            
+            let filtered = allGolfers.filter(g => g.name.toLowerCase().includes(search));
+
+            container.innerHTML = filtered.map(g => `
+                <div class="golfer-card">
+                    <div>
+                        <strong>${g.name}</strong><br>
+                        <small>${g.country} • ${g.age} anos • OWGR: ${g.worldRank}</small>
+                    </div>
+                    <button class="btn" onclick="selectGolferToLeaderboard(${g.id})">Adicionar ao Leaderboard</button>
+                </div>
+            `).join('');
+        }
+
+        function addNewGolfer() {
+            const name = prompt("Nome completo do golfista:");
+            if (!name) return;
+            const country = prompt("País:", "USA");
+            const age = parseInt(prompt("Idade:", "28")) || 28;
+            const rank = parseInt(prompt("Ranking Mundial (OWGR):", "100")) || 100;
+
+            const newId = allGolfers.length ? Math.max(...allGolfers.map(g => g.id)) + 1 : 1;
+            
+            allGolfers.push({ id: newId, name, country, age, worldRank: rank });
+            saveGolfers();
+            renderGolfersList();
+            alert(`✅ ${name} adicionado à Base de Dados!`);
+        }
+
+        function selectGolferToLeaderboard(id) {
+            const golfer = allGolfers.find(g => g.id === id);
+            if (!golfer) return;
+
+            leaderboard.push({
+                pos: leaderboard.length + 1,
+                name: golfer.name,
+                score: "-2",
+                round: "-1",
+                thru: "F",
+                r1: "68",
+                r2: "69",
+                r3: "67",
+                r4: "70",
+                strokes: "274"
+            });
+
+            saveLeaderboard();
+            renderLeaderboard();
+            alert(`✅ ${golfer.name} adicionado ao Leaderboard!`);
+        }
+
+        function addFromDatabase() {
+            if (!isEditMode) {
+                alert("Entre no modo Admin primeiro.");
+                return;
+            }
+            openGolfersDatabase();
+        }
+
         function renderLeaderboard() {
             document.getElementById('leaderboardBody').innerHTML = leaderboard.map((p, i) => `
                 <tr>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].pos=this.innerText">${p.pos}</td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].name=this.innerText">${p.name}</td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].score=this.innerText"><strong>${p.score}</strong></td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].round=this.innerText"><strong>${p.round}</strong></td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].thru=this.innerText">${p.thru}</td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r1=this.innerText"><strong>${p.r1}</strong></td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r2=this.innerText"><strong>${p.r2}</strong></td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r3=this.innerText"><strong>${p.r3}</strong></td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r4=this.innerText"><strong>${p.r4}</strong></td>
-                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].strokes=this.innerText"><strong>${p.strokes}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].pos=this.innerText; saveLeaderboard()">${p.pos}</td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].name=this.innerText; saveLeaderboard()">${p.name}</td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].score=this.innerText; saveLeaderboard()"><strong>${p.score}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].round=this.innerText; saveLeaderboard()"><strong>${p.round}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].thru=this.innerText; saveLeaderboard()">${p.thru}</td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r1=this.innerText; saveLeaderboard()"><strong>${p.r1}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r2=this.innerText; saveLeaderboard()"><strong>${p.r2}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r3=this.innerText; saveLeaderboard()"><strong>${p.r3}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].r4=this.innerText; saveLeaderboard()"><strong>${p.r4}</strong></td>
+                    <td contenteditable="${isEditMode}" onblur="leaderboard[${i}].strokes=this.innerText; saveLeaderboard()"><strong>${p.strokes}</strong></td>
                     <td class="admin-only" style="display: ${isEditMode ? '' : 'none'}">
                         <button class="btn-del" onclick="removePlayer(${i})">X</button>
                     </td>
@@ -342,29 +477,57 @@
                 score: "-2",
                 round: "-1",
                 thru: "F",
-                r1: "65",
-                r2: "66",
+                r1: "68",
+                r2: "69",
                 r3: "67",
-                r4: "68",
-                strokes: "266"
+                r4: "70",
+                strokes: "274"
             });
+            saveLeaderboard();
             renderLeaderboard();
         }
 
         function removePlayer(i) {
             if(confirm("Remover jogador?")) {
                 leaderboard.splice(i, 1);
+                saveLeaderboard();
                 renderLeaderboard();
             }
         }
 
-        function saveData() {
-            localStorage.setItem('pga_current_leaderboard', JSON.stringify(leaderboard));
-            alert("✅ Campeonato Atual salvo com sucesso!");
+        // ==================== NOVA FUNCIONALIDADE: ENCERRAR TORNEIO ====================
+        function endCurrentTournament() {
+            if (!confirm("⚠️ Tem certeza que deseja encerrar o torneio atual?\n\nTodos os dados serão salvos nos Arquivos e o leaderboard atual será limpo.")) {
+                return;
+            }
+
+            const tournamentData = {
+                date: new Date().toISOString(),
+                name: document.getElementById('tournamentName').innerText,
+                datePeriod: document.getElementById('tournamentDate').innerText,
+                course: document.getElementById('course').innerText,
+                scoringAvg: document.getElementById('scoringAvg').innerText,
+                driveDist: document.getElementById('driveDist').innerText,
+                gir: document.getElementById('gir').innerText,
+                putts: document.getElementById('putts').innerText,
+                leaderboard: [...leaderboard]
+            };
+
+            let archives = JSON.parse(localStorage.getItem('pga_archives')) || [];
+            archives.unshift(tournamentData); // Adiciona no topo
+            localStorage.setItem('pga_archives', JSON.stringify(archives));
+
+            alert(`✅ Torneio "${tournamentData.name}" encerrado e salvo nos Arquivos com sucesso!`);
+
+            // Limpa o leaderboard atual
+            leaderboard = [];
+            saveLeaderboard();
+            renderLeaderboard();
         }
 
         // Inicializar
         renderLeaderboard();
+        if (!localStorage.getItem('pga_all_golfers')) saveGolfers();
     </script>
 </body>
 </html>

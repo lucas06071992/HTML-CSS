@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLTV - Eventos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --card: #1a1a1a;
+            --text: #e0e0e0;
+            --accent: #ff6200;
+            --accent2: #00b4ff;
+            --live: #e74c3c;
+            --done: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: #111;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--accent2);
+        }
+        
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            color: var(--accent);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .search-bar {
+            background: #222;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            width: 280px;
+            color: white;
+            outline: none;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        
+        /* Layout */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .left-sidebar {
+            width: 240px;
+            flex-shrink: 0;
+        }
+        
+        .content {
+            flex: 1;
+        }
+        
+        .right-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .section-header {
+            background: #222;
+            padding: 12px 16px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .sidebar-padding {
+            padding: 15px;
+        }
+        
+        /* Tabelas de Ranking */
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .ranking-table td {
+            padding: 10px;
+            border-bottom: 1px solid #252525;
+            font-size: 14px;
+        }
+        
+        .ranking-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Sistema de Abas Alternáveis */
+        .events-tabs {
+            display: flex;
+            background: #222;
+            border-bottom: 2px solid #333;
+        }
+
+        .tab-link {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #aaa;
+            padding: 15px 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-link:hover {
+            color: #fff;
+            background: #282828;
+        }
+
+        .tab-link.active[data-tab="current"] { color: var(--live); border-bottom: 3px solid var(--live); background: #1c1c1c; }
+        .tab-link.active[data-tab="future"] { color: var(--accent2); border-bottom: 3px solid var(--accent2); background: #1c1c1c; }
+        .tab-link.active[data-tab="past"] { color: var(--done); border-bottom: 3px solid var(--done); background: #1c1c1c; }
+
+        .tab-content {
+            display: none;
+            padding: 20px 15px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .event-list-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .event-row {
+            display: flex;
+            align-items: center;
+            background: #181818;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #252525;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .event-row:hover {
+            transform: translateX(4px);
+            background: #1f1f1f;
+        }
+
+        .event-main-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .event-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .event-meta {
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .event-status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            min-width: 110px;
+        }
+
+        .badge-current {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--live);
+            border: 1px solid var(--live);
+        }
+
+        .badge-future {
+            background: rgba(0, 180, 255, 0.15);
+            color: var(--accent2);
+            border: 1px solid var(--accent2);
+        }
+
+        .badge-past {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--done);
+            border: 1px solid var(--done);
+        }
+        
+        @media (max-width: 1024px) {
+            .main-container {
+                flex-direction: column;
+            }
+            .left-sidebar, .right-sidebar {
+                width: 100%;
+            }
+            .event-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .event-status-badge {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="top-bar">
+            <a href="index.html" class="logo">RLTV <span>.gg</span></a>
+            
+            <nav id="main-nav">
+                <a href="index.html">Home</a>
+                <a href="news.html">Notícias</a>
+                <a href="matches.html">Partidas</a>
+                <a href="events.html" class="active">Eventos</a>
+                <a href="teams.html">Times</a>
+                <a href="players.html">Jogadores</a>
+                <a href="rankings.html">Rankings</a>
+            </nav>
+            
+            <div class="header-right">
+                <input type="text" class="search-bar" placeholder="Buscar campeonatos, eventos..." id="search-input">
+                <button class="btn" style="background:none;">🌙</button>
+                <button class="btn btn-primary">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- LEFT SIDEBAR COMPLETA -->
+        <div class="left-sidebar">
+            <div class="card">
+                <div class="section-header">Estatísticas Gerais</div>
+                <div class="sidebar-padding">
+                    <p><strong>Melhor Jogador:</strong> Vatira (Karmine Corp)</p>
+                    <p><strong>Melhor Time:</strong> Gentle Mates</p>
+                    <p><strong>Maior Sequência:</strong> 12 vitórias (NRG)</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Campeonatos Ativos</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <div style="margin-bottom: 12px;">
+                        <strong>RLCS 2026 Season</strong><br>
+                        <small style="color: #aaa;">Regular Season - Week 8</small>
+                    </div>
+                    <div>Paris Major 2026 - Finalizado</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Trending</div>
+                <div class="sidebar-padding" style="display: flex; flex-direction: column; gap: 5px;">
+                    <div>#VatiraGod</div>
+                    <div>#GentleMates</div>
+                    <div>#RLCS2026</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT (Central de Eventos Estruturada por Abas) -->
+        <div class="content">
+            <div class="card">
+                <!-- Abas de Seleção -->
+                <div class="events-tabs">
+                    <button class="tab-link active" data-tab="current" onclick="switchTab('current')">
+                        <i class="fa-solid fa-circle-play"></i> Atuais
+                    </button>
+                    <button class="tab-link" data-tab="future" onclick="switchTab('future')">
+                        <i class="fa-solid fa-calendar-days"></i> Futuros
+                    </button>
+                    <button class="tab-link" data-tab="past" onclick="switchTab('past')">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Encerrados
+                    </button>
+                </div>
+
+                <!-- Conteúdo da Aba: Atuais -->
+                <div id="current" class="tab-content active">
+                    <div class="event-list-wrapper" id="current-events-list"></div>
+                </div>
+
+                <!-- Conteúdo da Aba: Futuros -->
+                <div id="future" class="tab-content">
+                    <div class="event-list-wrapper" id="future-events-list"></div>
+                </div>
+
+                <!-- Conteúdo da Aba: Encerrados -->
+                <div id="past" class="tab-content">
+                    <div class="event-list-wrapper" id="past-events-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR COMPLETA -->
+        <div class="right-sidebar">
+            <div class="card">
+                <div class="section-header">Top 5 Mundial</div>
+                <table class="ranking-table" id="sidebar-ranking"></table>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Últimas Transferências</div>
+                <div id="transfers" class="sidebar-padding" style="font-size: 14px; display: flex; flex-direction: column; gap: 10px;"></div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Próximos Eventos</div>
+                <div id="next-events" class="sidebar-padding" style="font-size: 14px;"></div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Jogadores em Destaque</div>
+                <div id="featured-players" class="sidebar-padding"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 RLTV.gg - Portal não oficial de Rocket League Esports. Inspirado na HLTV.</p>
+        <p style="margin-top: 5px; font-size: 12px;">Dados simulados para demonstração.</p>
+    </footer>
+
+    <script>
+        // Banco de dados unificado de Campeonatos
+        const eventsData = [
+            { name: "RLCS 2026 - Europa Regional 3", location: "Online", dates: "05 Jun - 14 Jun, 2026", prize: "U$ 125,000", type: "current" },
+            { name: "RLCS 2026 - América do Norte Regional 3", location: "Online", dates: "05 Jun - 14 Jun, 2026", prize: "U$ 125,000", type: "current" },
+            
+            { name: "RLCS 2026 - London Major 2", location: "Londres, Inglaterra 🇬🇧", dates: "10 Jul - 15 Jul, 2026", prize: "U$ 300,000", type: "future" },
+            { name: "Rocket League World Championship 2026", location: "Düsseldorf, Alemanha 🇩🇪", dates: "15 Out - 25 Out, 2026", prize: "U$ 1,000,000", type: "future" },
+            
+            { name: "RLCS 2026 - Paris Major 1", location: "Paris, França 🇫🇷", dates: "18 Mai - 24 Mai, 2026", prize: "Campeão: Karmine Corp", type: "past" },
+            { name: "RLCS 2025 - World Championship", location: "Los Angeles, EUA 🇺🇸", dates: "Setembro, 2025", prize: "Campeão: Team Vitality", type: "past" }
+        ];
+
+        const teamsRanking = [
+            { name: "Gentle Mates", logo: "GM", rank: 1, points: 1969 },
+            { name: "Karmine Corp", logo: "KC", rank: 2, points: 1936 },
+            { name: "Team Vitality", logo: "VIT", rank: 3, points: 1847 },
+            { name: "NRG", logo: "NRG", rank: 4, points: 1745 },
+            { name: "Shopify Rebellion", logo: "SR", rank: 5, points: 1623 }
+        ];
+
+        const featuredPlayers = [
+            { name: "Vatira", team: "Karmine Corp", rating: 98 },
+            { name: "zen", team: "Team Vitality", rating: 96 },
+            { name: "Atow.", team: "Karmine Corp", rating: 95 }
+        ];
+
+        // Lógica de Alternância das Abas
+        function switchTab(tabId) {
+            // Remove a classe active de todos os links e conteúdos de abas
+            document.querySelectorAll('.tab-link').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Adiciona a classe active na aba e conteúdo selecionados
+            document.querySelector(`.tab-link[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Função para Processar e Distribuir os Eventos por Categoria
+        function renderEventsTimeline() {
+            const currentContainer = document.getElementById('current-events-list');
+            const futureContainer = document.getElementById('future-events-list');
+            const pastContainer = document.getElementById('past-events-list');
+
+            currentContainer.innerHTML = '';
+            futureContainer.innerHTML = '';
+            pastContainer.innerHTML = '';
+
+            eventsData.forEach(event => {
+                const eventRow = document.createElement('div');
+                eventRow.className = 'event-row';
+
+                let badgeClass = '';
+                let badgeText = '';
+
+                if (event.type === 'current') {
+                    badgeClass = 'badge-current';
+                    badgeText = 'Ao Vivo';
+                } else if (event.type === 'future') {
+                    badgeClass = 'badge-future';
+                    badgeText = 'Inscrições / Breve';
+                } else {
+                    badgeClass = 'badge-past';
+                    badgeText = 'Encerrado';
+                }
+
+                eventRow.innerHTML = `
+                    <div class="event-main-info">
+                        <span class="event-name">${event.name}</span>
+                        <span class="event-meta">
+                            <i class="fa-solid fa-location-dot" style="font-size:12px; width:14px;"></i> ${event.location} &nbsp;|&nbsp; 
+                            <i class="fa-solid fa-calendar" style="font-size:12px; width:14px;"></i> ${event.dates}
+                        </span>
+                    </div>
+                    <div>
+                        <span style="font-size: 13px; color: #fff; margin-right: 15px; font-weight: 500;">${event.prize}</span>
+                        <span class="event-status-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                `;
+
+                if (event.type === 'current') currentContainer.appendChild(eventRow);
+                if (event.type === 'future') futureContainer.appendChild(eventRow);
+                if (event.type === 'past') pastContainer.appendChild(eventRow);
+            });
+        }
+
+        // Renderizadores das Sidebars Unificadas
+        function renderSidebarRanking() {
+            const table = document.getElementById('sidebar-ranking');
+            const tbody = document.createElement('tbody');
+            tbody.innerHTML = teamsRanking.map(team => `
+                <tr>
+                    <td style="font-weight:bold; color: #777; width: 45px;">#${team.rank}</td>
+                    <td><span style="color:var(--accent2); margin-right:5px;">[${team.logo}]</span>${team.name}</td>
+                    <td style="text-align: right; color: var(--accent); font-weight:bold;">${team.points}</td>
+                </tr>
+            `).join('');
+            table.appendChild(tbody);
+        }
+        
+        function renderTransfers() {
+            document.getElementById('transfers').innerHTML = `
+                <div><strong>Vatira</strong> &rarr; Karmine Corp <small style="color:#666;">(Out/2025)</small></div>
+                <div style="border-top:1px solid #252525; padding-top:5px;"><strong>zen</strong> permanece na Vitality</div>
+            `;
+        }
+        
+        function renderNextEvents() {
+            document.getElementById('next-events').innerHTML = `
+                <div style="margin-bottom: 12px;">
+                    <strong>RLCS Regular Season</strong><br>
+                    <small style="color:#aaa;">Semana 8 • NA + EU</small>
+                </div>
+                <div>
+                    <strong>World Championship 2026</strong><br>
+                    <small style="color:var(--accent);">Outubro 2026</small>
+                </div>
+            `;
+        }
+        
+        function renderFeaturedPlayers() {
+            document.getElementById('featured-players').innerHTML = featuredPlayers.map(p => `
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="width: 35px; height: 35px; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">👤</div>
+                    <div>
+                        <strong style="font-size:13px; color:#fff;">${p.name}</strong><br>
+                        <small style="color:#aaa; font-size:11px;">${p.team} • <span style="color:#2ecc71;">${p.rating}</span></small>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        window.onload = function() {
+            renderEventsTimeline();
+            renderSidebarRanking();
+            renderTransfers();
+            renderNextEvents();
+            renderFeaturedPlayers();
+        };
+    </script>
+</body>
+</html>

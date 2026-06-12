@@ -18,7 +18,6 @@
             color: #333; 
         }
 
-        /* ==================== NAVBAR ==================== */
         nav {
             background: #ffffff;
             padding: 02px 06px;
@@ -78,7 +77,6 @@
             font-weight: bold;
         }
 
-        /* ==================== CONTEÚDO DA TABELA ==================== */
         .container { 
             max-width: 1200px; 
             margin: 25px auto; 
@@ -99,7 +97,6 @@
         
         .admin-only { display: none; }
 
-        /* LOGIN MODAL */
         .modal { 
             display: none; 
             position: fixed; 
@@ -118,6 +115,7 @@
             max-width: 380px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
+            position: relative;
         }
         .login-box h2 { margin-bottom: 25px; color: var(--pga-navy); }
         .login-input {
@@ -139,16 +137,54 @@
             border-radius: 6px;
             cursor: pointer;
         }
+
+        /* Botão X para fechar */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .golfers-container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .golfer-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ==================== NAVBAR ==================== -->
     <nav>
         <div class="nav-left">
-            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" 
-                 alt="PGA TOUR" 
-                 class="nav-logo">
+            <img id="pgaLogo" src="./images/PGA_Tour_logo.svg.png" alt="PGA TOUR" class="nav-logo">
         </div>
 
         <div class="nav-center">
@@ -165,6 +201,7 @@
         <div class="nav-right">
             <span id="loginLink" class="login-link" onclick="openLoginModal()">Login</span>
             <button id="logoutBtn" class="admin-btn" onclick="logout()" style="display:none;">Sair (Admin)</button>
+            <button class="admin-btn" onclick="openGolfersDatabase()" style="margin-left:10px;">📋 Base de Golfistas</button>
         </div>
     </nav>
 
@@ -185,12 +222,14 @@
             </thead>
             <tbody id="standingsBody"></tbody>
         </table>
-        <button class="btn btn-add admin-only" onclick="addRow()" style="display: none;">+ Adicionar Jogador</button>
+        <button class="btn btn-add admin-only" onclick="addRow()" style="display: none;">+ Adicionar Manual</button>
+        <button class="btn btn-add admin-only" onclick="addFromDatabase()" style="display: none; margin-left:10px;">+ Adicionar da Base</button>
     </div>
 
-    <!-- LOGIN MODAL -->
+    <!-- LOGIN MODAL COM BOTÃO X -->
     <div id="loginModal" class="modal">
         <div class="login-box">
+            <span class="close-btn" onclick="closeLoginModal()">×</span>
             <h2>🔑 Acesso Administrativo</h2>
             <input type="text" id="username" class="login-input" placeholder="Usuário" autocomplete="off">
             <input type="password" id="password" class="login-input" placeholder="Senha" autocomplete="off">
@@ -199,6 +238,19 @@
                 Usuário: <strong>ADMIN</strong><br>
                 Senha: <strong>ADMIN</strong>
             </p>
+        </div>
+    </div>
+
+    <!-- Base de Golfistas Modal -->
+    <div id="golfersModal" class="modal">
+        <div class="golfers-container">
+            <h2>📊 Base de Dados de Golfistas</h2>
+            <input type="text" id="golferSearch" class="search-input" placeholder="Buscar golfista..." onkeyup="filterGolfers()">
+            
+            <button class="btn btn-add" onclick="addNewGolfer()">+ Adicionar Novo Golfista</button>
+            <button class="btn" onclick="closeGolfersModal()" style="margin-left:10px;">Fechar</button>
+
+            <div id="golfersList" style="margin-top:15px;"></div>
         </div>
     </div>
 
@@ -211,8 +263,105 @@
             {pos:"2", name:"Matt Fitzpatrick", events:"10", pts:"2,394", ptsBehindLead:"37", wins:"3", top10s:"5"}
         ];
 
+        let allGolfers = JSON.parse(localStorage.getItem('pga_all_golfers')) || [
+            {id:1, name:"Scottie Scheffler", country:"USA", age:29, worldRank:1},
+            {id:2, name:"Matt Fitzpatrick", country:"England", age:31, worldRank:4},
+            {id:3, name:"Rory McIlroy", country:"Northern Ireland", age:37, worldRank:2},
+            {id:4, name:"Xander Schauffele", country:"USA", age:32, worldRank:9},
+            {id:5, name:"Jon Rahm", country:"Spain", age:31, worldRank:10},
+            {id:6, name:"Ludvig Åberg", country:"Sweden", age:26, worldRank:8},
+            {id:7, name:"Collin Morikawa", country:"USA", age:29, worldRank:6},
+        ];
+
+        function saveStandings() {
+            localStorage.setItem('pga_standings', JSON.stringify(db));
+        }
+
+        function saveGolfers() {
+            localStorage.setItem('pga_all_golfers', JSON.stringify(allGolfers));
+        }
+
         function openLoginModal() {
             document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+            // Limpa os campos ao fechar
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+
+        function openGolfersDatabase() {
+            document.getElementById('golfersModal').style.display = 'flex';
+            renderGolfersList();
+        }
+
+        function closeGolfersModal() {
+            document.getElementById('golfersModal').style.display = 'none';
+        }
+
+        function filterGolfers() {
+            renderGolfersList();
+        }
+
+        function renderGolfersList() {
+            const search = document.getElementById('golferSearch').value.toLowerCase().trim();
+            const container = document.getElementById('golfersList');
+            
+            let filtered = allGolfers.filter(g => g.name.toLowerCase().includes(search));
+
+            container.innerHTML = filtered.map(g => `
+                <div class="golfer-card">
+                    <div>
+                        <strong>${g.name}</strong><br>
+                        <small>${g.country} • ${g.age} anos • OWGR: ${g.worldRank}</small>
+                    </div>
+                    <button class="btn" onclick="selectGolferToAdd(${g.id})">Adicionar aos Standings</button>
+                </div>
+            `).join('');
+        }
+
+        function addNewGolfer() {
+            const name = prompt("Nome completo do golfista:");
+            if (!name) return;
+            const country = prompt("País:", "USA");
+            const age = parseInt(prompt("Idade:", "28")) || 28;
+            const rank = parseInt(prompt("Ranking Mundial (OWGR):", "100")) || 100;
+
+            const newId = allGolfers.length ? Math.max(...allGolfers.map(g => g.id)) + 1 : 1;
+            
+            allGolfers.push({ id: newId, name, country, age, worldRank: rank });
+            saveGolfers();
+            renderGolfersList();
+            alert(`✅ ${name} adicionado à Base de Dados!`);
+        }
+
+        function selectGolferToAdd(id) {
+            const golfer = allGolfers.find(g => g.id === id);
+            if (!golfer) return;
+
+            db.push({
+                pos: (db.length + 1).toString(),
+                name: golfer.name,
+                events: "0",
+                pts: "0",
+                ptsBehindLead: "-",
+                wins: "0",
+                top10s: "0"
+            });
+
+            saveStandings();
+            render();
+            alert(`✅ ${golfer.name} adicionado aos Standings e salvo!`);
+        }
+
+        function addFromDatabase() {
+            if (!isEditMode) {
+                alert("Entre no modo Admin primeiro.");
+                return;
+            }
+            openGolfersDatabase();
         }
 
         function login() {
@@ -224,7 +373,6 @@
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('loginLink').style.display = 'none';
                 document.getElementById('logoutBtn').style.display = 'block';
-                
                 enableFullEditMode();
             } else {
                 alert("❌ Usuário ou senha incorretos!\n\nUse:\nUsuário: ADMIN\nSenha: ADMIN");
@@ -237,7 +385,6 @@
                 el.style.display = el.tagName === 'TH' ? 'table-cell' : 'block';
             });
             render();
-            alert("✅ Modo Editor Completo ativado!\nVocê agora pode editar a classificação.");
         }
 
         function logout() {
@@ -254,13 +401,13 @@
         function render() {
             document.getElementById('standingsBody').innerHTML = db.map((item, i) => `
                 <tr>
-                    <td contenteditable="${isEditMode}" onblur="db[${i}].pos=this.innerText">${item.pos}</td>
-                    <td contenteditable="${isEditMode}" onblur="db[${i}].name=this.innerText">${item.name}</td>
-                    <td contenteditable="${isEditMode}" onblur="db[${i}].events=this.innerText">${item.events}</td>
-                    <td contenteditable="${isEditMode}" onblur="db[${i}].pts=this.innerText">${item.pts}</td>
-                    <td contenteditable="${isEditMode}" onblur="db[${i}].ptsBehindLead=this.innerText">${item.ptsBehindLead}</td>
-                    <td contenteditable="${isEditMode}" onblur="db[${i}].wins=this.innerText">${item.wins}</td>
-                    <td contenteditable="${isEditMode}" onblur="db[${i}].top10s=this.innerText">${item.top10s}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].pos=this.innerText; saveStandings()">${item.pos}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].name=this.innerText; saveStandings()">${item.name}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].events=this.innerText; saveStandings()">${item.events}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].pts=this.innerText; saveStandings()">${item.pts}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].ptsBehindLead=this.innerText; saveStandings()">${item.ptsBehindLead}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].wins=this.innerText; saveStandings()">${item.wins}</td>
+                    <td contenteditable="${isEditMode}" onblur="db[${i}].top10s=this.innerText; saveStandings()">${item.top10s}</td>
                     <td class="admin-only" style="display: ${isEditMode ? 'table-cell' : 'none'}">
                         <button class="btn-del" onclick="removeRow(${i})">X</button>
                     </td>
@@ -270,23 +417,21 @@
 
         function addRow() { 
             db.push({pos:(db.length+1).toString(), name:"Novo Jogador", events:"0", pts:"0", ptsBehindLead:"0", wins:"0", top10s:"0"}); 
+            saveStandings();
             render(); 
         }
 
         function removeRow(i) { 
             if(confirm('Excluir este jogador?')) { 
                 db.splice(i,1); 
+                saveStandings();
                 render(); 
             } 
         }
 
-        function saveData() { 
-            localStorage.setItem('pga_standings', JSON.stringify(db)); 
-            alert('✅ Standings salvo com sucesso!'); 
-        }
-
         // Inicializar
         render();
+        if (!localStorage.getItem('pga_all_golfers')) saveGolfers();
     </script>
 </body>
 </html>

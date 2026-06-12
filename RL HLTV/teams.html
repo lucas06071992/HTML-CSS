@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RLTV | Times - Rocket League Esports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --card: #1a1a1a;
+            --accent: #ff6200;
+            --accent2: #00b4ff;
+            --text: #e0e0e0;
+            --border: #2a2a2a;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: #111;
+            border-bottom: 3px solid var(--accent);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .logo span { color: var(--accent2); }
+        nav { display: flex; gap: 25px; }
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        nav a:hover, nav a.active { color: var(--accent); }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .search-bar {
+            background: #222;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            width: 280px;
+            color: white;
+        }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+        .btn-primary.admin-active {
+            background: #00b4ff;
+            box-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
+        }
+
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 20px;
+        }
+        .left-sidebar { width: 240px; flex-shrink: 0; }
+        .content { flex: 1; }
+        .right-sidebar { width: 260px; flex-shrink: 0; }
+        
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .section-header {
+            background: #222;
+            padding: 12px 16px;
+            font-weight: bold;
+            border-bottom: 2px solid var(--accent);
+        }
+        .sidebar-padding { padding: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        .ranking-table td, .ranking-table th { padding: 10px; text-align: left; font-size: 14px;}
+        .ranking-table tr { border-bottom: 1px solid #333; }
+
+        .region-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px;
+        }
+        .region-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, color 0.2s;
+            background: #202020;
+        }
+        .region-item:hover, .region-item.active {
+            background: var(--accent);
+            color: white;
+        }
+        .region-count {
+            font-size: 11px;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+        .team-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .team-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+        .team-logo-container {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 12px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .team-logo-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .team-card name {
+            display: block;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+        .team-card .region-tag {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .back-btn {
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover { background: #333; }
+        
+        .team-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            background: linear-gradient(135deg, #1f1f1f 0%, #111 100%);
+            padding: 30px;
+            border-radius: 8px;
+            border-left: 5px solid var(--accent);
+            margin-bottom: 20px;
+        }
+        .profile-logo {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .profile-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .profile-ranking-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .lineup-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .player-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 4fr 1.2fr;
+            align-items: center;
+            background: #1e1e1e;
+            padding: 12px 16px;
+            border-radius: 6px;
+            border-left: 4px solid #333;
+            gap: 10px;
+        }
+        .player-row.coach { border-left-color: var(--accent2); }
+        .player-row .player-name {
+            font-size: 14px;
+            font-family: 'Segoe UI';
+            font-weight: normal;
+            color: #aaa;
+        }
+        .player-row .player-rating-val {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2ecc71;
+            background: rgba(46, 204, 113, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-align: center;
+            width: fit-content;
+        }
+        .player-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            font-size: 12px;
+            text-align: center;
+            color: #aaa;
+            background: #151515;
+            padding: 6px;
+            border-radius: 4px;
+        }
+        .player-stats-grid span { display: flex; flex-direction: column; }
+        .player-stats-grid strong { color: #fff; font-size: 13px; }
+
+        .achievements-list {
+            list-style: none;
+            padding: 10px;
+        }
+        .achievements-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 6px;
+            border-bottom: 1px solid #222;
+            font-size: 14px;
+            gap: 10px;
+        }
+        .ach-title-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: bold;
+            transition: color 0.2s;
+            flex: 1;
+        }
+        .ach-title-link:hover { color: var(--accent2); }
+        .ach-title-link .ach-icon { font-size: 13px; color: #555; flex-shrink: 0; }
+        .ach-title-link.internal .ach-icon { color: var(--accent); }
+        .ach-title-link.external .ach-icon { color: var(--accent2); }
+        .ach-badge {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .ach-badge.internal { background: rgba(255,98,0,0.15); color: var(--accent); }
+        .ach-badge.external { background: rgba(0,180,255,0.15); color: var(--accent2); }
+        .ach-tier {
+            font-size: 12px;
+            font-weight: bold;
+            background: #333;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fff;
+        }
+        .ach-tier.S { background: #e74c3c; color: #fff; }
+        .ach-tier.A { background: #e67e22; color: #fff; }
+        .ach-tier.B { background: #9b59b6; color: #fff; }
+        .ach-tier.C { background: #3498db; color: #fff; }
+        .ach-tier.D { background: #7f8c8d; color: #fff; }
+        .ach-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .ach-pos { color: var(--accent); font-weight: bold; white-space: nowrap; }
+
+        /* ── BLOCOS DE CATEGORIA ── */
+        .ach-block { margin-bottom: 10px; }
+        .ach-block-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px 10px;
+            border-bottom: 2px solid #222;
+        }
+        .ach-block-medal { font-size: 20px; line-height: 1; }
+        .ach-block-title {
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .ach-block-title.gold   { color: #f1c40f; }
+        .ach-block-title.silver { color: #bdc3c7; }
+        .ach-block-title.bronze { color: #cd7f32; }
+        .ach-block-title.other  { color: #888; }
+        .ach-block-count {
+            font-size: 11px;
+            background: #252525;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        .ach-year-label {
+            padding: 8px 14px 2px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #444;
+        }
+
+        .admin-mode-on .editable {
+            border: 1px dashed #ff6200 !important;
+            padding: 2px 5px;
+            cursor: text;
+        }
+        .admin-mode-on .profile-logo { cursor: copy !important; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #1a1a1a;
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            border-top: 4px solid var(--accent);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 { margin-bottom: 15px; color: #fff; }
+        .modal-content label { display: block; margin: 10px 0 5px; font-size: 13px; color: #aaa; }
+        .modal-content input, .modal-content select {
+            width: 100%; padding: 8px; background: #222; border: 1px solid #333; color: #fff; border-radius: 4px;
+        }
+        .modal-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-container { flex-direction: column; }
+            .left-sidebar, .right-sidebar { width: 100%; }
+            .player-row { grid-template-columns: 1fr; gap: 15px; text-align: center; }
+            .player-row .player-rating-val { margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <input type="file" id="logoFileInput" accept="image/*" style="display: none;" onchange="loadLocalTeamLogo(this)">
+
+    <header>
+        <div class="top-bar">
+            <a href="index.html" class="logo">RLTV <span>.gg</span></a>
+            <nav id="main-nav">
+                <a href="index.html">Home</a>
+                <a href="news.html">Notícias</a>
+                <a href="matches.html">Partidas</a>
+                <a href="events.html">Eventos</a>
+                <a href="teams.html" class="active">Times</a>
+                <a href="players.html">Jogadores</a>
+                <a href="ranking.html">Rankings</a>
+            </nav>
+            <div class="header-right">
+                <input type="text" class="search-bar" placeholder="Buscar jogadores, times...">
+                <button class="btn">🌙</button>
+                <button class="btn btn-primary" id="adminBtn" onclick="toggleAdminMode()">ADMIN</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- LATERAL ESQUERDA -->
+        <div class="left-sidebar">
+            <div class="card">
+                <div class="section-header">Regiões</div>
+                <div class="region-menu">
+                    <div class="region-item active" onclick="filterRegion('all', this)">
+                        <span>Global</span> <span class="region-count" id="count-all">3</span>
+                    </div>
+                    <div class="region-item" onclick="filterRegion('Europa', this)">
+                        <span>Europa</span> <span class="region-count" id="count-eu">1</span>
+                    </div>
+                    <div class="region-item" onclick="filterRegion('América do Norte', this)">
+                        <span>América do Norte</span> <span class="region-count" id="count-na">1</span>
+                    </div>
+                    <div class="region-item" onclick="filterRegion('América do Sul', this)">
+                        <span>América do Sul</span> <span class="region-count" id="count-sam">1</span>
+                    </div>
+                    <div class="region-item" onclick="filterRegion('Oceania', this)">
+                        <span>Oceania</span> <span class="region-count" id="count-oce">0</span>
+                    </div>
+                    <div class="region-item" onclick="filterRegion('Ásia', this)">
+                        <span>Ásia</span> <span class="region-count" id="count-asia">0</span>
+                    </div>
+                    <div class="region-item" onclick="filterRegion('África', this)">
+                        <span>África</span> <span class="region-count" id="count-af">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-header">Estatísticas Gerais</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <p style="margin-bottom: 8px;"><strong>Melhor Jogador do Mês:</strong><br>Vatira (Karmine Corp)</p>
+                    <p style="margin-bottom: 8px;"><strong>Melhor Time do Mês:</strong><br>Gentle Mates</p>
+                    <p><strong>Maior Sequência:</strong><br>12 vitórias (NRG)</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Campeonatos Ativos</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <div style="margin-bottom: 12px;">
+                        <strong>RLCS 2026 Season</strong><br>
+                        <small style="color: #aaa;">Regular Season - Week 8</small>
+                    </div>
+                    <div>Paris Major 2026 - Finalizado</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="section-header">Trending</div>
+                <div class="sidebar-padding" style="font-size: 14px; color: #aaa; display: flex; flex-direction: column; gap: 5px;">
+                    <div>#VatiraGod</div>
+                    <div>#GentleMates</div>
+                    <div>#RLCS2026</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTEÚDO PRINCIPAL DINÂMICO -->
+        <div class="content">
+            
+            <!-- LISTA DE TODOS OS TIMES -->
+            <div id="view-list">
+                <div class="card" style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                        <h2 style="font-size: 22px;">Diretório de Organizações</h2>
+                        <button class="btn btn-primary" id="addTeamBtn" style="display: none; font-size: 12px;" onclick="openNewTeamModal()">+ Criar Time</button>
+                    </div>
+                    <div class="teams-grid" id="teams-container">
+                        <!-- Renderizado via JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW INTERNA DO TIME -->
+            <div id="view-details" style="display: none;">
+                <button class="back-btn" onclick="showList()"><i class="fa-solid fa-arrow-left"></i> Voltar para os Times</button>
+                
+                <div class="team-profile-header">
+                    <div class="profile-logo" id="det-logo" onclick="triggerTeamLogoChange()"></div>
+                    <div>
+                        <span id="det-region" class="editable"></span>
+                        <h1 id="det-name" style="font-size: 32px; margin-top: 5px; color: #fff;" class="editable"></h1>
+                        <p id="det-origin" style="color: #aaa; font-size: 14px;" class="editable"></p>
+                        <div id="det-ranking" class="profile-ranking-badge"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 20px;">
+                    <h3 style="font-size: 18px; margin-bottom: 15px; color: #fff;"><i class="fa-solid fa-users" style="color: var(--accent);"></i> Lineup & Estatísticas Individuais</h3>
+                    <div class="lineup-section" id="det-lineup">
+                        <!-- Jogadores adicionados dinamicamente -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Histórico Recente de Conquistas</span>
+                        <button class="btn" id="addAchievementBtn" style="display: none; background: #333; color: #fff; font-size: 12px; padding: 4px 10px;" onclick="addAchievementPrompt()">+ Add Título</button>
+                    </div>
+                    <div id="det-achievements"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- LATERAL DIREITA -->
+        <div class="right-sidebar">
+            <div class="card">
+                <div class="section-header">Ranking Mundial</div>
+                <table class="ranking-table">
+                    <tbody>
+                        <tr><td>#1</td><td><strong>GM</strong> Gentle Mates</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1969</td></tr>
+                        <tr><td>#2</td><td><strong>KC</strong> Karmine Corp</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1936</td></tr>
+                        <tr><td>#3</td><td><strong>VIT</strong> Team Vitality</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1847</td></tr>
+                        <tr><td>#4</td><td><strong>NRG</strong> NRG</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1745</td></tr>
+                        <tr><td>#5</td><td><strong>SR</strong> Shopify Rebellion</td><td style="text-align: right; color: var(--accent); font-weight: bold;">1623</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="section-header">Últimas Transferências</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <p style="margin-bottom: 8px;"><strong>Vatira</strong> → Karmine Corp <small style="color:#aaa;">(Out/2025)</small></p>
+                    <p><strong>zen</strong> permanece na Vitality</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-header">Próximos Eventos</div>
+                <div class="sidebar-padding" style="font-size: 14px;">
+                    <div style="margin-bottom: 10px;">
+                        <strong>RLCS Regular Season</strong><br>
+                        <small style="color:#aaa;">Semana 8 • NA + EU</small>
+                    </div>
+                    <div>
+                        <strong>World Championship 2026</strong><br>
+                        <small style="color:#aaa;">Outubro 2026</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE CADASTRO DE NOVO TIME -->
+    <div class="modal" id="newTeamModal">
+        <div class="modal-content">
+            <h3>Criar Nova Organização</h3>
+            <label>Nome do Time</label>
+            <input type="text" id="newTeamName" placeholder="Ex: Karmine Corp">
+            
+            <label>Região Global</label>
+            <select id="newTeamRegion">
+                <option value="Europa">Europa</option>
+                <option value="América do Norte">América do Norte</option>
+                <option value="América do Sul">América do Sul</option>
+                <option value="Oceania">Oceania</option>
+                <option value="Ásia">Ásia</option>
+                <option value="África">África</option>
+            </select>
+            
+            <label>País de Origem</label>
+            <input type="text" id="newTeamOrigin" placeholder="Ex: França">
+
+            <label>Posição no Ranking Mundial</label>
+            <input type="text" id="newTeamRanking" placeholder="Ex: #6 ou Sem Ranking">
+            
+            <label>Selecionar Imagem do Logo</label>
+            <input type="file" id="newTeamLogoFile" accept="image/*">
+            
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn" style="background: #333; color: #fff;" onclick="closeNewTeamModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="createNewTeamSubmit()">Salvar Organização</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO DE STATS DO JOGADOR -->
+    <div class="modal" id="statsModal">
+        <div class="modal-content">
+            <h3 id="statsModalTitle">Atualizar Dados do Jogador</h3>
+            
+            <div class="modal-grid-2">
+                <div>
+                    <label>Nick</label>
+                    <input type="text" id="statNick" placeholder="Ex: jstn">
+                </div>
+                <div>
+                    <label>Nome completo</label>
+                    <input type="text" id="statFullName" placeholder="Ex: Justin Morales">
+                </div>
+            </div>
+
+            <div style="margin-bottom:10px;">
+                <label>Nacionalidade</label>
+                <input type="text" id="statCountry" placeholder="Ex: brasil" style="width:100%;">
+            </div>
+
+            <div class="modal-grid-2">
+                <div>
+                    <label>Partidas (Games)</label>
+                    <input type="number" id="statGames" min="1">
+                </div>
+                <div>
+                    <label>Score Total Acumulado</label>
+                    <input type="number" id="statScore" min="0">
+                </div>
+            </div>
+
+            <div class="modal-grid-2">
+                <div>
+                    <label>Gols Totais</label>
+                    <input type="number" id="statGoals" min="0">
+                </div>
+                <div>
+                    <label>Assistências Totais</label>
+                    <input type="number" id="statAssists" min="0">
+                </div>
+            </div>
+
+            <div class="modal-grid-2">
+                <div>
+                    <label>Defesas Totais (Saves)</label>
+                    <input type="number" id="statSaves" min="0">
+                </div>
+                <div>
+                    <label>Chutes Totais (Shots)</label>
+                    <input type="number" id="statShots" min="0">
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn" style="background: #333; color: #fff;" onclick="closeStatsModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="savePlayerStatsSubmit()">Calcular & Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONQUISTA -->
+    <div class="modal" id="achievementModal">
+        <div class="modal-content">
+            <h3 id="achievementModalTitle">Adicionar Conquista / Título</h3>
+
+            <label>Nome do Campeonato</label>
+            <input type="text" id="achTitle" placeholder="Ex: RLCS 2026 World Championship">
+
+            <div class="modal-grid-2">
+                <div>
+                    <label>Tier do Campeonato</label>
+                    <select id="achTier">
+                        <option value="S">Tier S</option>
+                        <option value="A">Tier A</option>
+                        <option value="B">Tier B</option>
+                        <option value="C">Tier C</option>
+                        <option value="D">Tier D</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Colocação</label>
+                    <select id="achPos">
+                        <option value="1º Lugar">1º Lugar</option>
+                        <option value="2º Lugar">2º Lugar</option>
+                        <option value="3º Lugar">3º Lugar</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Ano</label>
+            <input type="text" id="achDate" placeholder="Ex: 2026" value="2026">
+
+            <label>Tipo de Link</label>
+            <select id="achLinkType" onchange="toggleAchLinkType()">
+                <option value="external">🌐 Link Externo (Liquipedia, etc.)</option>
+                <option value="internal">🏆 Campeonato do Site (interno)</option>
+                <option value="none">Sem link</option>
+            </select>
+
+            <div id="achExternalGroup">
+                <label>URL do campeonato (Liquipedia, etc.)</label>
+                <input type="url" id="achUrl" placeholder="https://liquipedia.net/rocketleague/...">
+            </div>
+
+            <div id="achInternalGroup" style="display:none;">
+                <label>ID do Campeonato interno</label>
+                <input type="text" id="achInternalId" placeholder="Ex: rlcs-2026-worlds">
+                <small style="color:#666; font-size:11px; display:block; margin-top:4px;">
+                    Será usado como link para <code>events.html?id=...</code>
+                </small>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn" style="background: #333; color: #fff;" onclick="closeAchievementModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="saveAchievementSubmit()">Salvar Conquista</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+        let adminMode = false;
+        let selectedTeamId = null;
+        let selectedPlayerNick = null;
+        let selectedAchievementIndex = null;
+
+        const countryFlags = {
+            "afeganistão": "🇦🇫", "áfrica do sul": "🇿🇦", "albânia": "🇦🇱", "alemanha": "🇩🇪", "andorra": "🇦🇩", "angola": "🇦🇴", "antígua e barbuda": "🇦🇬", "arábia saudita": "🇸🇦", "argélia": "🇩🇿", "argentina": "🇦🇷", "armênia": "🇦🇲", "austrália": "🇦🇺", "áustria": "🇦🇹", "azerbaijão": "🇦🇿",
+            "bahamas": "🇧🇸", "bangladesh": "🇧🇩", "barbados": "🇧🇧", "barrein": "🇧🇭", "bélgica": "🇧🇪", "belize": "🇧🇿", "benim": "🇧🇯", "bielorrússia": "🇧🇾", "bolívia": "🇧🇴", "bósnia e herzegovina": "🇧🇦", "botsuana": "🇧🇼", "brasil": "🇧🇷", "brunei": "🇧🇳", "bulgária": "🇧🇬", "burquina faso": "🇧🇫", "burundi": "🇧🇮", "butão": "🇧🇹",
+            "cabo verde": "🇨🇻", "camarões": "🇨🇲", "camboja": "🇰🇭", "canadá": "🇨🇦", "catar": "🇶🇦", "cazaquistão": "🇰🇿", "chade": "🇹🇩", "chéquia": "🇨🇿", "chile": "🇨🇱", "china": "🇨🇳", "chipre": "🇨🇾", "colômbia": "🇨🇴", "comores": "🇰🇲", "congo-brazzaville": "🇨🇬", "congo-kinshasa": "🇨🇩", "coréia do norte": "🇰🇵", "coréia do sul": "🇰🇷", "costa do marfim": "🇨🇮", "costa rica": "🇨🇷", "croácia": "🇭🇷", "cuba": "🇨🇺",
+            "dinamarca": "🇩🇰", "djibuti": "🇩🇯", "dominica": "🇩🇲",
+            "egito": "🇪🇬", "emirados árabes unidos": "🇦eae", "equador": "🇪🇨", "eritreia": "🇪🇷", "eslováquia": "🇸🇰", "eslovênia": "🇸🇮", "espanha": "🇪🇸", "estados unidos": "🇺🇸", "estônia": "🇪🇪", "esuatíni": "🇸🇿", "etiópia": "🇪🇹",
+            "fiji": "🇫🇯", "filipinas": "🇵🇭", "finlândia": "🇫🇮", "frança": "🇫🇷",
+            "gabão": "🇬🇦", "gâmbia": "🇬🇲", "gana": "🇬🇭", "geórgia": "🇬🇪", "granada": "🇬🇩", "grécia": "🇬🇷", "guatemala": "🇬🇹", "guiana": "🇬🇾", "guiné": "🇬🇳", "guiné equatorial": "🇬🇶", "guiné-bissau": "🇬🇼",
+            "haiti": "🇭🇹", "honduras": "🇭🇳", "hungria": "🇭🇺",
+            "iêmen": "🇾🇪", "ilhas marshall": "🇲🇭", "ilhas salomão": "🇸🇧", "índia": "🇮🇳", "indonésia": "🇮🇩", "irã": "🇮🇷", "iraque": "🇮🇶", "irlanda": "🇮🇪", "islândia": "🇮🇸", "israel": "🇮🇱", "itália": "🇮🇹",
+            "jamaica": "🇯🇲", "japão": "🇯🇵", "jordânia": "🇯🇴",
+            "kiribati": "🇰🇮", "kuwait": "🇰🇼",
+            "laos": "🇱🇦", "lesoto": "🇱🇸", "letônia": "🇱🇻", "líbano": "🇱🇧", "libéria": "🇱🇷", "líbia": "🇱🇾", "liechtenstein": "🇱🇮", "lituânia": "🇱🇹", "luxemburgo": "🇱🇺",
+            "macedônia do norte": "🇲🇰", "madagascar": "🇲🇬", "malásia": "🇲🇾", "malawi": "🇲🇼", "maldivas": "🇲🇻", "mali": "🇲🇱", "malta": "🇲🇹", "marrocos": "🇲🇦", "maurício": "🇲🇺", "mauritânia": "🇲🇷", "méxico": "🇲🇽", "mianmar": "🇲🇲", "micronésia": "🇫🇲", "moçambique": "🇲🇿", "moldávia": "🇲🇩", "mônaco": "🇲🇨", "mongólia": "🇲🇳", "montenegro": "🇲🇪",
+            "namíbia": "🇳🇦", "nauru": "🇳🇷", "nepal": "🇳🇵", "nicarágua": "🇳🇮", "níger": "🇳🇪", "nigéria": "🇳🇬", "noruega": "🇳🇴", "nova zelândia": "🇳🇿",
+            "omã": "🇴🇲",
+            "países baixos": "🇳🇱", "palau": "🇵🇼", "palestina": "🇵🇸", "panamá": "🇵🇦", "papua-nova guiné": "🇵🇬", "paquistão": "🇵🇰", "paraguai": "🇵🇾", "peru": "🇵🇪", "polônia": "🇵🇱", "portugal": "🇵🇹",
+            "quênia": "🇰🇪", "quirguistão": "🇰🇬",
+            "reino unido": "🇬🇧", "inglaterra": "🇬🇧", "república centro-africana": "🇨🇫", "república dominicana": "🇩🇴", "romênia": "🇷🇴", "ruanda": "🇷🇼", "rússia": "🇷🇺",
+            "salvador": "🇸🇻", "samoa": "🇼🇸", "santa lúcia": "🇱🇨", "são cristóvão e névis": "🇰🇳", "são marinho": "🇸🇲", "são tomé e príncipe": "🇸🇹", "são vicente e granadinas": "🇻🇨", "seicheles": "🇸🇨", "senegal": "🇸🇳", "serra leoa": "🇸🇱", "sérvia": "🇷🇸", "singapura": "🇸🇬", "síria": "🇸🇾", "somália": "🇸🇴", "sri lanka": "🇱🇰", "sudão": "🇸🇩", "sudão do sul": "🇸🇸", "suécia": "🇸🇪", "suíça": "🇨🇭", "suriname": "🇸🇷",
+            "tajiquistão": "🇹🇯", "tailândia": "🇹🇭", "tanzânia": "🇹🇿", "timor-leste": "🇹🇱", "togo": "🇹🇬", "tonga": "🇹🇴", "trindade e tobago": "🇹🇹", "tunísia": "🇹🇳", "turcomenistão": "🇹🇲", "turquia": "🇹🇷", "tuvalu": "🇹🇻",
+            "ucrânia": "🇺🇦", "uganda": "🇺🇬", "uruguai": "🇺🇾", "uzbequistão": "🇺🇿",
+            "vanuatu": "🇻🇺", "vaticano": "🇻🇦", "venezuela": "🇻🇪", "vietnã": "🇻🇳",
+            "zâmbia": "🇿🇲", "zimbábue": "🇿🇼"
+        };
+
+        function getFlagEmoji(countryName) {
+            if (!countryName) return "🏳️";
+            const normalized = countryName.toLowerCase().trim();
+            return countryFlags[normalized] || "🏳️";
+        }
+
+        function calculateRating(games, score, goals, assists, saves, shots) {
+            if (!games || games <= 0) return 0.00;
+            
+            const mScore = score / games;
+            const mGoals = goals / games;
+            const mAssists = assists / games;
+            const mSaves = saves / games;
+            const mShots = shots / games;
+
+            let rating = (mScore * 0.006) + (mGoals * 2.2) + (mAssists * 1.5) + (mSaves * 1.0) + (mShots * 0.2);
+            
+            if (rating < 0) rating = 0;
+            return parseFloat(rating.toFixed(2));
+        }
+
+        const defaultTeamsData = [
+            {
+                id: "faze",
+                name: "FaZe Clan",
+                region: "América do Norte",
+                origin: "Estados Unidos",
+                ranking: "Sem Ranking",
+                logo: "https://i.imgur.com/83uE0u1.png",
+                lineup: [
+                    { nick: "Firstkiller", name: "Jason Geraldi", country: "Estados Unidos", role: "player", games: 32, score: 14305, goals: 39, assists: 14, saves: 51, shots: 122 },
+                    { nick: "Sypical", name: "Caden Pellegrin", country: "Estados Unidos", role: "player", games: 32, score: 12100, goals: 21, assists: 16, saves: 55, shots: 92 },
+                    { nick: "mist", name: "Nick Costello", country: "Estados Unidos", role: "player", games: 32, score: 11900, goals: 18, assists: 19, saves: 62, shots: 85 },
+                    { nick: "Roll Dizz", name: "Raul Diaz", country: "Estados Unidos", role: "coach", games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 }
+                ],
+                achievements: [{ title: "RLCS 2025 Winter Major", pos: "1º Lugar", tier: "S", date: "2025" }]
+            },
+            {
+                id: "vitality",
+                name: "Team Vitality",
+                region: "Europa",
+                origin: "França",
+                ranking: "#3 do Mundo",
+                logo: "https://i.imgur.com/b9Lmsq1.png",
+                lineup: [
+                    { nick: "zen", name: "Alexis Bernier", country: "França", role: "player", games: 28, score: 13816, goals: 21, assists: 17, saves: 67, shots: 83 },
+                    { nick: "Alpha54", name: "Yanis Champenois", country: "França", role: "player", games: 28, score: 11200, goals: 19, assists: 15, saves: 48, shots: 79 },
+                    { nick: "Radosin", name: "Andrea Radovanović", country: "Sérvia", role: "player", games: 28, score: 10900, goals: 15, assists: 18, saves: 52, shots: 72 },
+                    { nick: "Ferra", name: "Victor Francal", country: "França", role: "coach", games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 }
+                ],
+                achievements: [{ title: "RLCS 2026 Paris Major", pos: "1º Lugar", tier: "S", date: "2026" }]
+            },
+            {
+                id: "furia",
+                name: "FURIA Esports",
+                region: "América do Sul",
+                origin: "Brasil",
+                ranking: "#6 do Mundo",
+                logo: "https://i.imgur.com/N74DByW.png",
+                lineup: [
+                    { nick: "Yanxnz", name: "Yan Nolasco", country: "Brasil", role: "player", games: 30, score: 13100, goals: 32, assists: 15, saves: 58, shots: 105 },
+                    { nick: "Lostt", name: "Gabriel Buzon", country: "Brasil", role: "player", games: 30, score: 11800, goals: 20, assists: 19, saves: 51, shots: 88 },
+                    { nick: "Drufinho", name: "Arthur Miguel", country: "Brasil", role: "player", games: 30, score: 11500, goals: 17, assists: 14, saves: 65, shots: 81 },
+                    { nick: "STL", name: "Wesley Silva", country: "Brasil", role: "coach", games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 }
+                ],
+                achievements: [{ title: "RLCS 2026 SAM Regional 1", pos: "1º Lugar", tier: "A", date: "2026" }]
+            }
+        ];
+
+        let teamsData = [];
+
+        const DB_NAME = 'RLTV_DB';
+        const DB_VERSION = 2;
+        const STORE_NAME = 'teams';
+        let _db = null;
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                if (_db) { resolve(_db); return; }
+                const req = indexedDB.open(DB_NAME, DB_VERSION);
+                req.onupgradeneeded = e => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains('ranking')) {
+                        db.createObjectStore('ranking', { keyPath: 'id' });
+                    }
+                };
+                req.onsuccess = e => { _db = e.target.result; resolve(_db); };
+                req.onerror = e => reject(e.target.error);
+            });
+        }
+
+        async function saveTeamToStorage(team) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                tx.objectStore(STORE_NAME).put(team);
+                tx.oncomplete = () => resolve();
+                tx.onerror = e => reject(e.target.error);
+            });
+        }
+
+        async function deleteTeamFromStorage(teamId) {
+            const db = await openDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                tx.objectStore(STORE_NAME).delete(teamId);
+                tx.oncomplete = () => resolve();
+                tx.onerror = e => reject(e.target.error);
+            });
+        }
+
+        async function saveTeamsToLocalStorage() {
+            for (const team of teamsData) {
+                await saveTeamToStorage(team);
+            }
+        }
+
+        async function loadTeamsFromStorage() {
+            try {
+                const db = await openDB();
+                const all = await new Promise((resolve, reject) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const req = tx.objectStore(STORE_NAME).getAll();
+                    req.onsuccess = e => resolve(e.target.result);
+                    req.onerror = e => reject(e.target.error);
+                });
+
+                if (all && all.length > 0) {
+                    all.forEach(team => {
+                        if (team.achievements) {
+                            team.achievements = team.achievements.map(ach => {
+                                if (!ach.linkType) ach = { ...ach, linkType: 'none', url: '', internalId: '' };
+                                if (!ach.tier) ach.tier = 'S';
+                                return ach;
+                            });
+                        }
+                    });
+                    teamsData = all;
+                } else {
+                    teamsData = defaultTeamsData;
+                    await saveTeamsToLocalStorage();
+                }
+            } catch(err) {
+                console.error('Erro ao carregar times:', err);
+                teamsData = defaultTeamsData;
+            }
+        }
+
+        let currentRegionFilter = "all";
+
+        function updateRegionCounts() {
+            document.getElementById('count-all').innerText = teamsData.length;
+            document.getElementById('count-eu').innerText = teamsData.filter(t => t.region === "Europa").length;
+            document.getElementById('count-na').innerText = teamsData.filter(t => t.region === "América do Norte").length;
+            document.getElementById('count-sam').innerText = teamsData.filter(t => t.region === "América do Sul").length;
+            document.getElementById('count-oce').innerText = teamsData.filter(t => t.region === "Oceania").length;
+            document.getElementById('count-asia').innerText = teamsData.filter(t => t.region === "Ásia").length;
+            document.getElementById('count-af').innerText = teamsData.filter(t => t.region === "África").length;
+        }
+
+        function renderTeamsList() {
+            updateRegionCounts();
+            const container = document.getElementById('teams-container');
+            container.innerHTML = "";
+
+            const filtered = currentRegionFilter === "all" 
+                ? teamsData 
+                : teamsData.filter(t => t.region === currentRegionFilter);
+
+            filtered.forEach(team => {
+                const card = document.createElement('div');
+                card.className = "team-card";
+                card.onclick = () => openTeamProfile(team.id);
+                card.innerHTML = `
+                    <div class="team-logo-container">
+                        <img src="${team.logo || 'https://i.imgur.com/gK6107L.png'}" alt="Logo ${team.name}">
+                    </div>
+                    <name>${team.name}</name>
+                    <div class="region-tag">${team.region}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openNewTeamModal() {
+            document.getElementById('newTeamModal').style.display = 'flex';
+        }
+
+        function closeNewTeamModal() {
+            document.getElementById('newTeamModal').style.display = 'none';
+            document.getElementById('newTeamName').value = '';
+            document.getElementById('newTeamOrigin').value = '';
+            document.getElementById('newTeamRanking').value = '';
+            document.getElementById('newTeamLogoFile').value = '';
+        }
+
+        async function createNewTeamSubmit() {
+            const name = document.getElementById('newTeamName').value.trim();
+            const region = document.getElementById('newTeamRegion').value;
+            const origin = document.getElementById('newTeamOrigin').value.trim();
+            const ranking = document.getElementById('newTeamRanking').value.trim();
+            const fileInput = document.getElementById('newTeamLogoFile');
+
+            if (!name) {
+                alert("O nome do time é obrigatório!");
+                return;
+            }
+
+            const uniqueId = "team_" + Date.now();
+            
+            const newTeam = {
+                id: uniqueId,
+                name: name,
+                region: region,
+                origin: origin || "Não especificado",
+                ranking: ranking || "Sem Ranking",
+                logo: "https://i.imgur.com/gK6107L.png",
+                lineup: [
+                    { nick: "Player 1", name: "Nome Sobrenome", country: "Brasil", role: "player", games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 },
+                    { nick: "Player 2", name: "Nome Sobrenome", country: "Brasil", role: "player", games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 },
+                    { nick: "Player 3", name: "Nome Sobrenome", country: "Brasil", role: "player", games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 },
+                    { nick: "Coach", name: "Treinador", country: "Brasil", role: "coach", games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 }
+                ],
+                achievements: []
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    newTeam.logo = e.target.result;
+                    teamsData.push(newTeam);
+                    await saveTeamToStorage(newTeam);
+                    closeNewTeamModal();
+                    renderTeamsList();
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                teamsData.push(newTeam);
+                await saveTeamToStorage(newTeam);
+                closeNewTeamModal();
+                renderTeamsList();
+            }
+        }
+
+        function filterRegion(region, element) {
+            currentRegionFilter = region;
+            document.querySelectorAll('.region-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            renderTeamsList();
+            showList();
+        }
+
+        function openTeamProfile(teamId) {
+            selectedTeamId = teamId;
+            const team = teamsData.find(t => t.id === teamId);
+            if(!team) return;
+
+            document.getElementById('view-list').style.display = "none";
+            document.getElementById('view-details').style.display = "block";
+
+            document.getElementById('det-name').innerText = team.name;
+            document.getElementById('det-region').innerText = team.region;
+            document.getElementById('det-origin').innerText = team.origin.includes("Organização baseada em:") ? team.origin : `Organização baseada em: ${team.origin}`;
+            document.getElementById('det-ranking').innerText = team.ranking.includes("🏆 Posição:") ? team.ranking : `🏆 Posição: ${team.ranking || 'Sem Ranking'}`;
+            document.getElementById('det-logo').innerHTML = `<img src="${team.logo || 'https://i.imgur.com/gK6107L.png'}" alt="${team.name}">`;
+
+            const editables = document.querySelectorAll('.editable');
+            editables.forEach(el => {
+                if (adminMode) el.setAttribute('contenteditable', 'true');
+                else el.removeAttribute('contenteditable');
+            });
+
+            document.getElementById('addAchievementBtn').style.display = adminMode ? 'block' : 'none';
+
+            renderLineup(team);
+            renderAchievements(team.achievements);
+        }
+
+        function renderLineup(team) {
+            const lineupContainer = document.getElementById('det-lineup');
+            lineupContainer.innerHTML = "";
+
+            team.lineup.forEach(member => {
+                const isCoach = member.role === 'coach';
+                const pRow = document.createElement('div');
+                pRow.className = `player-row ${isCoach ? 'coach' : ''}`;
+                
+                const flag = getFlagEmoji(member.country);
+                const totalGames = member.games || 0;
+                
+                const calculatedRating = isCoach ? "-" : calculateRating(totalGames, member.score, member.goals, member.assists, member.saves, member.shots);
+                
+                const avgScore = totalGames > 0 ? (member.score / totalGames).toFixed(1) : "0.0";
+                const avgGoals = totalGames > 0 ? (member.goals / totalGames).toFixed(2) : "0.00";
+                const avgAssists = totalGames > 0 ? (member.assists / totalGames).toFixed(2) : "0.00";
+                const avgSaves = totalGames > 0 ? (member.saves / totalGames).toFixed(2) : "0.00";
+                const avgShots = totalGames > 0 ? (member.shots / totalGames).toFixed(2) : "0.00";
+
+                pRow.innerHTML = `
+                    <div class="player-main">
+                        <span class="player-nick">${member.nick} ${isCoach ? '<small style="font-size:11px; color:var(--accent2);">(C)</small>' : ''}</span>
+                        <span class="player-name">${member.name}</span>
+                    </div>
+                    <div>
+                        <span class="player-flag">${flag} <small>${member.country || 'N/A'}</small></span>
+                    </div>
+                    <div>
+                        ${!isCoach ? `<div class="player-rating-val" style="color: ${calculatedRating >= 7 ? '#2ecc71' : calculatedRating >= 6 ? '#f1c40f' : '#e74c3c'}">${calculatedRating === 0 ? "0.00" : calculatedRating}</div>` : '-'}
+                    </div>
+                    <div>
+                        ${!isCoach ? `
+                        <div class="player-stats-grid">
+                            <span>Partidas <strong>${totalGames}</strong></span>
+                            <span>Avg Score <strong>${avgScore}</strong></span>
+                            <span>Gols <strong>${avgGoals}</strong></span>
+                            <span>Assists <strong>${avgAssists}</strong></span>
+                            <span>Saves <strong>${avgSaves}</strong></span>
+                            <span>Chutes <strong>${avgShots}</strong></span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    <div>
+                        ${(!isCoach && adminMode) ? `<button class="btn" style="background:#00b4ff; font-size:11px; padding:4px 8px; color:white;" onclick="openStatsModal('${member.nick}')">⚙️ Stats</button>` : ''}
+                    </div>
+                `;
+                lineupContainer.appendChild(pRow);
+            });
+        }
+
+        function openStatsModal(playerNick) {
+            selectedPlayerNick = playerNick;
+            const team = teamsData.find(t => t.id === selectedTeamId);
+            const player = team.lineup.find(p => p.nick === playerNick);
+            
+            if(!player) return;
+
+            document.getElementById('statsModalTitle').innerText = `Atualizar Dados de ${player.nick}`;
+            document.getElementById('statNick').value = player.nick || '';
+            document.getElementById('statFullName').value = player.name || '';
+            document.getElementById('statCountry').value = player.country || '';
+            document.getElementById('statGames').value = player.games || 0;
+            document.getElementById('statScore').value = player.score || 0;
+            document.getElementById('statGoals').value = player.goals || 0;
+            document.getElementById('statAssists').value = player.assists || 0;
+            document.getElementById('statSaves').value = player.saves || 0;
+            document.getElementById('statShots').value = player.shots || 0;
+
+            document.getElementById('statsModal').style.display = 'flex';
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').style.display = 'none';
+        }
+
+        async function savePlayerStatsSubmit() {
+            const team = teamsData.find(t => t.id === selectedTeamId);
+            const player = team.lineup.find(p => p.nick === selectedPlayerNick);
+
+            if (player) {
+                const newNick = document.getElementById('statNick').value.trim();
+                player.nick = newNick || player.nick;
+                player.name = document.getElementById('statFullName').value.trim() || player.name;
+                player.country = document.getElementById('statCountry').value.trim().toLowerCase() || player.country;
+                player.games = parseInt(document.getElementById('statGames').value) || 0;
+                player.score = parseInt(document.getElementById('statScore').value) || 0;
+                player.goals = parseInt(document.getElementById('statGoals').value) || 0;
+                player.assists = parseInt(document.getElementById('statAssists').value) || 0;
+                player.saves = parseInt(document.getElementById('statSaves').value) || 0;
+                player.shots = parseInt(document.getElementById('statShots').value) || 0;
+
+                selectedPlayerNick = player.nick;
+
+                await saveTeamToStorage(team);
+                closeStatsModal();
+                renderLineup(team);
+            }
+        }
+
+        function achCategory(pos) {
+            const p = (pos || '').toLowerCase().trim();
+            if (/^1[°º]|campe[ã]o|champion/i.test(p)) return '1';
+            if (/^2[°º]|vice/i.test(p))               return '2';
+            if (/^3[°º]/i.test(p))                     return '3';
+            return 'other';
+        }
+
+        function renderAchievements(achievements) {
+            const container = document.getElementById('det-achievements');
+            container.innerHTML = '';
+
+            const groups = {
+                '1':     { medal: '🥇', title: '1º Lugar',  cls: 'gold',   items: [] },
+                '2':     { medal: '🥈', title: '2º Lugar',  cls: 'silver', items: [] },
+                '3':     { medal: '🥉', title: '3º Lugar',  cls: 'bronze', items: [] },
+                'other': { medal: '📋', title: 'Outros',    cls: 'other',  items: [] },
+            };
+
+            (achievements || []).forEach((ach, originalIndex) => {
+                groups[achCategory(ach.pos)].items.push({ ...ach, originalIndex });
+            });
+
+            // Ordena cada grupo por ano decrescente
+            Object.values(groups).forEach(g => {
+                g.items.sort((a, b) => (parseInt(b.date) || 0) - (parseInt(a.date) || 0));
+            });
+
+            let hasAny = false;
+
+            Object.entries(groups).forEach(([key, g]) => {
+                if (g.items.length === 0) return;
+                hasAny = true;
+
+                // ── Cabeçalho do bloco ──
+                const block = document.createElement('div');
+                block.className = 'ach-block';
+                block.innerHTML = `
+                    <div class="ach-block-header">
+                        <span class="ach-block-medal">${g.medal}</span>
+                        <span class="ach-block-title ${g.cls}">${g.title}</span>
+                        <span class="ach-block-count">${g.items.length}</span>
+                    </div>`;
+
+                // ── Agrupa por ano dentro do bloco ──
+                const byYear = {};
+                g.items.forEach(ach => {
+                    const y = ach.date || 'S/D';
+                    (byYear[y] = byYear[y] || []).push(ach);
+                });
+                const years = Object.keys(byYear).sort((a, b) => (parseInt(b) || 0) - (parseInt(a) || 0));
+
+                years.forEach(year => {
+                    const yearDiv = document.createElement('div');
+                    yearDiv.className = 'ach-year-label';
+                    yearDiv.textContent = year;
+                    block.appendChild(yearDiv);
+
+                    const ul = document.createElement('ul');
+                    ul.className = 'achievements-list';
+                    ul.style.padding = '0 0 4px';
+
+                    byYear[year].forEach(ach => {
+                        const li  = document.createElement('li');
+                        const idx = ach.originalIndex;
+                        const lt  = ach.linkType || 'none';
+                        let href = '#', isClickable = false;
+                        if (lt === 'external' && ach.url)             { href = ach.url; isClickable = true; }
+                        else if (lt === 'internal' && ach.internalId) { href = `events.html?id=${ach.internalId}`; isClickable = true; }
+                        const icon   = lt === 'internal' ? 'fa-trophy' : 'fa-arrow-up-right-from-square';
+                        const badge  = lt === 'internal' ? 'SITE' : lt === 'external' ? 'EXT' : '';
+                        const target = lt === 'external' ? 'target="_blank" rel="noopener"' : '';
+                        const tier   = ach.tier || 'S';
+
+                        li.innerHTML = `
+                            <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+                                <span class="ach-tier ${tier}">Tier ${tier}</span>
+                                <a class="ach-title-link ${isClickable ? lt : ''}"
+                                   href="${isClickable && !adminMode ? href : '#'}"
+                                   ${isClickable && !adminMode ? target : ''}
+                                   style="${!isClickable || adminMode ? 'cursor:default;pointer-events:none;' : ''}">
+                                    ${isClickable ? `<i class="fa-solid ${icon} ach-icon"></i>` : ''}
+                                    ${ach.title}
+                                    ${badge ? `<span class="ach-badge ${lt}">${badge}</span>` : ''}
+                                </a>
+                            </div>
+                            <div class="ach-right">
+                                <span class="ach-pos">${ach.pos}</span>
+                                ${adminMode ? `
+                                    <button class="btn" style="background:#00b4ff;font-size:11px;padding:4px 8px;color:#fff;" onclick="openEditAchievementModal(${idx})"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn" style="background:#e74c3c;font-size:11px;padding:4px 8px;color:#fff;" onclick="deleteAchievement(${idx})"><i class="fa-solid fa-trash"></i></button>
+                                ` : ''}
+                            </div>`;
+                        ul.appendChild(li);
+                    });
+                    block.appendChild(ul);
+                });
+
+                container.appendChild(block);
+            });
+
+            if (!hasAny) {
+                container.innerHTML = `<p style="padding:16px;color:#444;font-size:13px;">Nenhuma conquista registrada.</p>`;
+            }
+        }
+
+        async function addAchievementPrompt() {
+            if (!selectedTeamId) return;
+            selectedAchievementIndex = null;
+            document.getElementById('achievementModalTitle').innerText = 'Adicionar Conquista / Título';
+            document.getElementById('achTitle').value = '';
+            document.getElementById('achPos').selectedIndex = 0;
+            document.getElementById('achTier').selectedIndex = 0;
+            document.getElementById('achDate').value = '2026';
+            document.getElementById('achUrl').value = '';
+            document.getElementById('achInternalId').value = '';
+            document.getElementById('achLinkType').value = 'external';
+            toggleAchLinkType();
+            document.getElementById('achievementModal').style.display = 'flex';
+        }
+
+        function openEditAchievementModal(index) {
+            if (!selectedTeamId) return;
+            const team = teamsData.find(t => t.id === selectedTeamId);
+            if (!team || !team.achievements[index]) return;
+
+            selectedAchievementIndex = index;
+            const ach = team.achievements[index];
+
+            document.getElementById('achievementModalTitle').innerText = 'Editar Conquista / Título';
+            document.getElementById('achTitle').value = ach.title || '';
+            document.getElementById('achPos').value = ach.pos || '1º Lugar';
+            document.getElementById('achTier').value = ach.tier || 'S';
+            document.getElementById('achDate').value = ach.date || '2026';
+            document.getElementById('achLinkType').value = ach.linkType || 'none';
+            document.getElementById('achUrl').value = ach.url || '';
+            document.getElementById('achInternalId').value = ach.internalId || '';
+            
+            toggleAchLinkType();
+            document.getElementById('achievementModal').style.display = 'flex';
+        }
+
+        async function deleteAchievement(index) {
+            if (!selectedTeamId) return;
+            const team = teamsData.find(t => t.id === selectedTeamId);
+            if (!team) return;
+
+            if (confirm(`Tem certeza que deseja excluir a conquista "${team.achievements[index].title}"?`)) {
+                team.achievements.splice(index, 1);
+                await saveTeamToStorage(team);
+                renderAchievements(team.achievements);
+            }
+        }
+
+        function closeAchievementModal() {
+            document.getElementById('achievementModal').style.display = 'none';
+        }
+
+        function toggleAchLinkType() {
+            const type = document.getElementById('achLinkType').value;
+            document.getElementById('achExternalGroup').style.display = type === 'external' ? 'block' : 'none';
+            document.getElementById('achInternalGroup').style.display = type === 'internal' ? 'block' : 'none';
+        }
+
+        async function saveAchievementSubmit() {
+            if (!selectedTeamId) return;
+            const team = teamsData.find(t => t.id === selectedTeamId);
+            if (!team) return;
+
+            const title = document.getElementById('achTitle').value.trim();
+            if (!title) { alert('Informe o nome do campeonato.'); return; }
+
+            const pos      = document.getElementById('achPos').value;
+            const tier     = document.getElementById('achTier').value;
+            const date     = document.getElementById('achDate').value.trim() || '2026';
+            const linkType = document.getElementById('achLinkType').value;
+            const url      = document.getElementById('achUrl').value.trim();
+            const internalId = document.getElementById('achInternalId').value.trim();
+
+            const achievementData = { title, pos, tier, date, linkType, url, internalId };
+
+            if (selectedAchievementIndex !== null) {
+                team.achievements[selectedAchievementIndex] = achievementData;
+            } else {
+                team.achievements.push(achievementData);
+            }
+
+            await saveTeamToStorage(team);
+            closeAchievementModal();
+            renderAchievements(team.achievements);
+        }
+
+        async function addAchievementFromEvent(teamId, title, pos, tier, date, internalId) {
+            await loadTeamsFromStorage();
+            const team = teamsData.find(t => t.id === teamId);
+            if (!team) return;
+            const alreadyExists = team.achievements.some(a => a.internalId === internalId);
+            if (alreadyExists) {
+                const existing = team.achievements.find(a => a.internalId === internalId);
+                existing.pos  = pos;
+                existing.tier = tier || 'S';
+                existing.date = date;
+            } else {
+                team.achievements.push({ title, pos, tier: tier || 'S', date, linkType: 'internal', url: '', internalId });
+            }
+            await saveTeamToStorage(team);
+        }
+
+        async function saveCurrentProfileDataToMemory() {
+            if (!selectedTeamId) return;
+            const team = teamsData.find(t => t.id === selectedTeamId);
+            if (!team) return;
+
+            team.name = document.getElementById('det-name').innerText.trim();
+            team.region = document.getElementById('det-region').innerText.trim();
+            
+            let rawOrigin = document.getElementById('det-origin').innerText;
+            team.origin = rawOrigin.replace("Organização baseada em:", "").trim();
+
+            let rawRanking = document.getElementById('det-ranking').innerText;
+            team.ranking = rawRanking.replace("🏆 Posição:", "").trim();
+
+            const imgEl = document.querySelector('#det-logo img');
+            if (imgEl && imgEl.src) {
+                team.logo = imgEl.src;
+            }
+            await saveTeamToStorage(team);
+        }
+
+        async function toggleAdminMode() {
+            adminMode = !adminMode;
+            const body = document.body;
+            const btn = document.getElementById('adminBtn');
+            const editables = document.querySelectorAll('.editable');
+            const addAchBtn = document.getElementById('addAchievementBtn');
+            const addTeamBtn = document.getElementById('addTeamBtn');
+
+            if (adminMode) {
+                body.classList.add('admin-mode-on');
+                btn.classList.add('admin-active');
+                btn.innerText = "SALVAR";
+                addTeamBtn.style.display = 'block';
+                
+                editables.forEach(el => { el.setAttribute('contenteditable', 'true'); });
+                if(selectedTeamId) {
+                    addAchBtn.style.display = 'block';
+                    const team = teamsData.find(t => t.id === selectedTeamId);
+                    renderLineup(team);
+                    renderAchievements(team.achievements);
+                }
+                alert('🔧 Modo ADMIN Ativado! Agora você pode gerenciar e somar estatísticas brutas diretamente nos perfis dos jogadores.');
+            } else {
+                body.classList.remove('admin-mode-on');
+                btn.classList.remove('admin-active');
+                btn.innerText = "ADMIN";
+                addTeamBtn.style.display = 'none';
+                
+                editables.forEach(el => { el.removeAttribute('contenteditable'); });
+                addAchBtn.style.display = 'none';
+
+                if (selectedTeamId) {
+                    await saveCurrentProfileDataToMemory();
+                    const team = teamsData.find(t => t.id === selectedTeamId);
+                    renderTeamsList();
+                    renderLineup(team);
+                    renderAchievements(team.achievements);
+                }
+                alert('💾 Modificações aplicadas e ratings recalculados com sucesso!');
+            }
+        }
+
+        function triggerTeamLogoChange() {
+            if (!adminMode) return;
+            document.getElementById('logoFileInput').click();
+        }
+
+        function loadLocalTeamLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    document.getElementById('det-logo').innerHTML = `<img src="${e.target.result}">`;
+                    if (selectedTeamId) {
+                        const team = teamsData.find(t => t.id === selectedTeamId);
+                        if (team) {
+                            team.logo = e.target.result;
+                            await saveTeamToStorage(team);
+                        }
+                    }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function showList() {
+            if (adminMode && selectedTeamId) {
+                await saveCurrentProfileDataToMemory();
+            }
+            
+            document.getElementById('view-list').style.display = "block";
+            document.getElementById('view-details').style.display = "none";
+            selectedTeamId = null;
+            renderTeamsList();
+        }
+
+        document.querySelectorAll('#main-nav a, .logo').forEach(link => {
+            link.addEventListener('click', async () => {
+                if (selectedTeamId) {
+                    await saveCurrentProfileDataToMemory();
+                }
+            });
+        });
+
+        window.onload = async function() {
+            await loadTeamsFromStorage();
+            renderTeamsList();
+        }
+    </script>
+</body>
+</html>
