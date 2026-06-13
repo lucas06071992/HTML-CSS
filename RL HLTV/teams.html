@@ -342,6 +342,30 @@
             gap: 10px;
             padding: 12px 14px 10px;
             border-bottom: 2px solid #222;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s;
+        }
+        .ach-block-header:hover { background: #1f1f1f; }
+        .ach-block-body {
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            max-height: 9999px;
+            opacity: 1;
+        }
+        .ach-block-body.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+        .ach-block-toggle {
+            margin-left: auto;
+            font-size: 11px;
+            color: #555;
+            transition: transform 0.25s;
+            flex-shrink: 0;
+        }
+        .ach-block-header.collapsed .ach-block-toggle {
+            transform: rotate(-90deg);
         }
         .ach-block-medal { font-size: 20px; line-height: 1; }
         .ach-block-title {
@@ -643,6 +667,7 @@
                 <input type="text" id="statCountry" placeholder="Ex: brasil" style="width:100%;">
             </div>
 
+            <div id="statsStatsFields">
             <div class="modal-grid-2">
                 <div>
                     <label>Partidas (Games)</label>
@@ -674,6 +699,7 @@
                     <label>Chutes Totais (Shots)</label>
                     <input type="number" id="statShots" min="0">
                 </div>
+            </div>
             </div>
 
             <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
@@ -1099,7 +1125,7 @@
                         ` : ''}
                     </div>
                     <div>
-                        ${(!isCoach && adminMode) ? `<button class="btn" style="background:#00b4ff; font-size:11px; padding:4px 8px; color:white;" onclick="openStatsModal('${member.nick}')">⚙️ Stats</button>` : ''}
+                        ${adminMode ? `<button class="btn" style="background:#00b4ff; font-size:11px; padding:4px 8px; color:white;" onclick="openStatsModal('${member.nick}')">⚙️ Editar</button>` : ''}
                     </div>
                 `;
                 lineupContainer.appendChild(pRow);
@@ -1110,19 +1136,28 @@
             selectedPlayerNick = playerNick;
             const team = teamsData.find(t => t.id === selectedTeamId);
             const player = team.lineup.find(p => p.nick === playerNick);
-            
-            if(!player) return;
 
-            document.getElementById('statsModalTitle').innerText = `Atualizar Dados de ${player.nick}`;
-            document.getElementById('statNick').value = player.nick || '';
-            document.getElementById('statFullName').value = player.name || '';
-            document.getElementById('statCountry').value = player.country || '';
-            document.getElementById('statGames').value = player.games || 0;
-            document.getElementById('statScore').value = player.score || 0;
-            document.getElementById('statGoals').value = player.goals || 0;
-            document.getElementById('statAssists').value = player.assists || 0;
-            document.getElementById('statSaves').value = player.saves || 0;
-            document.getElementById('statShots').value = player.shots || 0;
+            if (!player) return;
+
+            const isCoach = player.role === 'coach';
+
+            document.getElementById('statsModalTitle').innerText = isCoach
+                ? `Editar Técnico: ${player.nick}`
+                : `Atualizar Dados de ${player.nick}`;
+
+            document.getElementById('statNick').value     = player.nick    || '';
+            document.getElementById('statFullName').value = player.name    || '';
+            document.getElementById('statCountry').value  = player.country || '';
+            document.getElementById('statGames').value    = player.games   || 0;
+            document.getElementById('statScore').value    = player.score   || 0;
+            document.getElementById('statGoals').value    = player.goals   || 0;
+            document.getElementById('statAssists').value  = player.assists || 0;
+            document.getElementById('statSaves').value    = player.saves   || 0;
+            document.getElementById('statShots').value    = player.shots   || 0;
+
+            // Esconde campos de stats para técnicos
+            const statsFields = document.getElementById('statsStatsFields');
+            if (statsFields) statsFields.style.display = isCoach ? 'none' : 'block';
 
             document.getElementById('statsModal').style.display = 'flex';
         }
@@ -1153,6 +1188,11 @@
                 closeStatsModal();
                 renderLineup(team);
             }
+        }
+
+        function toggleAchBlock(header) {
+            header.classList.toggle('collapsed');
+            header.nextElementSibling.classList.toggle('collapsed');
         }
 
         function achCategory(pos) {
@@ -1193,11 +1233,13 @@
                 const block = document.createElement('div');
                 block.className = 'ach-block';
                 block.innerHTML = `
-                    <div class="ach-block-header">
+                    <div class="ach-block-header" onclick="toggleAchBlock(this)">
                         <span class="ach-block-medal">${g.medal}</span>
                         <span class="ach-block-title ${g.cls}">${g.title}</span>
                         <span class="ach-block-count">${g.items.length}</span>
-                    </div>`;
+                        <span class="ach-block-toggle">▼</span>
+                    </div>
+                    <div class="ach-block-body"></div>`;
 
                 // ── Agrupa por ano dentro do bloco ──
                 const byYear = {};
@@ -1207,11 +1249,13 @@
                 });
                 const years = Object.keys(byYear).sort((a, b) => (parseInt(b) || 0) - (parseInt(a) || 0));
 
+                const body = block.querySelector('.ach-block-body');
+
                 years.forEach(year => {
                     const yearDiv = document.createElement('div');
                     yearDiv.className = 'ach-year-label';
                     yearDiv.textContent = year;
-                    block.appendChild(yearDiv);
+                    body.appendChild(yearDiv);
 
                     const ul = document.createElement('ul');
                     ul.className = 'achievements-list';
@@ -1250,7 +1294,7 @@
                             </div>`;
                         ul.appendChild(li);
                     });
-                    block.appendChild(ul);
+                    body.appendChild(ul);
                 });
 
                 container.appendChild(block);
