@@ -13,6 +13,18 @@
             --accent2: #00b4ff;
             --text: #e0e0e0;
             --border: #2a2a2a;
+            --header-bg: #111;
+            --sidebar-bg: #1a1a1a;
+        }
+        [data-theme="ultradark"] {
+            --bg: #050507;
+            --card: #0d0d10;
+            --accent: #ff6200;
+            --accent2: #00b4ff;
+            --text: #c8c8d0;
+            --border: #18181f;
+            --header-bg: #07070a;
+            --sidebar-bg: #0d0d10;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -20,14 +32,16 @@
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
+            transition: background 0.4s, color 0.4s;
         }
         
         header {
-            background: #111;
+            background: var(--header-bg);
             border-bottom: 3px solid var(--accent);
             position: sticky;
             top: 0;
             z-index: 1000;
+            transition: background 0.4s;
         }
         .top-bar {
             display: flex;
@@ -150,24 +164,46 @@
             padding: 20px 15px;
             text-align: center;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.25s, border-color 0.35s;
+            position: relative;
+            overflow: hidden;
         }
+        .team-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            background: var(--team-color, transparent);
+            pointer-events: none;
+        }
+        .team-card:hover::before { opacity: 0.18; }
         .team-card:hover {
             transform: translateY(-3px);
-            border-color: var(--accent);
+            border-color: var(--team-color, var(--accent));
         }
         .team-logo-container {
-            width: 70px;
-            height: 70px;
+            width: 90px;
+            height: 90px;
             margin: 0 auto 12px auto;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 1;
+            transition: filter 0.35s ease, transform 0.25s ease;
+        }
+        .team-card:hover .team-logo-container {
+            filter: drop-shadow(0 0 10px var(--team-color, transparent))
+                    drop-shadow(0 0 22px var(--team-color, transparent));
+            transform: scale(1.08);
         }
         .team-logo-container img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
+            position: relative;
+            z-index: 2;
         }
         .team-card name {
             display: block;
@@ -175,27 +211,45 @@
             font-size: 16px;
             margin-bottom: 4px;
             color: #fff;
+            position: relative;
+            z-index: 1;
         }
         .team-card .region-tag {
             font-size: 12px;
             color: #aaa;
             text-transform: uppercase;
+            position: relative;
+            z-index: 1;
         }
 
+        #themeBtn {
+            font-size: 16px;
+            transition: transform 0.3s;
+        }
+        #themeBtn:hover { transform: rotate(20deg); }
+        [data-theme="ultradark"] #themeBtn { filter: brightness(1.4); }
+
         .back-btn {
-            background: #222;
-            color: #fff;
-            border: 1px solid #333;
-            padding: 8px 14px;
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 7px 16px;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: border-color 0.2s, color 0.2s;
+            letter-spacing: 0.3px;
         }
-        .back-btn:hover { background: #333; }
+        .back-btn i { color: var(--accent); font-size: 12px; }
+        .back-btn:hover {
+            border-color: var(--accent);
+            color: #fff;
+        }
         
         .team-profile-header {
             display: flex;
@@ -277,31 +331,180 @@
         .player-stats-grid span { display: flex; flex-direction: column; }
         .player-stats-grid strong { color: #fff; font-size: 13px; }
 
+        /* ── RATING GERAL DO JOGADOR ── */
+        .player-overall {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 6px;
+            font-weight: 900;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+        .player-overall-num { font-size: 22px; }
+        .player-overall-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+        .overall-elite   { background: rgba(46,204,113,0.15); color: #2ecc71; }
+        .overall-great   { background: rgba(52,152,219,0.15); color: #3498db; }
+        .overall-good    { background: rgba(241,196,15,0.15);  color: #f1c40f; }
+        .overall-average { background: rgba(231,76,60,0.15);   color: #e74c3c; }
+
+        /* ── ATRIBUTOS DO TÉCNICO ── */
+        .coach-attrs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .attr-tactique  .player-attr-label { color: #e74c3c; }
+        .attr-tactique  .player-attr-val   { color: #e74c3c; }
+        .attr-motivacao .player-attr-label { color: #f39c12; }
+        .attr-motivacao .player-attr-val   { color: #f39c12; }
+        .attr-rotacao   .player-attr-label { color: #3498db; }
+        .attr-rotacao   .player-attr-val   { color: #3498db; }
+        .attr-mentalidade .player-attr-label { color: #9b59b6; }
+        .attr-mentalidade .player-attr-val   { color: #9b59b6; }
+        [data-theme="ultradark"] .player-overall { background: rgba(255,255,255,0.04); }
+        .team-card-rating {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+            position: relative;
+            z-index: 1;
+        }
+        .team-rating-num {
+            font-size: 22px;
+            font-weight: 900;
+            line-height: 1;
+            color: #fff;
+        }
+        .team-rating-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        .rating-input-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        .rating-input {
+            width: 54px;
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            padding: 3px 6px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+        }
+        [data-theme="ultradark"] .team-rating-num { color: var(--accent-bright); }
+        [data-theme="ultradark"] .team-rating-label { color: var(--text-muted); }
+
+        /* ── RATING 4 ATRIBUTOS (jogador) ── */
+        .player-attrs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .player-attr {
+            background: #151515;
+            border-radius: 4px;
+            padding: 5px 4px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .player-attr-label {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #555;
+        }
+        .player-attr-val {
+            font-size: 16px;
+            font-weight: 900;
+            line-height: 1;
+        }
+        .attr-attack  .player-attr-label { color: #e74c3c; }
+        .attr-attack  .player-attr-val   { color: #e74c3c; }
+        .attr-defense .player-attr-label { color: #3498db; }
+        .attr-defense .player-attr-val   { color: #3498db; }
+        .attr-aerial  .player-attr-label { color: #9b59b6; }
+        .attr-aerial  .player-attr-val   { color: #9b59b6; }
+        .attr-passe   .player-attr-label { color: #27ae60; }
+        .attr-passe   .player-attr-val   { color: #27ae60; }
+
+        /* no admin: inputs de atributos no modal */
+        .attr-inputs { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 10px; }
+        .attr-input-group label { font-size: 11px; font-weight: 700; display: block; margin-bottom: 3px; }
+        .attr-input-group.attack  label { color: #e74c3c; }
+        .attr-input-group.defense label { color: #3498db; }
+        .attr-input-group.aerial  label { color: #9b59b6; }
+        .attr-input-group.passe   label { color: #27ae60; }
+        [data-theme="ultradark"] .player-attr { background: var(--card3); }
+        }
         .achievements-list {
             list-style: none;
-            padding: 10px;
+            padding: 0;
         }
         .achievements-list li {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 6px;
-            border-bottom: 1px solid #222;
-            font-size: 14px;
-            gap: 10px;
+            padding: 10px 14px;
+            border-bottom: 1px solid #1e1e1e;
+            gap: 8px;
         }
+        .ach-tier {
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .ach-tier.S { background: #e74c3c; }
+        .ach-tier.A { background: #e67e22; }
+        .ach-tier.B { background: #9b59b6; }
+        .ach-tier.C { background: #3498db; }
+        .ach-tier.D { background: #7f8c8d; }
         .ach-title-link {
+            flex: 1;
+            min-width: 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             text-decoration: none;
             color: var(--text);
             font-weight: bold;
+            font-size: 14px;
             transition: color 0.2s;
-            flex: 1;
+            overflow: hidden;
         }
         .ach-title-link:hover { color: var(--accent2); }
-        .ach-title-link .ach-icon { font-size: 13px; color: #555; flex-shrink: 0; }
+        .ach-title-link > span.ach-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .ach-icon { font-size: 12px; color: #555; flex-shrink: 0; }
         .ach-title-link.internal .ach-icon { color: var(--accent); }
         .ach-title-link.external .ach-icon { color: var(--accent2); }
         .ach-badge {
@@ -310,30 +513,24 @@
             border-radius: 8px;
             font-weight: 600;
             flex-shrink: 0;
+            white-space: nowrap;
         }
         .ach-badge.internal { background: rgba(255,98,0,0.15); color: var(--accent); }
         .ach-badge.external { background: rgba(0,180,255,0.15); color: var(--accent2); }
-        .ach-tier {
+        .ach-year {
             font-size: 12px;
-            font-weight: bold;
-            background: #333;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #fff;
+            color: #555;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-left: 8px;
         }
-        .ach-tier.S { background: #e74c3c; color: #fff; }
-        .ach-tier.A { background: #e67e22; color: #fff; }
-        .ach-tier.B { background: #9b59b6; color: #fff; }
-        .ach-tier.C { background: #3498db; color: #fff; }
-        .ach-tier.D { background: #7f8c8d; color: #fff; }
-        .ach-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .ach-pos {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            white-space: nowrap;
             flex-shrink: 0;
         }
-        .ach-pos { color: var(--accent); font-weight: bold; white-space: nowrap; }
-
         /* ── BLOCOS DE CATEGORIA ── */
         .ach-block { margin-bottom: 10px; }
         .ach-block-header {
@@ -458,7 +655,7 @@
             </nav>
             <div class="header-right">
                 <input type="text" class="search-bar" placeholder="Buscar jogadores, times...">
-                <button class="btn">🌙</button>
+                <button class="btn" id="themeBtn" onclick="toggleTheme()" title="Alternar tema">🌙</button>
                 <button class="btn btn-primary" id="adminBtn" onclick="toggleAdminMode()">ADMIN</button>
             </div>
         </div>
@@ -700,6 +897,51 @@
                     <input type="number" id="statShots" min="0">
                 </div>
             </div>
+
+            <div style="border-top:1px solid #2a2a2a; margin-top:12px; padding-top:12px;">
+                <label style="font-size:12px; color:#aaa; display:block; margin-bottom:6px;">⚡ Atributos (0–99)</label>
+                <div class="attr-inputs">
+                    <div class="attr-input-group attack">
+                        <label>Ataque</label>
+                        <input type="number" id="statAtaque" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#e74c3c;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                    <div class="attr-input-group defense">
+                        <label>Defesa</label>
+                        <input type="number" id="statDefesa" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#3498db;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                    <div class="attr-input-group aerial">
+                        <label>Aéreo</label>
+                        <input type="number" id="statAereo" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#9b59b6;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                    <div class="attr-input-group passe">
+                        <label>Passe</label>
+                        <input type="number" id="statPasse" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#27ae60;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- ATRIBUTOS DO TÉCNICO (só aparece para coach) -->
+            <div id="statsCoachFields" style="display:none; border-top:1px solid #2a2a2a; margin-top:12px; padding-top:12px;">
+                <label style="font-size:12px; color:#aaa; display:block; margin-bottom:6px;">🎯 Habilidades do Técnico (0–99)</label>
+                <div class="attr-inputs">
+                    <div class="attr-input-group" style="color:#e74c3c;">
+                        <label style="color:#e74c3c;">Tática</label>
+                        <input type="number" id="statTactica" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#e74c3c;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                    <div class="attr-input-group">
+                        <label style="color:#f39c12;">Motivação</label>
+                        <input type="number" id="statMotivacao" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#f39c12;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                    <div class="attr-input-group">
+                        <label style="color:#3498db;">Rotação</label>
+                        <input type="number" id="statRotacao" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#3498db;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                    <div class="attr-input-group">
+                        <label style="color:#9b59b6;">Mentalidade</label>
+                        <input type="number" id="statMentalidade" min="0" max="99" style="width:100%;background:#1a1a1a;border:1px solid #3a3a3a;color:#9b59b6;border-radius:4px;padding:5px;font-size:14px;font-weight:700;text-align:center;">
+                    </div>
+                </div>
             </div>
 
             <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
@@ -769,17 +1011,46 @@
     </div>
 
 <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const btn  = document.getElementById('themeBtn');
+            if (html.getAttribute('data-theme') === 'ultradark') {
+                html.removeAttribute('data-theme');
+                btn.textContent = '🌙';
+                btn.title = 'Ativar Ultra Dark';
+                localStorage.setItem('rltv-theme', 'default');
+            } else {
+                html.setAttribute('data-theme', 'ultradark');
+                btn.textContent = '☀️';
+                btn.title = 'Voltar ao tema padrão';
+                localStorage.setItem('rltv-theme', 'ultradark');
+            }
+        }
+
+        // Aplica tema salvo ao carregar
+        (function() {
+            const saved = localStorage.getItem('rltv-theme');
+            if (saved === 'ultradark') {
+                document.documentElement.setAttribute('data-theme', 'ultradark');
+                document.addEventListener('DOMContentLoaded', () => {
+                    const btn = document.getElementById('themeBtn');
+                    if (btn) { btn.textContent = '☀️'; btn.title = 'Voltar ao tema padrão'; }
+                });
+            }
+        })();
+
         let adminMode = false;
         let selectedTeamId = null;
         let selectedPlayerNick = null;
         let selectedAchievementIndex = null;
 
         const countryFlags = {
+            // ── Português ──
             "afeganistão": "🇦🇫", "áfrica do sul": "🇿🇦", "albânia": "🇦🇱", "alemanha": "🇩🇪", "andorra": "🇦🇩", "angola": "🇦🇴", "antígua e barbuda": "🇦🇬", "arábia saudita": "🇸🇦", "argélia": "🇩🇿", "argentina": "🇦🇷", "armênia": "🇦🇲", "austrália": "🇦🇺", "áustria": "🇦🇹", "azerbaijão": "🇦🇿",
             "bahamas": "🇧🇸", "bangladesh": "🇧🇩", "barbados": "🇧🇧", "barrein": "🇧🇭", "bélgica": "🇧🇪", "belize": "🇧🇿", "benim": "🇧🇯", "bielorrússia": "🇧🇾", "bolívia": "🇧🇴", "bósnia e herzegovina": "🇧🇦", "botsuana": "🇧🇼", "brasil": "🇧🇷", "brunei": "🇧🇳", "bulgária": "🇧🇬", "burquina faso": "🇧🇫", "burundi": "🇧🇮", "butão": "🇧🇹",
             "cabo verde": "🇨🇻", "camarões": "🇨🇲", "camboja": "🇰🇭", "canadá": "🇨🇦", "catar": "🇶🇦", "cazaquistão": "🇰🇿", "chade": "🇹🇩", "chéquia": "🇨🇿", "chile": "🇨🇱", "china": "🇨🇳", "chipre": "🇨🇾", "colômbia": "🇨🇴", "comores": "🇰🇲", "congo-brazzaville": "🇨🇬", "congo-kinshasa": "🇨🇩", "coréia do norte": "🇰🇵", "coréia do sul": "🇰🇷", "costa do marfim": "🇨🇮", "costa rica": "🇨🇷", "croácia": "🇭🇷", "cuba": "🇨🇺",
             "dinamarca": "🇩🇰", "djibuti": "🇩🇯", "dominica": "🇩🇲",
-            "egito": "🇪🇬", "emirados árabes unidos": "🇦eae", "equador": "🇪🇨", "eritreia": "🇪🇷", "eslováquia": "🇸🇰", "eslovênia": "🇸🇮", "espanha": "🇪🇸", "estados unidos": "🇺🇸", "estônia": "🇪🇪", "esuatíni": "🇸🇿", "etiópia": "🇪🇹",
+            "egito": "🇪🇬", "emirados árabes unidos": "🇦🇪", "equador": "🇪🇨", "eritreia": "🇪🇷", "eslováquia": "🇸🇰", "eslovênia": "🇸🇮", "espanha": "🇪🇸", "estados unidos": "🇺🇸", "estônia": "🇪🇪", "esuatíni": "🇸🇿", "etiópia": "🇪🇹",
             "fiji": "🇫🇯", "filipinas": "🇵🇭", "finlândia": "🇫🇮", "frança": "🇫🇷",
             "gabão": "🇬🇦", "gâmbia": "🇬🇲", "gana": "🇬🇭", "geórgia": "🇬🇪", "granada": "🇬🇩", "grécia": "🇬🇷", "guatemala": "🇬🇹", "guiana": "🇬🇾", "guiné": "🇬🇳", "guiné equatorial": "🇬🇶", "guiné-bissau": "🇬🇼",
             "haiti": "🇭🇹", "honduras": "🇭🇳", "hungria": "🇭🇺",
@@ -792,12 +1063,35 @@
             "omã": "🇴🇲",
             "países baixos": "🇳🇱", "palau": "🇵🇼", "palestina": "🇵🇸", "panamá": "🇵🇦", "papua-nova guiné": "🇵🇬", "paquistão": "🇵🇰", "paraguai": "🇵🇾", "peru": "🇵🇪", "polônia": "🇵🇱", "portugal": "🇵🇹",
             "quênia": "🇰🇪", "quirguistão": "🇰🇬",
-            "reino unido": "🇬🇧", "inglaterra": "🇬🇧", "república centro-africana": "🇨🇫", "república dominicana": "🇩🇴", "romênia": "🇷🇴", "ruanda": "🇷🇼", "rússia": "🇷🇺",
+            "reino unido": "🇬🇧", "inglaterra": "🇬🇧", "escócia": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "país de gales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", "república centro-africana": "🇨🇫", "república dominicana": "🇩🇴", "romênia": "🇷🇴", "ruanda": "🇷🇼", "rússia": "🇷🇺",
             "salvador": "🇸🇻", "samoa": "🇼🇸", "santa lúcia": "🇱🇨", "são cristóvão e névis": "🇰🇳", "são marinho": "🇸🇲", "são tomé e príncipe": "🇸🇹", "são vicente e granadinas": "🇻🇨", "seicheles": "🇸🇨", "senegal": "🇸🇳", "serra leoa": "🇸🇱", "sérvia": "🇷🇸", "singapura": "🇸🇬", "síria": "🇸🇾", "somália": "🇸🇴", "sri lanka": "🇱🇰", "sudão": "🇸🇩", "sudão do sul": "🇸🇸", "suécia": "🇸🇪", "suíça": "🇨🇭", "suriname": "🇸🇷",
             "tajiquistão": "🇹🇯", "tailândia": "🇹🇭", "tanzânia": "🇹🇿", "timor-leste": "🇹🇱", "togo": "🇹🇬", "tonga": "🇹🇴", "trindade e tobago": "🇹🇹", "tunísia": "🇹🇳", "turcomenistão": "🇹🇲", "turquia": "🇹🇷", "tuvalu": "🇹🇻",
             "ucrânia": "🇺🇦", "uganda": "🇺🇬", "uruguai": "🇺🇾", "uzbequistão": "🇺🇿",
             "vanuatu": "🇻🇺", "vaticano": "🇻🇦", "venezuela": "🇻🇪", "vietnã": "🇻🇳",
-            "zâmbia": "🇿🇲", "zimbábue": "🇿🇼"
+            "zâmbia": "🇿🇲", "zimbábue": "🇿🇼",
+            // ── Inglês (comum no esporte) ──
+            "afghanistan": "🇦🇫", "albania": "🇦🇱", "algeria": "🇩🇿", "andorra": "🇦🇩", "angola": "🇦🇴", "argentina": "🇦🇷", "armenia": "🇦🇲", "australia": "🇦🇺", "austria": "🇦🇹", "azerbaijan": "🇦🇿",
+            "bahrain": "🇧🇭", "bangladesh": "🇧🇩", "barbados": "🇧🇧", "belarus": "🇧🇾", "belgium": "🇧🇪", "belize": "🇧🇿", "benin": "🇧🇯", "bhutan": "🇧🇹", "bolivia": "🇧🇴", "bosnia": "🇧🇦", "botswana": "🇧🇼", "brazil": "🇧🇷", "brunei": "🇧🇳", "bulgaria": "🇧🇬", "burkina faso": "🇧🇫", "burundi": "🇧🇮",
+            "cambodia": "🇰🇭", "cameroon": "🇨🇲", "canada": "🇨🇦", "cape verde": "🇨🇻", "chile": "🇨🇱", "china": "🇨🇳", "colombia": "🇨🇴", "croatia": "🇭🇷", "cuba": "🇨🇺", "cyprus": "🇨🇾", "czech republic": "🇨🇿", "czechia": "🇨🇿",
+            "denmark": "🇩🇰",
+            "ecuador": "🇪🇨", "egypt": "🇪🇬", "estonia": "🇪🇪", "ethiopia": "🇪🇹",
+            "finland": "🇫🇮", "france": "🇫🇷",
+            "georgia": "🇬🇪", "germany": "🇩🇪", "ghana": "🇬🇭", "greece": "🇬🇷", "guatemala": "🇬🇹",
+            "haiti": "🇭🇹", "honduras": "🇭🇳", "hungary": "🇭🇺",
+            "iceland": "🇮🇸", "india": "🇮🇳", "indonesia": "🇮🇩", "iran": "🇮🇷", "iraq": "🇮🇶", "ireland": "🇮🇪", "israel": "🇮🇱", "italy": "🇮🇹",
+            "jamaica": "🇯🇲", "japan": "🇯🇵", "jordan": "🇯🇴",
+            "kazakhstan": "🇰🇿", "kenya": "🇰🇪", "kuwait": "🇰🇼",
+            "latvia": "🇱🇻", "lebanon": "🇱🇧", "libya": "🇱🇾", "liechtenstein": "🇱🇮", "lithuania": "🇱🇹", "luxembourg": "🇱🇺",
+            "malaysia": "🇲🇾", "mali": "🇲🇱", "malta": "🇲🇹", "mexico": "🇲🇽", "moldova": "🇲🇩", "monaco": "🇲🇨", "mongolia": "🇲🇳", "montenegro": "🇲🇪", "morocco": "🇲🇦", "mozambique": "🇲🇿",
+            "nepal": "🇳🇵", "netherlands": "🇳🇱", "new zealand": "🇳🇿", "nicaragua": "🇳🇮", "nigeria": "🇳🇬", "north korea": "🇰🇵", "norway": "🇳🇴",
+            "pakistan": "🇵🇰", "panama": "🇵🇦", "paraguay": "🇵🇾", "peru": "🇵🇪", "philippines": "🇵🇭", "poland": "🇵🇱", "portugal": "🇵🇹",
+            "qatar": "🇶🇦",
+            "romania": "🇷🇴", "russia": "🇷🇺", "rwanda": "🇷🇼",
+            "saudi arabia": "🇸🇦", "senegal": "🇸🇳", "serbia": "🇷🇸", "singapore": "🇸🇬", "slovakia": "🇸🇰", "slovenia": "🇸🇮", "somalia": "🇸🇴", "south africa": "🇿🇦", "south korea": "🇰🇷", "spain": "🇪🇸", "sri lanka": "🇱🇰", "sudan": "🇸🇩", "sweden": "🇸🇪", "switzerland": "🇨🇭", "syria": "🇸🇾",
+            "taiwan": "🇹🇼", "thailand": "🇹🇭", "tunisia": "🇹🇳", "turkey": "🇹🇷",
+            "ukraine": "🇺🇦", "united arab emirates": "🇦🇪", "uae": "🇦🇪", "united kingdom": "🇬🇧", "uk": "🇬🇧", "england": "🇬🇧", "scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", "united states": "🇺🇸", "usa": "🇺🇸", "us": "🇺🇸", "uruguay": "🇺🇾", "uzbekistan": "🇺🇿",
+            "venezuela": "🇻🇪", "vietnam": "🇻🇳",
+            "zambia": "🇿🇲", "zimbabwe": "🇿🇼"
         };
 
         function getFlagEmoji(countryName) {
@@ -806,17 +1100,52 @@
             return countryFlags[normalized] || "🏳️";
         }
 
+        // Overall do jogador (0-99) baseado nos 4 atributos
+        function calcOverall(player) {
+            const a = player.ataque ?? null;
+            const d = player.defesa ?? null;
+            const ae = player.aereo ?? null;
+            const p = player.passe  ?? null;
+            if (a === null && d === null && ae === null && p === null) return null;
+            const vals = [a,d,ae,p].filter(v => v !== null);
+            return Math.round(vals.reduce((s,v) => s+v, 0) / vals.length);
+        }
+
+        // Overall do técnico
+        function calcCoachOverall(coach) {
+            const t = coach.tactica     ?? null;
+            const m = coach.motivacao   ?? null;
+            const r = coach.rotacao     ?? null;
+            const me = coach.mentalidade ?? null;
+            if (t===null && m===null && r===null && me===null) return null;
+            const vals = [t,m,r,me].filter(v => v !== null);
+            return Math.round(vals.reduce((s,v) => s+v, 0) / vals.length);
+        }
+
+        // Rating do time baseado nos jogadores (média dos overalls, estilo FIFA)
+        function calcTeamRatingFromPlayers(team) {
+            const players = team.lineup.filter(m => m.role !== 'coach');
+            const overalls = players.map(p => calcOverall(p)).filter(v => v !== null);
+            if (overalls.length === 0) return null;
+            const avg = Math.round(overalls.reduce((s,v) => s+v, 0) / overalls.length);
+            return Math.min(99, avg);
+        }
+
+        function overallClass(val) {
+            if (val >= 85) return 'overall-elite';
+            if (val >= 75) return 'overall-great';
+            if (val >= 65) return 'overall-good';
+            return 'overall-average';
+        }
+
         function calculateRating(games, score, goals, assists, saves, shots) {
             if (!games || games <= 0) return 0.00;
-            
             const mScore = score / games;
             const mGoals = goals / games;
             const mAssists = assists / games;
             const mSaves = saves / games;
             const mShots = shots / games;
-
             let rating = (mScore * 0.006) + (mGoals * 2.2) + (mAssists * 1.5) + (mSaves * 1.0) + (mShots * 0.2);
-            
             if (rating < 0) rating = 0;
             return parseFloat(rating.toFixed(2));
         }
@@ -963,28 +1292,116 @@
             document.getElementById('count-af').innerText = teamsData.filter(t => t.region === "África").length;
         }
 
+        // Extrai a cor dominante de uma imagem via Canvas
+        function getDominantColor(imgEl, callback) {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 50; canvas.height = 50;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(imgEl, 0, 0, 50, 50);
+                const data = ctx.getImageData(0, 0, 50, 50).data;
+
+                const pixels = [];
+                for (let i = 0; i < data.length; i += 4) {
+                    if (data[i + 3] < 40) continue;
+                    const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
+                    if (brightness > 240) continue;
+                    pixels.push([data[i], data[i+1], data[i+2]]);
+                }
+
+                if (pixels.length === 0) { callback('rgb(255,98,0)', false); return; }
+
+                let r = 0, g = 0, b = 0;
+                pixels.forEach(p => { r += p[0]; g += p[1]; b += p[2]; });
+                r = Math.round(r / pixels.length);
+                g = Math.round(g / pixels.length);
+                b = Math.round(b / pixels.length);
+
+                const brightness = (r + g + b) / 3;
+                const saturation = Math.max(r,g,b) - Math.min(r,g,b);
+
+                // Logo preto puro sem cor → inverte para branco (invert=true)
+                if (brightness < 40 && saturation < 20) {
+                    callback('rgb(220,220,220)', true);
+                    return;
+                }
+
+                // Escuro com alguma cor → clareia só o glow
+                if (brightness < 80) {
+                    const factor = 80 / Math.max(brightness, 1);
+                    r = Math.min(255, Math.round(r * factor));
+                    g = Math.min(255, Math.round(g * factor));
+                    b = Math.min(255, Math.round(b * factor));
+                }
+
+                callback(`rgb(${r},${g},${b})`, false);
+            } catch(e) {
+                callback('rgb(255,98,0)', false);
+            }
+        }
+
         function renderTeamsList() {
             updateRegionCounts();
             const container = document.getElementById('teams-container');
             container.innerHTML = "";
 
-            const filtered = currentRegionFilter === "all" 
-                ? teamsData 
-                : teamsData.filter(t => t.region === currentRegionFilter);
+            const filtered = (currentRegionFilter === "all"
+                ? teamsData
+                : teamsData.filter(t => t.region === currentRegionFilter))
+                .slice()
+                .sort((a, b) => a.name.localeCompare(b.name, 'pt', { sensitivity: 'base' }));
 
             filtered.forEach(team => {
+                if (team.rating == null) team.rating = 50;
+
+                // Calcula rating automaticamente a partir dos jogadores se tiverem atributos
+                const autoRating = calcTeamRatingFromPlayers(team);
+                const displayRating = autoRating !== null ? autoRating : team.rating;
+                const ratingClass = overallClass(displayRating);
                 const card = document.createElement('div');
                 card.className = "team-card";
                 card.onclick = () => openTeamProfile(team.id);
+
+                const ratingHtml = adminMode
+                    ? `<div class="rating-input-wrap" onclick="event.stopPropagation()">
+                           <span style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:1px;">Rating</span>
+                           <input class="rating-input" type="number" min="0" max="100" value="${team.rating}"
+                               onchange="updateTeamRating('${team.id}', this.value)">
+                       </div>`
+                    : `<div class="team-card-rating">
+                           <div class="player-overall ${ratingClass}" style="width:56px;height:56px;">
+                               <span class="player-overall-num">${displayRating}</span>
+                               <span class="player-overall-label">OVR</span>
+                           </div>
+                       </div>`;
+
                 card.innerHTML = `
                     <div class="team-logo-container">
-                        <img src="${team.logo || 'https://i.imgur.com/gK6107L.png'}" alt="Logo ${team.name}">
+                        <img src="${team.logo || 'https://i.imgur.com/gK6107L.png'}" alt="Logo ${team.name}" crossorigin="anonymous">
                     </div>
                     <name>${team.name}</name>
                     <div class="region-tag">${team.region}</div>
+                    ${ratingHtml}
                 `;
+
+                const img = card.querySelector('img');
+                const applyColor = () => {
+                    getDominantColor(img, (color, isBlack) => {
+                        card.style.setProperty('--team-color', color);
+                    });
+                };
+                if (img.complete) applyColor();
+                else img.onload = applyColor;
+
                 container.appendChild(card);
             });
+        }
+
+        async function updateTeamRating(teamId, value) {
+            const team = teamsData.find(t => t.id === teamId);
+            if (!team) return;
+            team.rating = Math.max(0, Math.min(100, parseInt(value) || 50));
+            await saveTeamToStorage(team);
         }
 
         function openNewTeamModal() {
@@ -1101,28 +1518,66 @@
                 const avgSaves = totalGames > 0 ? (member.saves / totalGames).toFixed(2) : "0.00";
                 const avgShots = totalGames > 0 ? (member.shots / totalGames).toFixed(2) : "0.00";
 
+                const nomeExibir = (!member.name || member.name.trim() === '' || member.name === 'Nome Sobrenome' || member.name === 'Treinador')
+                    ? '' : member.name;
+
+                const overall = isCoach ? calcCoachOverall(member) : calcOverall(member);
+                const ovClass = overall !== null ? overallClass(overall) : '';
+
                 pRow.innerHTML = `
                     <div class="player-main">
                         <span class="player-nick">${member.nick} ${isCoach ? '<small style="font-size:11px; color:var(--accent2);">(C)</small>' : ''}</span>
-                        <span class="player-name">${member.name}</span>
+                        ${nomeExibir ? `<span class="player-name">${nomeExibir}</span>` : ''}
                     </div>
                     <div>
                         <span class="player-flag">${flag} <small>${member.country || 'N/A'}</small></span>
                     </div>
                     <div>
-                        ${!isCoach ? `<div class="player-rating-val" style="color: ${calculatedRating >= 7 ? '#2ecc71' : calculatedRating >= 6 ? '#f1c40f' : '#e74c3c'}">${calculatedRating === 0 ? "0.00" : calculatedRating}</div>` : '-'}
+                        ${overall !== null
+                            ? `<div class="player-overall ${ovClass}">
+                                <span class="player-overall-num">${overall}</span>
+                                <span class="player-overall-label">OVR</span>
+                               </div>`
+                            : '<span style="color:#444;font-size:13px;">—</span>'}
                     </div>
                     <div>
                         ${!isCoach ? `
-                        <div class="player-stats-grid">
-                            <span>Partidas <strong>${totalGames}</strong></span>
-                            <span>Avg Score <strong>${avgScore}</strong></span>
-                            <span>Gols <strong>${avgGoals}</strong></span>
-                            <span>Assists <strong>${avgAssists}</strong></span>
-                            <span>Saves <strong>${avgSaves}</strong></span>
-                            <span>Chutes <strong>${avgShots}</strong></span>
-                        </div>
-                        ` : ''}
+                        <div class="player-attrs">
+                            <div class="player-attr attr-attack">
+                                <span class="player-attr-label">Ataque</span>
+                                <span class="player-attr-val">${member.ataque ?? '—'}</span>
+                            </div>
+                            <div class="player-attr attr-defense">
+                                <span class="player-attr-label">Defesa</span>
+                                <span class="player-attr-val">${member.defesa ?? '—'}</span>
+                            </div>
+                            <div class="player-attr attr-aerial">
+                                <span class="player-attr-label">Aéreo</span>
+                                <span class="player-attr-val">${member.aereo ?? '—'}</span>
+                            </div>
+                            <div class="player-attr attr-passe">
+                                <span class="player-attr-label">Passe</span>
+                                <span class="player-attr-val">${member.passe ?? '—'}</span>
+                            </div>
+                        </div>` : `
+                        <div class="coach-attrs">
+                            <div class="player-attr attr-tactique">
+                                <span class="player-attr-label">Tática</span>
+                                <span class="player-attr-val">${member.tactica ?? '—'}</span>
+                            </div>
+                            <div class="player-attr attr-motivacao">
+                                <span class="player-attr-label">Motivação</span>
+                                <span class="player-attr-val">${member.motivacao ?? '—'}</span>
+                            </div>
+                            <div class="player-attr attr-rotacao">
+                                <span class="player-attr-label">Rotação</span>
+                                <span class="player-attr-val">${member.rotacao ?? '—'}</span>
+                            </div>
+                            <div class="player-attr attr-mentalidade">
+                                <span class="player-attr-label">Mentalidade</span>
+                                <span class="player-attr-val">${member.mentalidade ?? '—'}</span>
+                            </div>
+                        </div>`}
                     </div>
                     <div>
                         ${adminMode ? `<button class="btn" style="background:#00b4ff; font-size:11px; padding:4px 8px; color:white;" onclick="openStatsModal('${member.nick}')">⚙️ Editar</button>` : ''}
@@ -1148,16 +1603,31 @@
             document.getElementById('statNick').value     = player.nick    || '';
             document.getElementById('statFullName').value = player.name    || '';
             document.getElementById('statCountry').value  = player.country || '';
-            document.getElementById('statGames').value    = player.games   || 0;
-            document.getElementById('statScore').value    = player.score   || 0;
-            document.getElementById('statGoals').value    = player.goals   || 0;
-            document.getElementById('statAssists').value  = player.assists || 0;
-            document.getElementById('statSaves').value    = player.saves   || 0;
-            document.getElementById('statShots').value    = player.shots   || 0;
 
-            // Esconde campos de stats para técnicos
             const statsFields = document.getElementById('statsStatsFields');
-            if (statsFields) statsFields.style.display = isCoach ? 'none' : 'block';
+            const coachFields = document.getElementById('statsCoachFields');
+
+            if (isCoach) {
+                statsFields.style.display = 'none';
+                coachFields.style.display = 'block';
+                document.getElementById('statTactica').value    = player.tactica    ?? 70;
+                document.getElementById('statMotivacao').value  = player.motivacao  ?? 70;
+                document.getElementById('statRotacao').value    = player.rotacao    ?? 70;
+                document.getElementById('statMentalidade').value = player.mentalidade ?? 70;
+            } else {
+                statsFields.style.display = 'block';
+                coachFields.style.display = 'none';
+                document.getElementById('statGames').value    = player.games   || 0;
+                document.getElementById('statScore').value    = player.score   || 0;
+                document.getElementById('statGoals').value    = player.goals   || 0;
+                document.getElementById('statAssists').value  = player.assists || 0;
+                document.getElementById('statSaves').value    = player.saves   || 0;
+                document.getElementById('statShots').value    = player.shots   || 0;
+                document.getElementById('statAtaque').value   = player.ataque  ?? 70;
+                document.getElementById('statDefesa').value   = player.defesa  ?? 70;
+                document.getElementById('statAereo').value    = player.aereo   ?? 70;
+                document.getElementById('statPasse').value    = player.passe   ?? 70;
+            }
 
             document.getElementById('statsModal').style.display = 'flex';
         }
@@ -1167,27 +1637,38 @@
         }
 
         async function savePlayerStatsSubmit() {
-            const team = teamsData.find(t => t.id === selectedTeamId);
+            const team   = teamsData.find(t => t.id === selectedTeamId);
             const player = team.lineup.find(p => p.nick === selectedPlayerNick);
+            if (!player) return;
 
-            if (player) {
-                const newNick = document.getElementById('statNick').value.trim();
-                player.nick = newNick || player.nick;
-                player.name = document.getElementById('statFullName').value.trim() || player.name;
-                player.country = document.getElementById('statCountry').value.trim().toLowerCase() || player.country;
-                player.games = parseInt(document.getElementById('statGames').value) || 0;
-                player.score = parseInt(document.getElementById('statScore').value) || 0;
-                player.goals = parseInt(document.getElementById('statGoals').value) || 0;
+            const isCoach = player.role === 'coach';
+            const newNick = document.getElementById('statNick').value.trim();
+            player.nick    = newNick || player.nick;
+            player.name    = document.getElementById('statFullName').value.trim() || player.name;
+            player.country = document.getElementById('statCountry').value.trim().toLowerCase() || player.country;
+
+            if (isCoach) {
+                player.tactica     = Math.min(99, parseInt(document.getElementById('statTactica').value)     || 70);
+                player.motivacao   = Math.min(99, parseInt(document.getElementById('statMotivacao').value)   || 70);
+                player.rotacao     = Math.min(99, parseInt(document.getElementById('statRotacao').value)     || 70);
+                player.mentalidade = Math.min(99, parseInt(document.getElementById('statMentalidade').value) || 70);
+            } else {
+                player.games   = parseInt(document.getElementById('statGames').value)   || 0;
+                player.score   = parseInt(document.getElementById('statScore').value)   || 0;
+                player.goals   = parseInt(document.getElementById('statGoals').value)   || 0;
                 player.assists = parseInt(document.getElementById('statAssists').value) || 0;
-                player.saves = parseInt(document.getElementById('statSaves').value) || 0;
-                player.shots = parseInt(document.getElementById('statShots').value) || 0;
-
-                selectedPlayerNick = player.nick;
-
-                await saveTeamToStorage(team);
-                closeStatsModal();
-                renderLineup(team);
+                player.saves   = parseInt(document.getElementById('statSaves').value)   || 0;
+                player.shots   = parseInt(document.getElementById('statShots').value)   || 0;
+                player.ataque  = Math.min(99, parseInt(document.getElementById('statAtaque').value) || 70);
+                player.defesa  = Math.min(99, parseInt(document.getElementById('statDefesa').value) || 70);
+                player.aereo   = Math.min(99, parseInt(document.getElementById('statAereo').value)  || 70);
+                player.passe   = Math.min(99, parseInt(document.getElementById('statPasse').value)  || 70);
             }
+
+            selectedPlayerNick = player.nick;
+            await saveTeamToStorage(team);
+            closeStatsModal();
+            renderLineup(team);
         }
 
         function toggleAchBlock(header) {
@@ -1274,24 +1755,21 @@
                         const tier   = ach.tier || 'S';
 
                         li.innerHTML = `
-                            <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
-                                <span class="ach-tier ${tier}">Tier ${tier}</span>
-                                <a class="ach-title-link ${isClickable ? lt : ''}"
-                                   href="${isClickable && !adminMode ? href : '#'}"
-                                   ${isClickable && !adminMode ? target : ''}
-                                   style="${!isClickable || adminMode ? 'cursor:default;pointer-events:none;' : ''}">
-                                    ${isClickable ? `<i class="fa-solid ${icon} ach-icon"></i>` : ''}
-                                    ${ach.title}
-                                    ${badge ? `<span class="ach-badge ${lt}">${badge}</span>` : ''}
-                                </a>
-                            </div>
-                            <div class="ach-right">
-                                <span class="ach-pos">${ach.pos}</span>
-                                ${adminMode ? `
-                                    <button class="btn" style="background:#00b4ff;font-size:11px;padding:4px 8px;color:#fff;" onclick="openEditAchievementModal(${idx})"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="btn" style="background:#e74c3c;font-size:11px;padding:4px 8px;color:#fff;" onclick="deleteAchievement(${idx})"><i class="fa-solid fa-trash"></i></button>
-                                ` : ''}
-                            </div>`;
+                            <span class="ach-tier ${tier}">Tier ${tier}</span>
+                            <a class="ach-title-link ${isClickable ? lt : ''}"
+                               href="${isClickable && !adminMode ? href : '#'}"
+                               ${isClickable && !adminMode ? target : ''}
+                               style="${!isClickable || adminMode ? 'cursor:default;pointer-events:none;' : ''}">
+                                ${isClickable ? `<i class="fa-solid ${icon} ach-icon"></i>` : ''}
+                                <span class="ach-text">${ach.title}</span>
+                                ${badge ? `<span class="ach-badge ${lt}">${badge}</span>` : ''}
+                            </a>
+                            <span class="ach-year">${ach.date || ''}</span>
+                            <span class="ach-pos">${ach.pos}</span>
+                            ${adminMode ? `
+                                <button class="btn" style="background:#00b4ff;font-size:11px;padding:4px 8px;color:#fff;flex-shrink:0;" onclick="openEditAchievementModal(${idx})"><i class="fa-solid fa-pen"></i></button>
+                                <button class="btn" style="background:#e74c3c;font-size:11px;padding:4px 8px;color:#fff;flex-shrink:0;" onclick="deleteAchievement(${idx})"><i class="fa-solid fa-trash"></i></button>
+                            ` : ''}`;
                         ul.appendChild(li);
                     });
                     body.appendChild(ul);
@@ -1513,7 +1991,379 @@
 
         window.onload = async function() {
             await loadTeamsFromStorage();
+            await injectTeamsFromExcel();
+            await injectKarmineCorpAchievements();
             renderTeamsList();
+        }
+
+        // Busca logo de um time via Liquipedia (fallback para placeholder)
+        function logoUrl(team) {
+            return `https://www.google.com/s2/favicons?sz=64&domain=liquipedia.net`;
+        }
+
+        function makeTeam(id, name, region, origin, players) {
+            return {
+                id, name, region, origin,
+                logo: '',
+                ranking: 'N/A',
+                rating: 50,
+                achievements: [],
+                lineup: [
+                    ...players.map(nick => ({
+                        nick, name: '', country: '', role: 'player',
+                        games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0
+                    })),
+                    { nick: 'Coach', name: '', country: '', role: 'coach',
+                      games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 }
+                ]
+            };
+        }
+
+        async function injectTeamsFromExcel() {
+            // Verifica por nome para não duplicar
+            const existingNames = new Set(teamsData.map(t => t.name.toLowerCase().trim()));
+
+            const novosTimesList = [
+                // ── EUROPA ──
+                makeTeam('bad-news-eagles',    'Bad News Eagles',     'Europa',           'Albania',         ['ringa','ecorny.','WoozyPanda']),
+                makeTeam('sissi-state-punks',  'Sissi State Punks',   'Europa',           'Austria',         ['Gordy','Peersius','Tevmeister']),
+                makeTeam('acend',              'ACEND',               'Europa',           'Áustria',         ['FAETNATION','Maxi','Skizzen']),
+                makeTeam('nemiga',             'Nemiga Gaming',       'Europa',           'Belarus',         ['K1sty','Eleq-','Sh1n']),
+                makeTeam('heet',               'HEET',                'Europa',           'Bélgica',         ['badnezz','nolvex.','Bullet']),
+                makeTeam('cr4zy',              'CR4ZY',               'Europa',           'Croácia',         ['swizz','hoodied','Surrounded']),
+                makeTeam('team-sampi',         'Team Sampi',          'Europa',           'Chéquia',         ['Nalmon','Pupajs','Deviix']),
+                makeTeam('entropiq',           'Entropiq',            'Europa',           'Chéquia',         ['ToXx','Den1s','NumBy']),
+                makeTeam('astralis',           'Astralis',            'Europa',           'Dinamarca',       ['Gylfen','fruity','Vejrgang']),
+                makeTeam('og-esports',         'OG eSports',          'Europa',           'Dinamarca',       ['Maestro','Fredberg','TempoH']),
+                makeTeam('fnatic',             'Fnatic',              'Europa',           'Inglaterra',      ['Deevo','Gorilla','EyeIgnite']),
+                makeTeam('into-the-breach',    'Into The Breach',     'Europa',           'Inglaterra',      ['Growlii','ApparentlyJack','Shellzz']),
+                makeTeam('endpoint',           'Endpoint',            'Europa',           'Inglaterra',      ['noly','RelatingWave','Stokes']),
+                makeTeam('ence',               'ENCE',                'Europa',           'Finlândia',       ['Metsanauris','Mognus','Krompee']),
+                makeTeam('havu',               'HAVU Gaming',         'Europa',           'Finlândia',       ['LethalKale','FNSi','Kossu72']),
+                makeTeam('team-ldlc',          'Team LDLC',           'Europa',           'França',          ['Vatira','EleXiT','Ferra']),
+                makeTeam('arma-team',          'ARMA Team',           'Europa',           'França',          ['Dadooh','juicy','Radosin']),
+                makeTeam('3dmax',              '3DMAX',               'Europa',           'França',          ['Chausette45','GiuK','Fairy Peak']),
+                makeTeam('team-bds',           'Team BDS',            'Europa',           'França',          ['Spank','hell0','Alpha54']),
+                makeTeam('solary',             'Solary',              'Europa',           'França',          ['Mozzarella','kisaï','Quarna']),
+                makeTeam('verygames',          'VeryGames',           'Europa',           'França',          ['Maestro','Neqzo','DaXe']),
+                makeTeam('mouz',               'MOUZ',                'Europa',           'Alemanha',        ['Rezears','MegaBit','Sikii']),
+                makeTeam('g2-esports',         'G2 eSports',          'Europa',           'Alemanha',        ['Paschy90','ELMP','Snaski']),
+                makeTeam('big',                'BIG',                 'Europa',           'Alemanha',        ['Catalysm','Flarke','Godsmilla']),
+                makeTeam('werder-bremen',      'Werder Bremen',       'Europa',           'Alemanha',        ['scream.','Gnagflow06','Zeddo']),
+                makeTeam('meet-your-makers',   'Meet Your Makers',    'Europa',           'Alemanha',        ['KAR0TTENP0WER','DullenMIKE','FreaKii.']),
+                makeTeam('sk-gaming',          'SK Gaming',           'Europa',           'Alemanha',        ['deto','Turbopolsa','Flamezz']),
+                makeTeam('natus-vincere',      'Natus Vincere',       'Europa',           'Ucrânia',         ['alik_ander','niks','illum1n4t3']),
+                makeTeam('team-spirit',        'Team Spirit',         'Europa',           'Rússia',          ['Sozya','P1oNeRR','Klenoff']),
+                makeTeam('virtus-pro',         'Virtus.pro',          'Europa',           'Rússia',          ['Ufenok77','Abel','Tango']),
+                makeTeam('gambit-esports',     'Gambit Esports',      'Europa',           'Rússia',          ['terstas','lek0ms','Legacy']),
+                makeTeam('9pandas',            '9Pandas',             'Europa',           'Rússia',          ['Sakura','deps','TeXQ']),
+                makeTeam('saw',                'SAW',                 'Europa',           'Portugal',        ['Lazybear','rafa.','tuga810']),
+                makeTeam('rhyno',              'Rhyno eSports',       'Europa',           'Portugal',        ['armandogvale','Lickse','Fusion77']),
+                makeTeam('barcelona',          'Barcelona',           'Europa',           'Espanha',         ['Lasa','alemz','TORRES8232']),
+                makeTeam('movistar-riders',    'Movistar Riders',     'Europa',           'Espanha',         ['stizzy','Nachitow','IceFox']),
+                makeTeam('koi',                'KOI',                 'Europa',           'Espanha',         ['Leoro','Stake','NachoAbella']),
+                makeTeam('mad-lions',          'MAD Lions',           'Europa',           'Espanha',         ['Andonii','Rxii','Tempeest']),
+                makeTeam('nip',                'Ninjas in Pyjamas',   'Europa',           'Suécia',          ['BorasLegend','RalleGnaget','Spiralz']),
+                makeTeam('team-liquid',        'Team Liquid',         'Europa',           'Países Baixos',   ['nickbeast','RvK','SquishyMuffinz']),
+                makeTeam('ajax',               'Ajax',                'Europa',           'Países Baixos',   ['remkoe','Purposa','Vogan']),
+                makeTeam('psv',                'PSV',                 'Europa',           'Países Baixos',   ['Mittaen','oaly.','Jessie']),
+                makeTeam('aurora-gaming',      'Aurora Gaming',       'Europa',           'Sérvia',          ['Sloppy','Duki','Haregan']),
+                makeTeam('zero-tenacity',      'Zero Tenacity',       'Europa',           'Sérvia',          ['Mario','KrunaLex','WinterLosse']),
+                makeTeam('heroic',             'Heroic',              'Europa',           'Noruega',         ['gReazymeister','Seeb.','Maadzz']),
+                makeTeam('senja',              'Senja eSports',       'Europa',           'Noruega',         ['Bolt','Haven','Enlid']),
+                makeTeam('metizport',          'Metizport',           'Europa',           'Noruega',         ['Jwols','Hyper','mattien.']),
+                makeTeam('illuminar',          'Illuminar Gaming',    'Europa',           'Polônia',         ['Neerven','petrick','Edek']),
+                makeTeam('cyber-wolves',       'Cyber Wolves eSports','Europa',           'Eslovênia',       ['Niklas','juusk','Keda']),
+                makeTeam('juventus',           'Juventus',            'Europa',           'Itália',          ['Palatinus','davoof','Sorius']),
+                makeTeam('reply-totem',        'Reply Totem',         'Europa',           'Itália',          ['Dead-Monster','Hyderr','jelly.']),
+                makeTeam('venezia',            'Venezia',             'Europa',           'Itália',          ['Gramma','ViolentPanda','Kaydop']),
+                makeTeam('team-refuse',        'Team Refuse',         'Europa',           'Grécia',          ['HardPoint','WolfRider','manolo07']),
+                makeTeam('dark-passage',       'Dark Passage',        'Europa',           'Turquia',         ['Fades','Kemals','Emrah']),
+                makeTeam('eternal-fire',       'Eternal Fire',        'Europa',           'Turquia',         ['Lorely','zgocBrayt','CYRAX']),
+                makeTeam('passion-ua',         'Passion UA',          'Europa',           'Ucrânia',         ['sweeziq','Andle','Labotryas']),
+                makeTeam('hellraisers',        'HellRaisers',         'Europa',           'Ucrânia',         ['Bober','K0bzar_','Onl1Dima']),
+                makeTeam('method',             'Method',              'Europa',           'Escócia',         ['Markydooda','Smashy','miztik']),
+                makeTeam('ecstatic',           'Ecstatic',            'Europa',           'Dinamarca',       ['creamyy','Rexo','Yukeo']),
+                makeTeam('wyilde',             'Wylde',               'Europa',           'Irlanda',         ['Maxeew','virtuoso','Tomster']),
+                makeTeam('swansea',            'Swansea',             'Europa',           'País de Gales',   ['Tadpole','Breezi','Ravena']),
+
+                // ── AMÉRICA DO SUL ──
+                makeTeam('boca-juniors',       'Boca Juniors',        'América do Sul',   'Argentina',       ['nicolas','Lexim','Sempa']),
+                makeTeam('9z-team',            '9Z Team',             'América do Sul',   'Argentina',       ['UmBroken','Laucha','Patan']),
+                makeTeam('bestia',             'Bestia',              'América do Sul',   'Argentina',       ['misery','SebaLuoni','pulga']),
+                makeTeam('kru-esports',        'KRÜ eSports',         'América do Sul',   'Argentina',       ['seck','Luckz99','mazikeen']),
+                makeTeam('leviatan',           'Leviatán',            'América do Sul',   'Argentina',       ['LagLy','BRUNOFURRER','TaTu']),
+                makeTeam('isurus',             'Isurus',              'América do Sul',   'Argentina',       ['Yago','shad','Chopper']),
+                makeTeam('furious-gaming',     'Furious Gaming',      'América do Sul',   'Argentina',       ['NICOcarra15','Kevinacho','Wipes']),
+                makeTeam('santos',             'Santos',              'América do Sul',   'Brasil',          ['t O x i c','Thiagomf256','Dreevo']),
+                makeTeam('loud',               'LOUD',                'América do Sul',   'Brasil',          ['Royales','FirefoxD','JKnaps']),
+                makeTeam('pain-gaming',        'paiN Gaming',         'América do Sul',   'Brasil',          ['AztromicK','nxghtt','Dreankz']),
+                makeTeam('g3nerationx',        'G3NERATIONX',         'América do Sul',   'Brasil',          ['snipjz.','ntk','M1k3Rules']),
+                makeTeam('team-solid',         'Team Solid',          'América do Sul',   'Brasil',          ['brad','Matix','HotWheelsSid']),
+                makeTeam('imperial',           'Imperial eSports',    'América do Sul',   'Brasil',          ['nottenz','DylaN','HappYMeaL664']),
+                makeTeam('red-canids',         'Red Canids',          'América do Sul',   'Brasil',          ['caiotg1','yanD','KnS']),
+                makeTeam('legacy',             'Legacy',              'América do Sul',   'Brasil',          ['Noxity.','droppz','Strov3']),
+                makeTeam('fluxo',              'Fluxo',               'América do Sul',   'Brasil',          ['0ver Zer0','Haberkamper','Noisy']),
+                makeTeam('w7m',                'W7M eSports',         'América do Sul',   'Brasil',          ['Masi','Klaus','grumpz']),
+                makeTeam('liberty',            'Liberty',             'América do Sul',   'Brasil',          ['Dappluto','IAGOREIS','SubHallz']),
+                makeTeam('galorys',            'Galorys',             'América do Sul',   'Brasil',          ['wells','fAsi','Gian']),
+                makeTeam('Vikings-kr',         'Vikings KR',          'América do Sul',   'Brasil',          ['Mago','Aorus','nitro']),
+                makeTeam('sg-esports',         'SG eSports',          'América do Sul',   'Brasil',          ['lukezera','Vitor','Thiagoritoo']),
+                makeTeam('infamous',           'Infamous Gaming',     'América do Sul',   'Peru',            ['QuesoLDP','raggeo.','Turbo.']),
+                makeTeam('thunder-awaken',     'Thunder Awaken',      'América do Sul',   'Peru',            ['Mixel','Boom','SecretSpams.']),
+                makeTeam('penarol',            'Peñarol',             'América do Sul',   'Uruguai',         ['W1LKINS','mathz','MALARD0']),
+                makeTeam('valoroous',          'Valoroous',           'América do Sul',   'Chile',           ['Reysbull','GuilleM_14','starwindss']),
+                makeTeam('movistar-optix',     'Movistar Optix',      'América do Sul',   'Chile',           ['artorres','zett','suprass.']),
+                makeTeam('river-plate',        'River Plate',         'América do Sul',   'Argentina',       ['Rmn','Bonanno','Szaro']),
+
+                // ── AMERICA DO NORTE ──
+                // CANADA
+                makeTeam('luminosity',          'Luminosity Gaming',    'América do Norte', 'Canadá',          ['Jknaps','GoalMachine','CorruptedG']),
+                makeTeam('gaimin-gladiators',   'Gaimin Gladiators',    'América do Norte', 'Canadá',          ['Taroco.','Freshness','Lethamyr']),
+                makeTeam('shopify-rebellion',   'Shopify Rebellion',    'América do Norte', 'Canadá',          ['Jordan','Lachinio','Agitpower']),
+                makeTeam('livid-gaming',        'Livid Gaming',         'América do Norte', 'Canadá',          ['PhilB94','Allushin','Comp']),
+                makeTeam('vireo-pro',           'Vireo.Pro',            'América do Norte', 'Canadá',          ['AxB','DudeWithTheNose','tawk']),
+                makeTeam('parabellum',          'Parabellum eSports',   'América do Norte', 'Canadá',          ['Sosa','AdamW','Broken']),
+                makeTeam('team-reciprocity',    'Team Reciprocity',     'América do Norte', 'Canadá',          ['ChrissyB','spoods','Tommer']),
+                makeTeam('strife-esports',      'Strife eSports',       'América do Norte', 'Canadá',          ['NiGhT','Avenger','MansRFlying']),
+                makeTeam('honor-esports',       'Honor eSports',        'América do Norte', 'Canadá',          ['timi','BoscoBoy','radoko.']),
+                makeTeam('orgless-na',          'Orgless',              'América do Norte', 'Canadá',          ['anomaly','zol','Vegas']),
+                makeTeam('mirage-na',           'Mirage',               'América do Norte', 'Canadá',          ['Resonal','Nibra','HotWheelsSid']),
+                makeTeam('most-wanted',         'Most Wanted',          'América do Norte', 'Canadá',          ['Tekoz','Jay','Dareyck']),
+                makeTeam('lotus8',              'Lotus 8 eSports',      'América do Norte', 'Canadá',          ['tide.','GrEh','JsOlive']),
+                makeTeam('valors',              'Valors',               'América do Norte', 'Canadá',          ['EPICJonny','blaze.','Draz']),
+                makeTeam('nokturns',            'Nokturns',             'América do Norte', 'Canadá',          ['Wizakor','Titoh','grills']),
+                makeTeam('lazarus-esports',     'Lazarus eSports',      'América do Norte', 'Canadá',          ['PNDH','GoRocksGo','rahmyn']),
+                makeTeam('dark-allegiance',     'Dark Allegiance',      'América do Norte', 'Canadá',          ['Marsou','kristian','loakci']),
+                makeTeam('vexo-esports',        'Vexo eSports',         'América do Norte', 'Canadá',          ['Jerry','bishop','Mojo']),
+                // COSTA RICA
+                makeTeam('infinity-cr',         'Infinity',             'América do Norte', 'Costa Rica',      ['Rade','smooly','KeysarMG']),
+                makeTeam('fatal-ambition',      'Fatal Ambition',       'América do Norte', 'Costa Rica',      ['Voncita','Panda','Wavepace']),
+                makeTeam('saprissa',            'Deportivo Saprissa',   'América do Norte', 'Costa Rica',      ['El_Fiera','yank','MonzTick']),
+                // DOMINICAN REPUBLIC
+                makeTeam('bandits-gaming',      'Bandits Gaming',       'América do Norte', 'República Dominicana', ['Domi','GonzaloApBe11','ElPollo675']),
+                makeTeam('mezexis',             'Mezexis Esports',      'América do Norte', 'República Dominicana', ['Peak','iSrCraK','Prech.']),
+                // EL SALVADOR
+                makeTeam('zaga-talent',         'Zaga Talent Gaming',   'América do Norte', 'El Salvador',     ['noisy','Xr4rr.','BULL_PsyCho503']),
+                // GUATEMALA
+                makeTeam('aurelius',            'Aurelius eSports',     'América do Norte', 'Guatemala',       ['guayogol','juanes','Grantelbаrt']),
+                // HONDURAS
+                makeTeam('d1-gaming',           'D1 Gaming',            'América do Norte', 'Honduras',        ['oznola','deexom','Bendeck377']),
+                // MEXICO
+                makeTeam('estral',              'Estral eSports',       'América do Norte', 'México',          ['aZapatos','nessCoff','Cokita.']),
+                makeTeam('six-karma',           'Six Karma',            'América do Norte', 'México',          ['RapidBunny','Falss','PonchoRoGa']),
+                makeTeam('estorm',              'Estorm',               'América do Norte', 'México',          ['Rein10','Darou','muffino']),
+                makeTeam('atheris',             'Atheris eSports',      'América do Norte', 'México',          ['Blastyck','Sebs','JJPrezus']),
+                makeTeam('peek-gaming',         'Pêek Gaming',          'América do Norte', 'México',          ['Joksan','paco.','Santhino.']),
+                makeTeam('overknight',          'Overknight',           'América do Norte', 'México',          ['Memoriezs','Mazo','diviiza']),
+                makeTeam('alpha-atheris',       'Alpha Atheris',        'América do Norte', 'México',          ['LuisRayado98','AbsorbentKarma','Lgndary']),
+                makeTeam('ldm-esports',         'LDM eSports',          'América do Norte', 'México',          ['VillaMore3','Tryhardlito','Storm.']),
+                makeTeam('19esports',           '19Esports',            'América do Norte', 'México',          ['Gxmma.','angel','Yannini']),
+                makeTeam('ignis-mx',            'Ignis',                'América do Norte', 'México',          ['DragonRojo','ayLucky','Varo']),
+                makeTeam('fenix-esports',       'Fenix eSports',        'América do Norte', 'México',          ['andrypuma','Ozmo','Betrayed']),
+                makeTeam('kingdom-gaming',      'Kingdom Gaming',       'América do Norte', 'México',          ['giannisae','NeneCreative','Santana']),
+                // PANAMA
+                makeTeam('project-guardians',   'Project Guardians',    'América do Norte', 'Panamá',          ['Dasc','bouche.','Albertss']),
+                makeTeam('gravity-elite',       'Gravity Elite',        'América do Norte', 'Panamá',          ['enzoDemonN','EtrnlBirria','Lewis_43x']),
+                // PUERTO RICO
+                makeTeam('red-rooster',         'Red Rooster Team',     'América do Norte', 'Porto Rico',      ['Noxes','AuntJemima','Spearical']),
+                makeTeam('war-legion',          'War Legion Esports',   'América do Norte', 'Porto Rico',      ['Owl','Nooizyboy','prosk']),
+                // USA
+                makeTeam('faze-clan',           'FaZe Clan',            'América do Norte', 'Estados Unidos',  ['Rizzo','BeastMode','Chronic']),
+                makeTeam('team-envy',           'Team Envy',            'América do Norte', 'Estados Unidos',  ['Atomic','Brian','Torment']),
+                makeTeam('complexity',          'Complexity',           'América do Norte', 'Estados Unidos',  ['FiGoSkiLLz','Arsenal','MaJicBear']),
+                makeTeam('optic-gaming',        'OpTic Gaming',         'América do Norte', 'Estados Unidos',  ['KingCJ0','hockE','comm']),
+                makeTeam('flipsid3',            'FlipSid3 Tactics',     'América do Norte', 'Estados Unidos',  ['SterrenStatuSs','Chicago','hockser']),
+                makeTeam('team-3d',             'Team 3D',              'América do Norte', 'Estados Unidos',  ['GGGodfather','Firstkiller','Retals']),
+                makeTeam('evil-geniuses',       'Evil Geniuses',        'América do Norte', 'Estados Unidos',  ['Chris','GarrettG','Lj']),
+                makeTeam('team-solomid',        'Team SoloMid',         'América do Norte', 'Estados Unidos',  ['michs09','Sypical','Kronovi']),
+                makeTeam('nrg-esports',         'NRG eSports',          'América do Norte', 'Estados Unidos',  ['jstn.','KreeganBG','Gimmick']),
+                makeTeam('ibuypower',           'iBUYPOWER',            'América do Norte', 'Estados Unidos',  ['LionBlaze','TimoX','Fireburner']),
+                makeTeam('cloud9',              'Cloud9',               'América do Norte', 'Estados Unidos',  ['Daniel','memory','CHEESE.']),
+                makeTeam('counter-logic',       'Counter Logic Gaming', 'América do Norte', 'Estados Unidos',  ['AYYJAYY','mist','Fiddle']),
+                makeTeam('sentinels',           'Sentinels',            'América do Norte', 'Estados Unidos',  ['Dani','Scrzbbles','Buddy']),
+                makeTeam('darkzero',            'DarkZero eSports',     'América do Norte', 'Estados Unidos',  ['Gyro.','Eisvogel','dreaz']),
+                makeTeam('100-thieves',         '100 Thieves',          'América do Norte', 'Estados Unidos',  ['Jacob','reveal','Zineel']),
+                makeTeam('spacestation',        'Spacestation Gaming',  'América do Norte', 'Estados Unidos',  ['Alekzandur','kofyr','Wahvey']),
+                makeTeam('dignitas',            'Dignitas',             'América do Norte', 'Estados Unidos',  ['rapid','Crafty','Wonder']),
+                makeTeam('m80',                 'M80',                  'América do Norte', 'Estados Unidos',  ['Gilles','Shock','2Piece']),
+                makeTeam('team-dynamic',        'Team Dynamic',         'América do Norte', 'Estados Unidos',  ['proownez','Andy','.tristn']),
+                makeTeam('wildcard-gaming',     'Wildcard Gaming',      'América do Norte', 'Estados Unidos',  ['DAGNOLF96','Paarth','Dappur']),
+                makeTeam('boss',                'BOSS',                 'América do Norte', 'Estados Unidos',  ['ayjacks','Pirates','Klassux']),
+                makeTeam('mythic',              'Mythic',               'América do Norte', 'Estados Unidos',  ['MaXe vip','Pirates','Roll Dizz']),
+                makeTeam('nouns-esports',       'Nouns eSports',        'América do Norte', 'Estados Unidos',  ['Rafsou','percy.','Toastie']),
+                makeTeam('party-astronauts',    'Party Astronauts',     'América do Norte', 'Estados Unidos',  ['Cursorr','buzz','Reticence']),
+                makeTeam('oxygen-na',           'Oxygen',               'América do Norte', 'Estados Unidos',  ['LostlnTheWavesz','Evoh','Zanejackey']),
+                makeTeam('limitless',           'Limitless',            'América do Norte', 'Estados Unidos',  ['tcorrell','RemiMartinn','Sea-Bass']),
+                makeTeam('detonate',            'Detonate',             'América do Norte', 'Estados Unidos',  ['Kinseh','Satthew','Dylo']),
+                makeTeam('take-flyte',          'Take Flyte',           'América do Norte', 'Estados Unidos',  ['RvPLegend','Karma','Flitz']),
+                makeTeam('quiktrip-pioneers',   'QuikTrip Pioneers',    'América do Norte', 'Estados Unidos',  ['Vinch','AlphaKep','Sizz']),
+                makeTeam('beastcoast',          'BeastCoast',           'América do Norte', 'Estados Unidos',  ['Lev','Nuqqet','oath']),
+                makeTeam('soniqs',              'Soniqs',               'América do Norte', 'Estados Unidos',  ['Paps','Gawfs','ZPS']),
+                makeTeam('xset',                'XSET',                 'América do Norte', 'Estados Unidos',  ['night.','Cryptic','Doomsee']),
+
+                // ── OCEANIA ──
+                makeTeam('flyquest',           'FlyQuest',            'Oceania',          'Austrália',       ['Express','Scrub','Decka']),
+                makeTeam('pwr',                'PWR',                 'Oceania',          'Austrália',       ['Torsos','Fever','Shorez']),
+                makeTeam('renegades',          'Renegades',           'Oceania',          'Austrália',       ['RuNaWaY','Fibérr','SPYDOGE']),
+                makeTeam('grayhound',          'Grayhound Gaming',    'Oceania',          'Austrália',       ['Superlachie','CJCJ','Requiem']),
+                makeTeam('order',              'ORDER',               'Oceania',          'Austrália',       ['Nokturnal','kaka','Walcott']),
+                makeTeam('mindfreak',          'MINDFREAK',           'Oceania',          'Austrália',       ['PRoToS_JaNeLa','Julz','zenulous']),
+                makeTeam('chiefs',             'Chiefs eSports Club', 'Oceania',          'Austrália',       ['CatfiSh','gus','Prompt']),
+                makeTeam('dire-wolves',        'Dire Wolves',         'Oceania',          'Austrália',       ['Skip1','pryyme','Ghost']),
+                makeTeam('kingz',              'Kingz',               'Oceania',          'Nova Zelândia',   ['Viictus','Indominator','Granta']),
+
+                // ── ÁSIA ──
+                makeTeam('tyloo',              'TYLOO',               'Ásia',             'China',           ['ZW','AzureCiel','Juxta']),
+                makeTeam('rare-atom',          'Rare Atom',           'Ásia',             'China',           ['CartRider','Arctic','STARYORI']),
+                makeTeam('lynn-vision',        'Lynn Vision Gaming',  'Ásia',             'China',           ['SKYLINE','Astroz','Mengniu']),
+                makeTeam('team-falcons',       'Team Falcons',        'Ásia',             'Arábia Saudita',  ['Msdossary','trk511','Kiileerrz']),
+                makeTeam('twisted-minds',      'Twisted Minds',       'Ásia',             'Arábia Saudita',  ['Rw9','AboFawzi','M7sn']),
+                makeTeam('gods-reign',         'Gods Reign',          'Ásia',             'Índia',           ['Sakky','AbsCrazy','diesalot']),
+                makeTeam('gen-g',              'Gen.G',               'Ásia',             'Coreia do Sul',   ['KWAK','ZiX','Fettic']),
+                makeTeam('t1',                 'T1',                  'Ásia',             'Coreia do Sul',   ['JungMin','ZEBS.','Stank']),
+                makeTeam('drx',                'DRX',                 'Ásia',             'Coreia do Sul',   ['GWAN','wa.','CHAN']),
+                makeTeam('alter-ego',          'Alter Ego',           'Ásia',             'Indonésia',       ['LCT','Squirrel','Tornado_62']),
+                makeTeam('boom-esports',       'BOOM eSports',        'Ásia',             'Indonésia',       ['Res','The Optimistic Noob','Frederon']),
+                makeTeam('absolute',           'ABSOLUTE',            'Ásia',             'Japão',           ['Youxme','ReaLize','Maru.']),
+                makeTeam('detonation',         'DetonatioN FocusMe',  'Ásia',             'Japão',           ['Tenhow','Lunatic.','Jay']),
+                makeTeam('nasr',               'NASR eSports',        'Ásia',             'Emirados Árabes', ['Jushu','Sk.','hisooka.']),
+                makeTeam('nigma-galaxy',       'Nigma Galaxy',        'Ásia',             'Emirados Árabes', ['F5B','Bazooka','TheBeatsOpas']),
+                makeTeam('oryx',               'ORYX eSports',        'Ásia',             'Qatar',           ['distrion','Only6.','Shanks']),
+                makeTeam('mongolz',            'The Mongolz',         'Ásia',             'Mongólia',        ['notcosmo','sh0cksie','Zer0']),
+
+                // ── ÁFRICA ──
+                // ── AFRICA ──
+                // ALGERIA
+                makeTeam('skulls-esports',     'Skulls eSports',       'África', 'Argélia',      ['ramzy','Spectre','Cold79']),
+                makeTeam('15-average-gaming',  '15 Average Gaming',    'África', 'Argélia',      ['Akai','mass','Sykou.']),
+                makeTeam('silent-hell',        'Silent Hell eSports',  'África', 'Argélia',      ['Adel','tegan','Miskin']),
+                // COTE D'IVOIRE
+                makeTeam('team-oplon',         'Team Oplon',           'África', 'Costa do Marfim', ['Dark06','sylixito.','HUNTER_ROYASE44']),
+                makeTeam('zerance',            'ZERANCE',              'África', 'Costa do Marfim', ['ZEG R','H4G Brxdy','Nocturne_Sauvage']),
+                // EGYPT
+                makeTeam('gamax',              'GAMAX eSports',        'África', 'Egito',        ['Rami_Sa3d','Negative','ToxicPrison']),
+                makeTeam('raad',               "RA'AD",                'África', 'Egito',        ['HugeBody','AbuLba','IslamDunk']),
+                makeTeam('qlash-mena',         'QLASH MENA',           'África', 'Egito',        ['Nine','AnasBadr','Crunchy']),
+                makeTeam('anubis-gaming',      'Anubis Gaming',        'África', 'Egito',        ['Tomy','MoWaelJR','Atabani']),
+                // GHANA
+                makeTeam('team-infused',       'Team Infused',         'África', 'Gana',         ['Wondhakid','Lankai','D4nnyDaGOAT']),
+                // MOROCCO
+                makeTeam('the-black-lotus',    'The Black Lotus',      'África', 'Marrocos',     ['dralii','AnoriQ','Karimisbak']),
+                makeTeam('one-more-esports',   'One More eSports',     'África', 'Marrocos',     ['Itachi','nass','Aymane']),
+                makeTeam('fox-gaming',         'FOX Gaming',           'África', 'Marrocos',     ['KinaneNabhani','ray','madz.']),
+                makeTeam('twareg-esports',     'Twareg eSports',       'África', 'Marrocos',     ['MarwanMC9','yas','volensy']),
+                makeTeam('victorious-demons',  'Victorious Demons',    'África', 'Marrocos',     ['m7md','Lmamouni','9nine']),
+                // NIGER
+                makeTeam('supremacy',          'Supremacy',            'África', 'Níger',        ['Brainy Smurf','Papa Smurf','Smurfette']),
+                // NIGERIA
+                makeTeam('marsborne',          'Marsborne',            'África', 'Nigéria',      ['mojohn','Albax.','platoonpeaky']),
+                makeTeam('absolved',           'Absolved',             'África', 'Nigéria',      ['Briggsof9ja','KCKAOS','rTeatu']),
+                // SOUTH AFRICA
+                makeTeam('atk',                'ATK',                  'África', 'África do Sul', ['Werty','Galaxy','Dani']),
+                makeTeam('bird',               'BIRD',                 'África', 'África do Sul', ['2Die4','Snowyy','Sweaty']),
+                makeTeam('bravado',            'Bravado Gaming',       'África', 'África do Sul', ['Darth','Dani Visser','Lackstar']),
+                makeTeam('nixuh',              'NIXUH',                'África', 'África do Sul', ['SkillSteal','Happymeal','Damesheet']),
+                makeTeam('goliath-gaming',     'Goliath Gaming',       'África', 'África do Sul', ['Beast','EliakimZA','Arceon']),
+                makeTeam('dnmk-esports',       'DNMK eSports',         'África', 'África do Sul', ['kamz','Friction','Lev']),
+                makeTeam('the-punishers',      'The Punishers',        'África', 'África do Sul', ['ChrisdeBoer','Wee_Casper','snoozy']),
+                makeTeam('kitsune-esports',    'Kitsune eSports',      'África', 'África do Sul', ['Mr.Low','Declan','ZaidApril']),
+                makeTeam('energy-esports',     'Energy eSports',       'África', 'África do Sul', ['Giobundyy','Dapz','SchalkG']),
+                makeTeam('sinister5',          'Sinister5',            'África', 'África do Sul', ['gunz','Ram','Kaylan']),
+                makeTeam('big5-esports',       'BIG 5 eSports',        'África', 'África do Sul', ['Zero','D3Funct','Paronix']),
+                makeTeam('white-rabbit-gaming','White Rabbit Gaming',  'África', 'África do Sul', ['ShadowHunter','Trstn','Riker']),
+                makeTeam('evolved-gaming',     'Evolved Gaming',       'África', 'África do Sul', ['YoPeGo','RisenEclipse','Syanto']),
+                makeTeam('omnius-gaming',      'Omnius Gaming',        'África', 'África do Sul', ['vnX','Auriginal','N1tro']),
+                makeTeam('exdee-gaming',       'ExDee Gaming',         'África', 'África do Sul', ['Zeph.','k0entj92','Duklaz']),
+                makeTeam('nibble-esports',     'Nibble eSports',       'África', 'África do Sul', ['Zany','Jeff','GoldNiNja']),
+                makeTeam('aipx-gaming',        'AIPX Gaming',          'África', 'África do Sul', ['BigFoot','Ravi','TechnicEagle75']),
+                makeTeam('team-tko',           'Team TKO',             'África', 'África do Sul', ['Echo','xyro','JustSpecs']),
+                makeTeam('unity-za',           'Unity',                'África', 'África do Sul', ['cpZebra','5bs','li0n_za']),
+                makeTeam('aperture-gaming',    'Aperture Gaming',      'África', 'África do Sul', ['ChristianW','Yujn','Devour']),
+                makeTeam('damage-control',     'Damage Control',       'África', 'África do Sul', ['BananaCat','Rowen','josho']),
+                makeTeam('royalty-esports',    'Royalty eSports',      'África', 'África do Sul', ['PwnFlakes','JRS.','Ballim']),
+                makeTeam('exotic-esports',     'Exotic eSports',       'África', 'África do Sul', ['Syfohn','T3ACHER1','PotatoWithaGun']),
+                makeTeam('vendetta-esports',   'Vendetta eSports',     'África', 'África do Sul', ['Serenity','JeromeMoment','Marnie']),
+                makeTeam('vinco-gaming',       'Vinco Gaming',         'África', 'África do Sul', ['Jerome in da bath','Blade','JTW']),
+                makeTeam('lost-legion-giants', 'Lost Legion Giants',   'África', 'África do Sul', ['BreeZy','PhysicsZA','Dilly']),
+                // TUNISIA
+                makeTeam('gng-esports',        'GNG eSports',          'África', 'Tunísia',      ['Ghassan.','Ry4n.','ChihebS']),
+                makeTeam('divine-vendetta',    'Divine Vendetta',      'África', 'Tunísia',      ['mentus','S E L M E N 73','ZargaABK']),
+                makeTeam('csh-esports',        'CSH eSports',          'África', 'Tunísia',      ['Bedis_blaiej','wajih hb','dreyyaa-']),
+                makeTeam('revenga-esports',    'Revenga eSports',      'África', 'Tunísia',      ['Momento','Blade','Radicallii73']),
+                makeTeam('rulz',               'RULZ',                 'África', 'Tunísia',      ['Wassim','Madcap','ANGEL']),
+            ];
+
+            let added = 0;
+            let fixed = 0;
+            for (const team of novosTimesList) {
+                const nome = team.name.toLowerCase().trim();
+                if (!existingNames.has(nome)) {
+                    teamsData.push(team);
+                    await saveTeamToStorage(team);
+                    existingNames.add(nome);
+                    added++;
+                } else {
+                    // Time já existe — verifica se tem coach, se não tiver adiciona
+                    const existing = teamsData.find(t => t.name.toLowerCase().trim() === nome);
+                    if (existing && !existing.lineup.some(p => p.role === 'coach')) {
+                        existing.lineup.push({ nick: 'Coach', name: '', country: '', role: 'coach',
+                            games: 0, score: 0, goals: 0, assists: 0, saves: 0, shots: 0 });
+                        await saveTeamToStorage(existing);
+                        fixed++;
+                    }
+                }
+            }
+            if (added > 0) console.log(`✅ ${added} times adicionados do Excel.`);
+            if (fixed > 0) console.log(`🔧 ${fixed} times tiveram o técnico restaurado.`);
+        }
+
+        // Injeta 2º e 3º lugares do Karmine Corp no IndexedDB (sem duplicar)
+        async function injectKarmineCorpAchievements() {
+            const kc = teamsData.find(t =>
+                t.name && t.name.toLowerCase().includes('karmine')
+            );
+            if (!kc) return;
+
+            const novos2 = [
+                // 2026
+                { title: "RLCS 2026 - Kick-Off Weekend", pos: "2º Lugar", tier: "S", date: "2026", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2026/Kick-Off_Weekend", internalId: "" },
+                { title: "RLCS 2026 - Boston Major: EU Open 2", pos: "2º Lugar", tier: "A", date: "2026", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2026/Boston_Major/Europe/Open_2", internalId: "" },
+                // 2025
+                { title: "RLCS 2025 - Birmingham Major: EU Open 3", pos: "2º Lugar", tier: "A", date: "2025", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2025/Birmingham_Major/Europe/Open_3", internalId: "" },
+                { title: "RLCS 2025 - Birmingham Major", pos: "2º Lugar", tier: "S", date: "2025", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2025/Birmingham_Major", internalId: "" },
+                // 2023
+                { title: "RLCS 2022-23 - Spring: EU Regional 2 - Spring Cup", pos: "2º Lugar", tier: "A", date: "2023", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2022-23/Spring/Europe/2", internalId: "" },
+                { title: "RLCS 2022-23 - Winter Split Major", pos: "2º Lugar", tier: "S", date: "2023", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2022-23/Winter", internalId: "" },
+                // 2022
+                { title: "RLCS 2022-23 - Fall: EU Regional 1 - Fall Open", pos: "2º Lugar", tier: "A", date: "2022", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2022-23/Fall/Europe/Open", internalId: "" },
+                { title: "RLCS 2021-22 - World Championship", pos: "2º Lugar", tier: "S", date: "2022", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2021-22/World_Championship", internalId: "" },
+            ];
+
+            const novos3 = [
+                // 2024
+                { title: "RLCS 2024 - World Championship", pos: "3º Lugar", tier: "S", date: "2024", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2024/World_Championship", internalId: "" },
+                { title: "RLCS 2024 - Major 1: Copenhagen", pos: "3º Lugar", tier: "S", date: "2024", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2024/Major_1", internalId: "" },
+                // 2023
+                { title: "RLCS 2022-23 - World Championship", pos: "3º Lugar", tier: "S", date: "2023", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2022-23/World_Championship", internalId: "" },
+                { title: "RLCS 2022-23 - Spring Split Major", pos: "3º Lugar", tier: "S", date: "2023", linkType: "external", url: "https://liquipedia.net/rocketleague/Rocket_League_Championship_Series/2022-23/Spring", internalId: "" },
+            ];
+
+            let changed = false;
+
+            for (const ach of [...novos2, ...novos3]) {
+                const jaExiste = kc.achievements.some(a =>
+                    a.title === ach.title && a.pos === ach.pos
+                );
+                if (!jaExiste) {
+                    kc.achievements.push(ach);
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                await saveTeamToStorage(kc);
+            }
         }
     </script>
 </body>
